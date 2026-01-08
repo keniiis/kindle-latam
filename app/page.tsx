@@ -39,7 +39,7 @@ type BookGroup = {
     clippings: Clipping[];
 };
 
-// --- COMPONENTE BOOKCARD (CORREGIDO: Busca por Título Y Autor) ---
+// --- COMPONENTE BOOKCARD ---
 const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) => {
     const [coverUrl, setCoverUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -47,20 +47,16 @@ const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) =
     useEffect(() => {
         let isMounted = true;
         const fetchCover = async () => {
-            // 1. Limpieza del Título
             const cleanTitle = book.title.split('(')[0].split(':')[0].split(' -')[0].trim();
-            // 2. Limpieza del Autor
             const cleanAuthor = book.author.replace(/[\(\)]/g, '').trim();
 
             try {
-                // Buscamos por Título Y Autor para mayor precisión
                 const response = await fetch(
                     `https://openlibrary.org/search.json?title=${encodeURIComponent(cleanTitle)}&author=${encodeURIComponent(cleanAuthor)}&limit=1&fields=cover_i`
                 );
                 const data = await response.json();
 
                 if (isMounted && data.docs && data.docs.length > 0) {
-                    // Buscamos el primero que tenga portada
                     const bookWithCover = data.docs.find((doc: any) => doc.cover_i);
                     if (bookWithCover) {
                         setCoverUrl(`https://covers.openlibrary.org/b/id/${bookWithCover.cover_i}-L.jpg`);
@@ -128,7 +124,6 @@ export default function Home() {
     const [toastMessage, setToastMessage] = useState<string | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    // 1. CARGAR DATOS
     useEffect(() => {
         const savedData = localStorage.getItem(STORAGE_KEY);
         if (savedData) {
@@ -141,14 +136,12 @@ export default function Home() {
         setIsLoaded(true);
     }, []);
 
-    // 2. GUARDAR DATOS
     useEffect(() => {
         if (isLoaded && rawClippings.length > 0) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(rawClippings));
         }
     }, [rawClippings, isLoaded]);
 
-    // LOGOUT
     const handleClearData = () => {
         if (confirm('¿Estás seguro? Esto borrará tus libros de este navegador.')) {
             localStorage.removeItem(STORAGE_KEY);
@@ -157,7 +150,6 @@ export default function Home() {
         }
     };
 
-    // NUEVO: CARGAR DEMO
     const handleLoadDemo = () => {
         const parsed = parseKindleClippings(DEMO_TEXT.trim());
         setRawClippings(parsed);
@@ -225,7 +217,6 @@ export default function Home() {
                     )}
                 </header>
 
-                {/* VISTA 1: UPLOAD */}
                 {rawClippings.length === 0 && (
                     <div
                         onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}
@@ -246,7 +237,6 @@ export default function Home() {
                             <input type="file" accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
                         </label>
 
-                        {/* BOTÓN MÁGICO PARA DEMO */}
                         <div className="mt-8 pt-6 border-t border-slate-200 w-full max-w-xs text-center">
                             <p className="text-xs text-slate-400 mb-3 uppercase tracking-wide font-bold">¿No tienes archivo?</p>
                             <button
@@ -259,14 +249,12 @@ export default function Home() {
                     </div>
                 )}
 
-                {/* VISTA 2: BIBLIOTECA */}
                 {rawClippings.length > 0 && !selectedBook && (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                             <Book className="text-indigo-600" />
                             Tu Biblioteca ({library.length} libros)
                         </h2>
-
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                             {library.map((book) => (
                                 <BookCard
@@ -279,7 +267,6 @@ export default function Home() {
                     </div>
                 )}
 
-                {/* VISTA 3: DETALLE */}
                 {selectedBook && (
                     <div className="animate-in fade-in slide-in-from-right-8 duration-300 max-w-4xl mx-auto">
                         <button
@@ -300,7 +287,8 @@ export default function Home() {
                                     <div key={clip.id} className="group relative pl-6 border-l-4 border-slate-200 hover:border-indigo-500 transition-colors">
                                         <p className="text-lg text-slate-700 leading-relaxed font-serif italic">"{clip.content}"</p>
 
-                                        <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {/* AQUÍ ESTÁ EL ARREGLO PARA MÓVIL: md:opacity-0 */}
+                                        <div className="mt-3 flex items-center gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                             <span className="text-xs text-slate-400 font-sans uppercase tracking-wider mr-auto">{clip.type}</span>
 
                                             <button
@@ -325,7 +313,6 @@ export default function Home() {
                     </div>
                 )}
 
-                {/* MODAL & TOAST */}
                 {clipToShare && selectedBook && (
                     <ShareModal
                         content={clipToShare.content}
