@@ -9,13 +9,37 @@ import { UploadCloud, Book, ChevronLeft, Quote, Share2, Copy, CheckCircle2, Load
 // Constante para la llave del almacenamiento local
 const STORAGE_KEY = 'kindle-latam-library';
 
+// DATOS DE PRUEBA (DEMO)
+const DEMO_TEXT = `
+Hábitos Atómicos (James Clear)
+- Highlight | Added on Monday, January 1, 2024
+
+No te elevas al nivel de tus metas. Caes al nivel de tus sistemas.
+==========
+Cien años de soledad (Gabriel García Márquez)
+- Highlight | Added on Tuesday, January 2, 2024
+
+Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo.
+==========
+El Sutil Arte de Que te Importe un Carajo (Mark Manson)
+- Highlight | Added on Wednesday, January 3, 2024
+
+La felicidad es un problema constante.
+==========
+Manual de Desarrollo Web (Daniel Peña)
+- Highlight | Added on Friday, January 5, 2024
+
+Las PWAs son el futuro del desarrollo móvil en Latam. Si combinas Next.js con una buena estrategia de SEO local, eres imparable.
+==========
+`;
+
 type BookGroup = {
     title: string;
     author: string;
     clippings: Clipping[];
 };
 
-// --- COMPONENTE BOOKCARD (Con la lógica de búsqueda inteligente que ya tenías) ---
+// --- COMPONENTE BOOKCARD (CORREGIDO: Busca por Título Y Autor) ---
 const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) => {
     const [coverUrl, setCoverUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -23,13 +47,13 @@ const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) =
     useEffect(() => {
         let isMounted = true;
         const fetchCover = async () => {
-            // 1. Limpieza del Título (igual que antes)
+            // 1. Limpieza del Título
             const cleanTitle = book.title.split('(')[0].split(':')[0].split(' -')[0].trim();
-            // 2. Limpieza del Autor (por si acaso viene con formatos raros)
+            // 2. Limpieza del Autor
             const cleanAuthor = book.author.replace(/[\(\)]/g, '').trim();
 
             try {
-                // CAMBIO CLAVE: Ahora buscamos por Título Y Autor
+                // Buscamos por Título Y Autor para mayor precisión
                 const response = await fetch(
                     `https://openlibrary.org/search.json?title=${encodeURIComponent(cleanTitle)}&author=${encodeURIComponent(cleanAuthor)}&limit=1&fields=cover_i`
                 );
@@ -102,9 +126,9 @@ export default function Home() {
     const [isDragging, setIsDragging] = useState(false);
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
-    const [isLoaded, setIsLoaded] = useState(false); // Para evitar parpadeos al cargar
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    // 1. EFECTO: CARGAR DATOS AL INICIAR
+    // 1. CARGAR DATOS
     useEffect(() => {
         const savedData = localStorage.getItem(STORAGE_KEY);
         if (savedData) {
@@ -117,20 +141,27 @@ export default function Home() {
         setIsLoaded(true);
     }, []);
 
-    // 2. EFECTO: GUARDAR DATOS CUANDO CAMBIEN
+    // 2. GUARDAR DATOS
     useEffect(() => {
         if (isLoaded && rawClippings.length > 0) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(rawClippings));
         }
     }, [rawClippings, isLoaded]);
 
-    // Manejar Logout / Limpiar datos
+    // LOGOUT
     const handleClearData = () => {
         if (confirm('¿Estás seguro? Esto borrará tus libros de este navegador.')) {
             localStorage.removeItem(STORAGE_KEY);
             setRawClippings([]);
             setSelectedBook(null);
         }
+    };
+
+    // NUEVO: CARGAR DEMO
+    const handleLoadDemo = () => {
+        const parsed = parseKindleClippings(DEMO_TEXT.trim());
+        setRawClippings(parsed);
+        setToastMessage("¡Modo Demo activado! 🚀");
     };
 
     useEffect(() => {
@@ -171,7 +202,6 @@ export default function Home() {
         setToastMessage("¡Copiado al portapapeles!");
     };
 
-    // Evitamos renderizar hasta que hayamos leído el localStorage para no causar hidratación incorrecta
     if (!isLoaded) return null;
 
     return (
@@ -181,9 +211,9 @@ export default function Home() {
                 <header className="mb-12 flex justify-between items-center">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                            Kindle<span className="text-indigo-600">Latam</span>
+                            Citando<span className="text-indigo-600">Ando</span>
                         </h1>
-                        <p className="text-sm text-slate-500 mt-1">Tu biblioteca visual</p>
+                        <p className="text-sm text-slate-500 mt-1">Tu segundo cerebro, versión PWA</p>
                     </div>
                     {rawClippings.length > 0 && (
                         <button
@@ -215,6 +245,17 @@ export default function Home() {
                             Explorar Archivos
                             <input type="file" accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
                         </label>
+
+                        {/* BOTÓN MÁGICO PARA DEMO */}
+                        <div className="mt-8 pt-6 border-t border-slate-200 w-full max-w-xs text-center">
+                            <p className="text-xs text-slate-400 mb-3 uppercase tracking-wide font-bold">¿No tienes archivo?</p>
+                            <button
+                                onClick={handleLoadDemo}
+                                className="text-sm font-medium text-slate-600 hover:text-indigo-600 underline decoration-indigo-200 hover:decoration-indigo-600 underline-offset-4 transition-all"
+                            >
+                                Cargar datos de prueba
+                            </button>
+                        </div>
                     </div>
                 )}
 
