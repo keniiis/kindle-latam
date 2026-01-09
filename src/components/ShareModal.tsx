@@ -3,7 +3,12 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
-import { X, Palette, Save, ArrowLeft, Instagram, Loader2 } from 'lucide-react';
+import {
+    ArrowLeft, Trash2, Coffee, BookOpen,
+    Palette, Type, LayoutGrid, Image as ImageIcon,
+    MoreVertical, Download, Loader2, X, RotateCcw,
+    Smartphone, Square, User, ShieldCheck, Book
+} from 'lucide-react';
 
 interface ShareModalProps {
     content: string;
@@ -12,28 +17,46 @@ interface ShareModalProps {
     onClose: () => void;
 }
 
-const THEMES = [
-    { name: 'Naranja', bg: 'bg-gradient-to-br from-orange-100 to-amber-200', text: 'text-orange-950' },
-    { name: 'Azul', bg: 'bg-gradient-to-br from-blue-100 to-indigo-200', text: 'text-indigo-950' },
-    { name: 'Rosa', bg: 'bg-gradient-to-br from-rose-100 to-pink-200', text: 'text-rose-950' },
-    { name: 'Lila', bg: 'bg-gradient-to-br from-violet-100 to-purple-200', text: 'text-purple-950' },
-    { name: 'Blanco', bg: 'bg-white', text: 'text-slate-900' },
-    { name: 'Negro', bg: 'bg-zinc-900', text: 'text-zinc-100' },
+const COLORS = [
+    { name: 'Lavanda', bg: 'bg-[#e0e7ff]', text: 'text-[#1e1b4b]', dot: 'bg-[#e0e7ff] border-indigo-200' },
+    { name: 'Amarillo', bg: 'bg-[#fef9c3]', text: 'text-[#422006]', dot: 'bg-[#fef9c3] border-yellow-200' },
+    { name: 'Rosa', bg: 'bg-[#fee2e2]', text: 'text-[#4c0519]', dot: 'bg-[#fee2e2] border-rose-200' },
+    { name: 'Menta', bg: 'bg-[#d1fae5]', text: 'text-[#064e3b]', dot: 'bg-[#d1fae5] border-emerald-200' },
+    { name: 'Fucsia', bg: 'bg-gradient-to-br from-fuchsia-200 to-purple-300', text: 'text-fuchsia-950', dot: 'bg-fuchsia-300' },
+    { name: 'Oscuro', bg: 'bg-slate-900', text: 'text-white', dot: 'bg-slate-800' },
+];
+
+const FONTS = [
+    { name: 'Serif', class: 'font-serif' },
+    { name: 'Sans', class: 'font-sans' },
+    { name: 'Mono', class: 'font-mono' },
+];
+
+const ALIGNMENTS = [
+    { name: 'Centro', class: 'text-center' },
+    { name: 'Izquierda', class: 'text-left' },
 ];
 
 export default function ShareModal({ content, title, author, onClose }: ShareModalProps) {
     const ref = useRef<HTMLDivElement>(null);
-    const [currentTheme, setCurrentTheme] = useState(THEMES[1]);
-    const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+    const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+    const [selectedFont, setSelectedFont] = useState(FONTS[0]);
+    const [selectedAlign, setSelectedAlign] = useState(ALIGNMENTS[0]);
     const [isGenerating, setIsGenerating] = useState(false);
+
+    // Opciones del Modal
+    const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+    const [format, setFormat] = useState<'story' | 'post'>('story');
+    const [showAuthor, setShowAuthor] = useState(true);
+    const [showWatermark, setShowWatermark] = useState(true);
+    const [showTitle, setShowTitle] = useState(true); // "Mostrar Portada" interpretado como Título
 
     const handleDownload = async () => {
         if (ref.current === null) return;
         setIsGenerating(true);
-
         try {
             const dataUrl = await toPng(ref.current, { cacheBust: true, pixelRatio: 3 });
-            download(dataUrl, 'citando-ando-story.png');
+            download(dataUrl, `citando-ando-${format}.png`);
         } catch (err) {
             console.error(err);
         } finally {
@@ -41,115 +64,225 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
         }
     };
 
+    const toggleFont = () => {
+        const nextIndex = (FONTS.indexOf(selectedFont) + 1) % FONTS.length;
+        setSelectedFont(FONTS[nextIndex]);
+    };
+
+    const toggleAlign = () => {
+        const nextIndex = (ALIGNMENTS.indexOf(selectedAlign) + 1) % ALIGNMENTS.length;
+        setSelectedAlign(ALIGNMENTS[nextIndex]);
+    };
+
+    const resetSettings = () => {
+        setSelectedColor(COLORS[0]);
+        setSelectedFont(FONTS[0]);
+        setSelectedAlign(ALIGNMENTS[0]);
+        setFormat('story');
+        setShowAuthor(true);
+        setShowWatermark(true);
+        setShowTitle(true);
+        setIsOptionsOpen(false);
+    };
+
     return (
-        <div className="fixed inset-0 z-60 flex flex-col bg-zinc-950 text-white h-dvh">
-
-            {/* 1. TOP BAR */}
-            <div className="flex justify-between items-center p-4 px-6 bg-zinc-900/50 backdrop-blur-md z-10 border-b border-white/5 shrink-0">
-                <span className="font-bold text-xs tracking-[0.2em] text-zinc-400 uppercase">Vista Previa</span>
-                <button onClick={onClose} className="p-2 bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors">
-                    <X size={20} className="text-white" />
+        <div className="fixed inset-0 z-[60] bg-[#f2f4f7] flex flex-col h-dvh font-sans animate-in fade-in duration-300">
+            {/* 1. HEADER */}
+            <header className="px-6 py-4 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 md:bg-transparent md:static z-10">
+                <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-full transition-colors">
+                    <ArrowLeft size={20} className="text-slate-700" />
                 </button>
-            </div>
+                <div className="flex items-center gap-2">
+                    <div className="bg-[#8c25f4] p-1.5 rounded-lg text-white shadow-md shadow-purple-500/20">
+                        <BookOpen size={16} strokeWidth={3} />
+                    </div>
+                    <span className="font-bold text-slate-900 tracking-tight">CitandoAndo</span>
+                </div>
+                <div className="flex items-center gap-2 md:gap-4">
+                    <button className="hidden md:flex p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                        <Trash2 size={20} />
+                    </button>
+                    <a href="https://ko-fi.com/devdanipena" target="_blank" className="bg-[#8c25f4] text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold flex gap-2 shadow-lg shadow-purple-500/30 hover:bg-[#7c1be2] transition-colors">
+                        <Coffee size={16} strokeWidth={2.5} />
+                        <span className="hidden sm:inline">Invítame un café</span>
+                    </a>
+                </div>
+            </header>
 
-            {/* 2. AREA DE PREVISUALIZACIÓN */}
-            <div className="flex-1 flex items-center justify-center p-4 overflow-hidden relative w-full">
+            {/* 2. MAIN CANVAS AREA */}
+            <main className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-200/50 rounded-full blur-3xl -z-10 animate-pulse"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/50 rounded-full blur-3xl -z-10 animate-pulse delay-700"></div>
 
-                <div className="relative h-full max-h-[60vh] sm:max-h-[70vh] aspect-9/16 shadow-2xl mx-auto">
-
-                    <div
-                        ref={ref}
-                        className={`w-full h-full flex flex-col justify-between p-6 sm:p-10 ${currentTheme.bg} transition-colors duration-500`}
-                        style={{ fontFamily: 'serif' }}
-                    >
-                        {/* Header */}
-                        <div className="flex items-center gap-2 opacity-60">
-                            <Instagram size={16} className={currentTheme.text} />
-                            <span className={`text-[9px] tracking-widest uppercase font-sans font-bold ${currentTheme.text}`}>Citando Ando</span>
-                        </div>
-
-                        {/* Contenido */}
-                        <div className="flex-1 flex items-center justify-center my-4 overflow-hidden">
-                            <p className={`text-lg sm:text-2xl leading-relaxed italic font-medium text-center line-clamp-10 ${currentTheme.text}`}>
+                <div className={`relative h-full max-h-[65vh] ${format === 'story' ? 'aspect-[9/16]' : 'aspect-square'} shadow-2xl shadow-slate-400/20 mx-auto transition-all duration-500 ease-out hover:scale-[1.01]`}>
+                    <div ref={ref} className={`w-full h-full flex flex-col p-8 sm:p-10 ${selectedColor.bg} transition-colors duration-500 rounded-3xl`}>
+                        {showWatermark && (
+                            <div className={`text-center text-[10px] tracking-[0.3em] font-bold opacity-40 uppercase mb-auto ${selectedColor.text}`}>
+                                # CitandoAndo
+                            </div>
+                        )}
+                        <div className={`my-auto flex flex-col justify-center ${!showWatermark && 'pt-10'}`}>
+                            <p className={`text-2xl sm:text-3xl leading-relaxed italic ${selectedFont.class} font-medium ${selectedAlign.class} ${selectedColor.text}`} style={{ textWrap: 'balance' } as any}>
                                 "{content}"
                             </p>
                         </div>
-
-                        {/* Footer */}
-                        <div className={`mt-2 pt-4 border-t ${currentTheme.name === 'Negro' ? 'border-zinc-700' : 'border-black/10'}`}>
-                            <p className={`text-[10px] sm:text-sm font-bold uppercase tracking-wide ${currentTheme.text} line-clamp-1`}>
-                                {title}
-                            </p>
-                            <p className={`text-[9px] sm:text-xs opacity-75 mt-1 ${currentTheme.text} line-clamp-1`}>
-                                {author}
-                            </p>
-
-                            {/* --- NUEVO: URL DE TU PWA PARA VIRALIDAD --- */}
-                            <div className="mt-3 flex justify-end opacity-40">
-                                <p className={`text-[8px] font-sans tracking-widest uppercase ${currentTheme.text}`}>
+                        <div className={`mt-auto pt-8 border-t ${selectedColor.name === 'Oscuro' ? 'border-zinc-700' : 'border-black/5'} text-center flex flex-col items-center gap-1`}>
+                            {showTitle && (
+                                <h3 className={`font-bold uppercase tracking-wider text-xs sm:text-sm ${selectedColor.text}`}>
+                                    {title}
+                                </h3>
+                            )}
+                            {showAuthor && (
+                                <p className={`text-[10px] sm:text-xs opacity-60 ${selectedColor.text}`}>
+                                    {author}
+                                </p>
+                            )}
+                            {showWatermark && (
+                                <p className={`mt-4 text-[7px] tracking-[0.2em] opacity-30 uppercase ${selectedColor.text}`}>
                                     citando-ando.vercel.app
                                 </p>
-                            </div>
+                            )}
                         </div>
                     </div>
-
                 </div>
-            </div>
+            </main>
 
-            {/* 3. BARRA INFERIOR */}
-            <div className="bg-zinc-900 pb-8 pt-4 px-6 rounded-t-3xl shadow-[0_-5px_30px_rgba(0,0,0,0.5)] z-20 flex flex-col gap-4 shrink-0">
+            {/* 3. MODAL DE OPCIONES */}
+            {isOptionsOpen && (
+                <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                            <h3 className="font-bold text-lg text-slate-800">Opciones de diseño</h3>
+                            <button onClick={() => setIsOptionsOpen(false)} className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-6">
+                            {/* Formato */}
+                            <div>
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <ImageIcon size={14} /> Formato de imagen
+                                </label>
+                                <div className="bg-slate-100 p-1 rounded-xl flex">
+                                    <button
+                                        onClick={() => setFormat('story')}
+                                        className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${format === 'story' ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        9:16 Story
+                                    </button>
+                                    <button
+                                        onClick={() => setFormat('post')}
+                                        className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${format === 'post' ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        1:1 Post
+                                    </button>
+                                </div>
+                            </div>
 
-                {isColorPickerOpen && (
-                    <div className="flex justify-center gap-3 overflow-x-auto py-2 animate-in slide-in-from-bottom-4 fade-in no-scrollbar">
-                        {THEMES.map((theme) => (
+                            {/* Toggles */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                                        <div className="size-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center"><Book size={16} /></div>
+                                        Mostrar Título
+                                    </div>
+                                    <button
+                                        onClick={() => setShowTitle(!showTitle)}
+                                        className={`w-12 h-7 rounded-full transition-colors relative ${showTitle ? 'bg-purple-600' : 'bg-slate-200'}`}
+                                    >
+                                        <div className={`size-5 bg-white rounded-full shadow-sm absolute top-1 transition-all ${showTitle ? 'left-6' : 'left-1'}`}></div>
+                                    </button>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                                        <div className="size-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center"><User size={16} /></div>
+                                        Mostrar Autor
+                                    </div>
+                                    <button
+                                        onClick={() => setShowAuthor(!showAuthor)}
+                                        className={`w-12 h-7 rounded-full transition-colors relative ${showAuthor ? 'bg-purple-600' : 'bg-slate-200'}`}
+                                    >
+                                        <div className={`size-5 bg-white rounded-full shadow-sm absolute top-1 transition-all ${showAuthor ? 'left-6' : 'left-1'}`}></div>
+                                    </button>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3 text-slate-700 font-medium text-sm">
+                                        <div className="size-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center"><ShieldCheck size={16} /></div>
+                                        Marca de agua
+                                    </div>
+                                    <button
+                                        onClick={() => setShowWatermark(!showWatermark)}
+                                        className={`w-12 h-7 rounded-full transition-colors relative ${showWatermark ? 'bg-purple-600' : 'bg-slate-200'}`}
+                                    >
+                                        <div className={`size-5 bg-white rounded-full shadow-sm absolute top-1 transition-all ${showWatermark ? 'left-6' : 'left-1'}`}></div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Calidad Exportación */}
+                            <div>
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                    <span className="bg-purple-100 text-purple-700 px-1 rounded text-[9px]">HQ</span> Calidad de exportación
+                                </label>
+                                <div className="w-full h-10 px-4 flex items-center justify-between bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700">
+                                    HD (1080p)
+                                </div>
+                            </div>
+
+                            {/* Reset Button */}
                             <button
-                                key={theme.name}
-                                onClick={() => setCurrentTheme(theme)}
-                                className={`
-                  w-10 h-10 rounded-full border-2 shrink-0 transition-all duration-300
-                  ${theme.bg} 
-                  ${currentTheme.name === theme.name ? 'border-white scale-110 shadow-lg shadow-white/20' : 'border-transparent opacity-60 hover:opacity-100'}
-                `}
-                            />
-                        ))}
-                    </div>
-                )}
-
-                <div className="flex justify-around items-end text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-                    <button
-                        onClick={() => setIsColorPickerOpen(true)}
-                        className={`flex flex-col items-center gap-2 p-2 ${isColorPickerOpen ? 'text-white' : 'hover:text-zinc-300'} transition-colors`}
-                    >
-                        <div className={`p-3 rounded-2xl ${isColorPickerOpen ? 'bg-zinc-800' : 'bg-transparent'}`}>
-                            <Palette size={22} strokeWidth={1.5} />
+                                onClick={resetSettings}
+                                className="w-full py-3 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-colors"
+                            >
+                                <RotateCcw size={16} /> Restablecer diseño
+                            </button>
                         </div>
-                        <span>Color</span>
-                    </button>
-
-                    {isColorPickerOpen ? (
-                        <button
-                            onClick={() => setIsColorPickerOpen(false)}
-                            className="flex flex-col items-center gap-2 p-2 text-white animate-in fade-in"
-                        >
-                            <div className="p-3 rounded-2xl bg-zinc-800">
-                                <ArrowLeft size={22} strokeWidth={1.5} />
-                            </div>
-                            <span>Volver</span>
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleDownload}
-                            disabled={isGenerating}
-                            className="flex flex-col items-center gap-2 p-2 hover:text-white transition-colors animate-in fade-in disabled:opacity-50"
-                        >
-                            <div className="p-3 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-900/50">
-                                {isGenerating ? <Loader2 size={22} className="animate-spin" /> : <Save size={22} strokeWidth={1.5} />}
-                            </div>
-                            <span>Guardar</span>
-                        </button>
-                    )}
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {/* 4. BOTTOM FLOATING BAR */}
+            <footer className="p-6 pb-8 md:pb-10 flex justify-center sticky bottom-0 z-20 pointer-events-none">
+                <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 pointer-events-auto animate-in slide-in-from-bottom-10 duration-500">
+                    <div className="bg-white px-6 py-3 rounded-full shadow-xl shadow-slate-200/50 border border-slate-100 flex items-center gap-6 md:gap-8">
+                        {/* Selector de Color */}
+                        <div className="flex items-center gap-4 pr-6 border-r border-slate-100">
+
+                            <div className="flex items-center gap-2">
+                                {COLORS.map((c) => (
+                                    <button
+                                        key={c.name}
+                                        onClick={() => setSelectedColor(c)}
+                                        className={`size-8 rounded-full border-2 transition-all duration-300 ${c.dot} ${selectedColor.name === c.name ? 'border-purple-500 scale-110 ring-2 ring-purple-100' : 'border-slate-100 hover:scale-105'}`}
+                                        title={c.name}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Herramientas Funcionales */}
+                        <div className="flex items-center gap-6 text-slate-400">
+                            <button onClick={toggleFont} className="flex flex-col items-center gap-1.5 hover:text-slate-800 transition-colors group">
+                                <div className="p-1 group-hover:bg-slate-50 rounded-lg transition-colors"><Type size={18} /></div>
+                                <span className="text-[9px] font-bold tracking-wider">LETRA</span>
+                            </button>
+                            <button onClick={toggleAlign} className="flex flex-col items-center gap-1.5 hover:text-slate-800 transition-colors group">
+                                <div className="p-1 group-hover:bg-slate-50 rounded-lg transition-colors"><LayoutGrid size={18} /></div>
+                                <span className="text-[9px] font-bold tracking-wider">DISEÑO</span>
+                            </button>
+                            {/* Opciones Avanzadas */}
+                            <button onClick={() => setIsOptionsOpen(true)} className="p-2 hover:bg-slate-50 rounded-full text-slate-300 hover:text-slate-600 transition-colors">
+                                <MoreVertical size={18} />
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onClick={handleDownload} disabled={isGenerating} className="bg-[#8c25f4] text-white h-[58px] px-8 rounded-full font-bold text-sm shadow-xl shadow-purple-500/30 hover:bg-[#7c1be2] hover:scale-105 hover:shadow-purple-500/40 transition-all flex items-center gap-3 whitespace-nowrap">
+                        {isGenerating ? <Loader2 size={20} className="animate-spin" /> : <Download size={20} className="stroke-2" />}
+                        <span className="tracking-wide">Descargar Story</span>
+                    </button>
+                </div>
+            </footer>
         </div>
     );
 }
