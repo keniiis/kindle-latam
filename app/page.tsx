@@ -1,16 +1,12 @@
-// src/app/page.tsx
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { parseKindleClippings, Clipping } from '@/lib/parser';
 import ShareModal from '@/components/ShareModal';
+import { UploadCloud, Book, ChevronLeft, Quote, Share2, Copy, CheckCircle2, Loader2, Trash2, Coffee } from 'lucide-react';
 
-import { UploadCloud, Book, ChevronLeft, Quote, Share2, Copy, CheckCircle2, Loader2, Trash2 } from 'lucide-react';
-
-// Constante para la llave del almacenamiento local
 const STORAGE_KEY = 'kindle-latam-library';
 
-// DATOS DE PRUEBA (DEMO)
 const DEMO_TEXT = `
 Hábitos Atómicos (James Clear)
 - Highlight | Added on Monday, January 1, 2024
@@ -40,7 +36,6 @@ type BookGroup = {
     clippings: Clipping[];
 };
 
-// --- COMPONENTE BOOKCARD ---
 const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) => {
     const [coverUrl, setCoverUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +81,7 @@ const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) =
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 animate-in fade-in"
                     />
                 ) : (
-                    <div className={`w-full h-full bg-linear-to-br from-slate-50 to-slate-200 flex flex-col items-center justify-center p-4 text-center transition-all duration-500 ${isLoading ? 'opacity-80' : 'opacity-100'}`}>
+                    <div className={`w-full h-full bg-linear-gradient-to-br from-slate-50 to-slate-200 flex flex-col items-center justify-center p-4 text-center transition-all duration-500 ${isLoading ? 'opacity-80' : 'opacity-100'}`}>
                         {isLoading ? (
                             <Loader2 className="animate-spin text-indigo-400" size={24} />
                         ) : (
@@ -116,7 +111,6 @@ const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) =
     );
 };
 
-// --- COMPONENTE PRINCIPAL ---
 export default function Home() {
     const [rawClippings, setRawClippings] = useState<Clipping[]>([]);
     const [selectedBook, setSelectedBook] = useState<BookGroup | null>(null);
@@ -201,21 +195,38 @@ export default function Home() {
         <main className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
             <div className="max-w-6xl mx-auto p-6 md:p-12">
 
-                <header className="mb-12 flex justify-between items-center">
-                    <div>
+                {/* HEADER CON BOTÓN DE DONACIÓN */}
+                <header className="mb-12 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="text-center sm:text-left">
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900">
                             Citando<span className="text-indigo-600">Ando</span>
                         </h1>
                         <p className="text-sm text-slate-500 mt-1">Tu segundo cerebro, versión PWA</p>
                     </div>
-                    {rawClippings.length > 0 && (
-                        <button
-                            onClick={handleClearData}
-                            className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 font-medium transition-colors bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100"
+
+                    <div className="flex items-center gap-3">
+                        {/* LINK DE DONACIÓN - CAMBIAR HREF */}
+                        <a
+                            href="https://ko-fi.com/devdanipena"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-sm text-amber-700 bg-amber-100 hover:bg-amber-200 px-4 py-2 rounded-full font-medium transition-colors shadow-sm hover:shadow-md active:scale-95"
                         >
-                            <Trash2 size={16} /> Salir
-                        </button>
-                    )}
+                            <Coffee size={16} />
+                            <span className="hidden sm:inline">Invítame un café</span>
+                            <span className="sm:hidden">Donar</span>
+                        </a>
+
+                        {rawClippings.length > 0 && (
+                            <button
+                                onClick={handleClearData}
+                                className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 font-medium transition-colors bg-red-50 px-3 py-2 rounded-lg hover:bg-red-100"
+                                title="Borrar todos los libros"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        )}
+                    </div>
                 </header>
 
                 {rawClippings.length === 0 && (
@@ -288,7 +299,6 @@ export default function Home() {
                                     <div key={clip.id} className="group relative pl-6 border-l-4 border-slate-200 hover:border-indigo-500 transition-colors">
                                         <p className="text-lg text-slate-700 leading-relaxed font-serif italic">"{clip.content}"</p>
 
-                                        {/* AQUÍ ESTÁ EL ARREGLO PARA MÓVIL: md:opacity-0 */}
                                         <div className="mt-3 flex items-center gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                             <span className="text-xs text-slate-400 font-sans uppercase tracking-wider mr-auto">{clip.type}</span>
 
@@ -330,6 +340,13 @@ export default function Home() {
                         </div>
                     </div>
                 )}
+
+                {/* FOOTER DE MARCA PERSONAL (Opcional, si quieres mantenerlo) */}
+                <footer className="mt-20 py-8 border-t border-slate-200 text-center">
+                    <p className="text-slate-400 text-xs">
+                        Hecho con <span className="text-red-400">❤</span> en Chiloé por <span className="font-bold text-slate-500">Daniel Peña</span>
+                    </p>
+                </footer>
 
             </div>
         </main>

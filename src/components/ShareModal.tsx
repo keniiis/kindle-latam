@@ -43,7 +43,6 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
 
     return (
         <div className="fixed inset-0 z-60 flex flex-col bg-zinc-950 text-white h-dvh">
-            {/* h-[100dvh] ayuda en móviles para ignorar la barra de URL al calcular altura */}
 
             {/* 1. TOP BAR */}
             <div className="flex justify-between items-center p-4 px-6 bg-zinc-900/50 backdrop-blur-md z-10 border-b border-white/5 shrink-0">
@@ -53,12 +52,9 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                 </button>
             </div>
 
-            {/* 2. AREA DE PREVISUALIZACIÓN (Flexible) */}
+            {/* 2. AREA DE PREVISUALIZACIÓN */}
             <div className="flex-1 flex items-center justify-center p-4 overflow-hidden relative w-full">
 
-                {/* --- AJUSTE REDMI 12 / MÓVIL --- */}
-                {/* Usamos max-h-[65vh] para que nunca sea más alta que el 65% de la pantalla */}
-                {/* Usamos w-auto y aspect-[9/16] para que el ancho se ajuste solo según la altura */}
                 <div className="relative h-full max-h-[60vh] sm:max-h-[70vh] aspect-9/16 shadow-2xl mx-auto">
 
                     <div
@@ -72,9 +68,8 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                             <span className={`text-[9px] tracking-widest uppercase font-sans font-bold ${currentTheme.text}`}>Citando Ando</span>
                         </div>
 
-                        {/* Contenido (Texto Ajustable) */}
+                        {/* Contenido */}
                         <div className="flex-1 flex items-center justify-center my-4 overflow-hidden">
-                            {/* text-lg en móvil, text-2xl en PC */}
                             <p className={`text-lg sm:text-2xl leading-relaxed italic font-medium text-center line-clamp-10 ${currentTheme.text}`}>
                                 "{content}"
                             </p>
@@ -88,13 +83,20 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                             <p className={`text-[9px] sm:text-xs opacity-75 mt-1 ${currentTheme.text} line-clamp-1`}>
                                 {author}
                             </p>
+
+                            {/* --- NUEVO: URL DE TU PWA PARA VIRALIDAD --- */}
+                            <div className="mt-3 flex justify-end opacity-40">
+                                <p className={`text-[8px] font-sans tracking-widest uppercase ${currentTheme.text}`}>
+                                    citando-ando.vercel.app
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            {/* 3. BARRA INFERIOR (Fija abajo) */}
+            {/* 3. BARRA INFERIOR */}
             <div className="bg-zinc-900 pb-8 pt-4 px-6 rounded-t-3xl shadow-[0_-5px_30px_rgba(0,0,0,0.5)] z-20 flex flex-col gap-4 shrink-0">
 
                 {isColorPickerOpen && (
