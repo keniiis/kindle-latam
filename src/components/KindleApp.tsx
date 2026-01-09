@@ -52,9 +52,9 @@ const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) =
 
     return (
         <div onClick={onClick} className="group bg-slate-900 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/10 border border-slate-800 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full">
-            <div className="relative w-full aspect-2/3 bg-slate-800 overflow-hidden">
+            <div className="relative w-full aspect-[2/3] bg-slate-800 overflow-hidden">
                 {coverUrl ? (
-                    <img src={coverUrl} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 animate-in fade-in" />
+                    <img src={coverUrl} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 animate-in fade-in duration-700" />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
                         <Book size={40} className="text-slate-600 mb-3" />
@@ -76,7 +76,7 @@ const FaqItem = ({ question, answer }: { question: string, answer: string }) => 
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="border border-slate-800 rounded-xl bg-slate-900/50 overflow-hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="w-full flex items-center justify-between p-4 text-left">
+            <button onClick={() => setIsOpen(!isOpen)} className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors">
                 <span className="font-semibold text-slate-200 text-sm">{question}</span>
                 {isOpen ? <ChevronUp size={16} className="text-indigo-400" /> : <ChevronDown size={16} className="text-slate-500" />}
             </button>
@@ -176,7 +176,7 @@ export default function KindleApp() {
                         <div className="text-center max-w-3xl mx-auto mb-12">
                             <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
                                 Libera tus notas de <br />
-                                <span className="text-transparent bg-clip-text bg-linear-gradient-to-r from-violet-400 to-indigo-600">Kindle</span> y Instagram
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-600">Kindle</span> y Instagram
                             </h2>
                             <p className="text-lg text-slate-400 mb-8 leading-relaxed max-w-xl mx-auto">
                                 Transforma tu archivo <code className="bg-slate-900 text-indigo-300 px-1.5 py-0.5 rounded text-sm border border-slate-800">My Clippings.txt</code> en una biblioteca visual.
@@ -188,7 +188,7 @@ export default function KindleApp() {
                         <div
                             onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}
                             className={`
-                relative flex flex-col p-8 items-center justify-center min-h-[320px] border border-dashed rounded-3xl transition-all max-w-2xl mx-auto
+                relative flex flex-col items-center justify-center min-h-[320px] border border-dashed rounded-3xl transition-all max-w-2xl mx-auto
                 ${isDragging ? 'border-indigo-500 bg-indigo-500/5 scale-[1.02]' : 'border-slate-700 bg-slate-900/50 hover:border-slate-600 hover:bg-slate-900'}
               `}
                         >
