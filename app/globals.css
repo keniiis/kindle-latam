@@ -49,3 +49,55 @@
 .slide-in-from-bottom-4 {
   animation-name: enter;
 }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Fondo de puntos (Workspace Grid) */
+.workspace-grid {
+  background-image: radial-gradient(circle at 2px 2px, rgba(140, 37, 244, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Scrollbar personalizado (púrpura) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8b4fe;
+  /* Un tono púrpura claro */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8c25f4;
+  /* Tu color primary */
+}
+
+/* Animación suave para gradientes */
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}

@@ -1,123 +1,94 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { parseKindleClippings, Clipping } from '@/lib/parser';
 import ShareModal from '@/components/ShareModal';
-import { UploadCloud, Book, ChevronLeft, Share2, Copy, CheckCircle2, Trash2, Coffee, Shield, Image as ImageIcon, Smartphone, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+    BookOpen, ArrowRight, Tablet, Smartphone, Usb, Quote, Share2,
+    DownloadCloud, WifiOff, RefreshCw, CheckCircle2, Menu, Palette,
+    BadgeCheck, UploadCloud, ChevronLeft, Copy, Trash2, Coffee, Book
+} from 'lucide-react';
 
 const STORAGE_KEY = 'kindle-latam-library';
 
-const DEMO_TEXT = `
-Hábitos Atómicos (James Clear)
-- Highlight | Added on Monday, January 1, 2024
-
-No te elevas al nivel de tus metas. Caes al nivel de tus sistemas.
-==========
-Cien años de soledad (Gabriel García Márquez)
-- Highlight | Added on Tuesday, January 2, 2024
-
-Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo.
-==========
-`;
-
-type BookGroup = {
-    title: string;
-    author: string;
-    clippings: Clipping[];
-};
-
-// --- COMPONENTE TARJETA LIBRO (VERSIÓN DARK) ---
-const BookCard = ({ book, onClick }: { book: BookGroup; onClick: () => void }) => {
+// --- COMPONENTE TARJETA LIBRO (ADAPTADO AL NUEVO TEMA) ---
+const BookCard = ({ book, onClick }: { book: any; onClick: () => void }) => {
     const [coverUrl, setCoverUrl] = useState<string | null>(null);
 
     useEffect(() => {
         let isMounted = true;
         const fetchCover = async () => {
-            const cleanTitle = book.title.split('(')[0].split(':')[0].split(' -')[0].trim();
+            const cleanTitle = book.title.split('(')[0].split(':')[0].trim();
             const cleanAuthor = book.author.replace(/[\(\)]/g, '').trim();
             try {
-                const response = await fetch(
-                    `https://openlibrary.org/search.json?title=${encodeURIComponent(cleanTitle)}&author=${encodeURIComponent(cleanAuthor)}&limit=1&fields=cover_i`
-                );
-                const data = await response.json();
-                if (isMounted && data.docs?.length > 0) {
-                    const bookWithCover = data.docs.find((doc: any) => doc.cover_i);
-                    if (bookWithCover) setCoverUrl(`https://covers.openlibrary.org/b/id/${bookWithCover.cover_i}-L.jpg`);
+                const res = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(cleanTitle)}&author=${encodeURIComponent(cleanAuthor)}&limit=1&fields=cover_i`);
+                const data = await res.json();
+                if (isMounted && data.docs?.length > 0 && data.docs[0].cover_i) {
+                    setCoverUrl(`https://covers.openlibrary.org/b/id/${data.docs[0].cover_i}-L.jpg`);
                 }
-            } catch (error) { console.error(error); }
+            } catch (e) { console.error(e); }
         };
         fetchCover();
         return () => { isMounted = false; };
     }, [book.title, book.author]);
 
     return (
-        <div onClick={onClick} className="group bg-slate-900 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/10 border border-slate-800 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full">
-            <div className="relative w-full aspect-[2/3] bg-slate-800 overflow-hidden">
+        <div onClick={onClick} className="group bg-white rounded-xl shadow-sm hover:shadow-xl hover:shadow-primary/10 border border-primary/10 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full">
+            <div className="relative w-full aspect-[2/3] bg-background-light overflow-hidden">
                 {coverUrl ? (
-                    <img src={coverUrl} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 animate-in fade-in duration-700" />
+                    <img src={coverUrl} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
-                        <Book size={40} className="text-slate-600 mb-3" />
-                        <span className="text-[10px] text-slate-500 font-bold uppercase">{book.title}</span>
+                    <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center text-primary/40">
+                        <Book size={40} className="mb-3" />
+                        <span className="text-[10px] font-bold uppercase">{book.title}</span>
                     </div>
                 )}
-                <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-md text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm border border-white/10">{book.clippings.length}</div>
+                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-md text-primary text-xs font-bold px-2 py-1 rounded-md shadow-sm border border-primary/10">{book.clippings.length}</div>
             </div>
-            <div className="p-4 flex flex-col flex-1 justify-between bg-slate-900">
-                <h3 className="font-bold text-slate-200 text-sm line-clamp-2 leading-tight mb-1 group-hover:text-indigo-400 transition-colors">{book.title}</h3>
-                <p className="text-xs text-slate-500 line-clamp-1">{book.author}</p>
+            <div className="p-4 bg-white">
+                <h3 className="font-bold text-[#140d1c] text-sm line-clamp-2 leading-tight mb-1 group-hover:text-primary transition-colors">{book.title}</h3>
+                <p className="text-xs text-gray-500 line-clamp-1">{book.author}</p>
             </div>
         </div>
     );
 };
 
-// --- COMPONENTE FAQ ITEM ---
-const FaqItem = ({ question, answer }: { question: string, answer: string }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    return (
-        <div className="border border-slate-800 rounded-xl bg-slate-900/50 overflow-hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-800/50 transition-colors">
-                <span className="font-semibold text-slate-200 text-sm">{question}</span>
-                {isOpen ? <ChevronUp size={16} className="text-indigo-400" /> : <ChevronDown size={16} className="text-slate-500" />}
-            </button>
-            {isOpen && <div className="p-4 pt-0 text-slate-400 text-xs leading-relaxed border-t border-slate-800/50 mt-2">{answer}</div>}
-        </div>
-    )
-}
-
-// --- APP PRINCIPAL ---
 export default function KindleApp() {
     const [rawClippings, setRawClippings] = useState<Clipping[]>([]);
-    const [selectedBook, setSelectedBook] = useState<BookGroup | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
+    const [selectedBook, setSelectedBook] = useState<any | null>(null);
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
-    const [toastMessage, setToastMessage] = useState<string | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Carga inicial
     useEffect(() => {
         const savedData = localStorage.getItem(STORAGE_KEY);
         if (savedData) { try { setRawClippings(JSON.parse(savedData)); } catch (e) { console.error(e); } }
         setIsLoaded(true);
     }, []);
 
+    // Persistencia
     useEffect(() => {
         if (isLoaded && rawClippings.length > 0) localStorage.setItem(STORAGE_KEY, JSON.stringify(rawClippings));
     }, [rawClippings, isLoaded]);
 
+    // Manejadores
+    const handleFileUpload = async (file: File) => {
+        const text = await file.text();
+        setRawClippings(parseKindleClippings(text));
+        setSelectedBook(null);
+        // Scroll al top cuando se carga
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const triggerFileUpload = () => fileInputRef.current?.click();
+
     const handleClearData = () => {
         if (confirm('¿Borrar todo?')) { localStorage.removeItem(STORAGE_KEY); setRawClippings([]); setSelectedBook(null); }
     };
-    const handleLoadDemo = () => { setRawClippings(parseKindleClippings(DEMO_TEXT.trim())); setToastMessage("¡Modo Demo activado!"); };
-
-    const handleCopy = (text: string, author: string) => {
-        navigator.clipboard.writeText(`> ${text}\n>\n> — *${author}*`);
-        setToastMessage("¡Copiado!");
-    };
-
-    useEffect(() => { if (toastMessage) { const timer = setTimeout(() => setToastMessage(null), 3000); return () => clearTimeout(timer); } }, [toastMessage]);
 
     const library = useMemo(() => {
-        const groups: Record<string, BookGroup> = {};
+        const groups: Record<string, any> = {};
         rawClippings.forEach((clip) => {
             if (!groups[clip.title]) groups[clip.title] = { title: clip.title, author: clip.author, clippings: [] };
             groups[clip.title].clippings.push(clip);
@@ -125,168 +96,259 @@ export default function KindleApp() {
         return Object.values(groups).sort((a, b) => b.clippings.length - a.clippings.length);
     }, [rawClippings]);
 
-    const handleFileUpload = async (file: File) => {
-        const text = await file.text();
-        setRawClippings(parseKindleClippings(text));
-        setSelectedBook(null);
-    };
-    const onDrop = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files?.[0]) handleFileUpload(e.dataTransfer.files[0]); }, []);
-    const onDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
-    const onDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
-
     if (!isLoaded) return null;
 
-    return (
-        <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
-            <div className="max-w-6xl mx-auto p-6 md:p-8">
-
-                {/* HEADER */}
-                <header className="mb-16 flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold tracking-tighter text-white">
-                            Citando<span className="text-indigo-500">Ando</span>
-                        </h1>
-                        <span className="bg-indigo-500/10 text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-indigo-500/20">BETA</span>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <a href="https://ko-fi.com/devdanipena" target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm font-bold text-amber-950 bg-amber-400 hover:bg-amber-300 px-5 py-2.5 rounded-full transition-all shadow-lg shadow-amber-900/20 active:scale-95">
-                            <Coffee size={18} strokeWidth={2.5} />
-                            <span>Invítame un café</span>
-                        </a>
-                        {rawClippings.length > 0 && (
-                            <button onClick={handleClearData} className="p-2.5 rounded-full bg-slate-900 hover:bg-red-900/20 text-slate-400 hover:text-red-400 border border-slate-800 hover:border-red-900/50 transition-all" title="Borrar todo">
-                                <Trash2 size={18} />
-                            </button>
-                        )}
+    // --- VISTA: LIBRERÍA / APP (Si hay datos) ---
+    if (rawClippings.length > 0) {
+        return (
+            <div className="min-h-screen bg-background-light font-display text-[#140d1c]">
+                {/* Header App */}
+                <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-primary/10 px-6 lg:px-40 py-4">
+                    <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                                <BookOpen size={20} />
+                            </div>
+                            <h2 className="text-xl font-extrabold tracking-tight">CitandoAndo</h2>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <button onClick={handleClearData} className="text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors"><Trash2 size={18} /></button>
+                            <a href="https://ko-fi.com/devdanipena" target="_blank" className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 flex items-center gap-2">
+                                <Coffee size={16} /> <span>Invítame un café</span>
+                            </a>
+                        </div>
                     </div>
                 </header>
 
-                {/* --- ESTADO 1: LANDING PAGE DARK MODE --- */}
-                {rawClippings.length === 0 && (
-                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 pb-20">
-
-                        {/* TAGLINE */}
-                        <div className="flex justify-center mb-6">
-                            <span className="text-[10px] font-bold tracking-[0.2em] text-indigo-400 uppercase bg-indigo-950/30 px-3 py-1 rounded-full border border-indigo-500/20 glow-sm">Transforma tus Highlights</span>
-                        </div>
-
-                        {/* HERO TITLE */}
-                        <div className="text-center max-w-3xl mx-auto mb-12">
-                            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
-                                Libera tus notas de <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-600">Kindle</span> y Instagram
-                            </h2>
-                            <p className="text-lg text-slate-400 mb-8 leading-relaxed max-w-xl mx-auto">
-                                Transforma tu archivo <code className="bg-slate-900 text-indigo-300 px-1.5 py-0.5 rounded text-sm border border-slate-800">My Clippings.txt</code> en una biblioteca visual.
-                                Sin cuentas, sin suscripciones y 100% privado.
-                            </p>
-                        </div>
-
-                        {/* UPLOAD BOX (DARK) */}
-                        <div
-                            onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}
-                            className={`
-                relative flex flex-col items-center justify-center min-h-[320px] border border-dashed rounded-3xl transition-all max-w-2xl mx-auto
-                ${isDragging ? 'border-indigo-500 bg-indigo-500/5 scale-[1.02]' : 'border-slate-700 bg-slate-900/50 hover:border-slate-600 hover:bg-slate-900'}
-              `}
-                        >
-                            <div className="p-5 bg-slate-800 rounded-2xl text-indigo-400 mb-6 shadow-xl shadow-black/20 border border-slate-700"><UploadCloud size={40} /></div>
-                            <h3 className="text-xl font-bold text-white mb-2">Sube tu archivo "My Clippings.txt"</h3>
-                            <p className="text-slate-500 mb-8 max-w-xs text-center text-sm">Arrastra el archivo desde la carpeta "documents" de tu Kindle.</p>
-
-                            <label className="px-8 py-3.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-500 cursor-pointer shadow-lg shadow-indigo-500/25 transition-all active:scale-95 text-base border border-indigo-400/20">
-                                Explorar Archivos <input type="file" accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
-                            </label>
-
-                            <div className="mt-8 flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-slate-600"></div>
-                                <button onClick={handleLoadDemo} className="text-xs font-bold text-slate-500 hover:text-indigo-400 transition-colors uppercase tracking-wider">
-                                    ¿No tienes Kindle? Prueba la Demo
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* FEATURES GRID */}
-                        <div className="grid md:grid-cols-3 gap-6 mt-24 max-w-5xl mx-auto">
-                            {[
-                                { icon: Shield, color: 'text-emerald-400', bg: 'bg-emerald-400/10', title: 'Privacidad Total', text: 'Tus notas se procesan localmente en tu navegador. Nunca subimos tus datos.' },
-                                { icon: ImageIcon, color: 'text-pink-400', bg: 'bg-pink-400/10', title: 'Creador de Stories', text: 'Diseña imágenes estéticas con tus citas favoritas listas para Instagram.' },
-                                { icon: Smartphone, color: 'text-sky-400', bg: 'bg-sky-400/10', title: 'Instalable (PWA)', text: 'Instala la app en tu Android o iPhone y accede a tu biblioteca offline.' }
-                            ].map((f, i) => (
-                                <div key={i} className="bg-slate-900 p-6 rounded-2xl border border-slate-800 hover:border-slate-700 transition-colors">
-                                    <div className={`${f.bg} w-10 h-10 rounded-lg flex items-center justify-center ${f.color} mb-4`}><f.icon size={20} /></div>
-                                    <h4 className="font-bold text-slate-200 mb-2">{f.title}</h4>
-                                    <p className="text-slate-500 text-xs leading-relaxed">{f.text}</p>
+                <main className="max-w-[1200px] mx-auto px-6 lg:px-20 py-10">
+                    {!selectedBook ? (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="flex justify-between items-end mb-8">
+                                <div>
+                                    <h2 className="text-3xl font-bold mb-2">Tu Biblioteca</h2>
+                                    <p className="text-gray-500">{library.length} libros importados</p>
                                 </div>
-                            ))}
-                        </div>
-
-                        {/* FAQ SECTION */}
-                        <div className="mt-24 max-w-2xl mx-auto">
-                            <h3 className="text-xl font-bold text-white mb-8 text-center">Preguntas Frecuentes</h3>
-                            <div className="space-y-4">
-                                <FaqItem question="¿Dónde encuentro el archivo My Clippings?" answer='Conecta tu Kindle por USB. Abre la unidad que aparece en tu PC, entra a la carpeta "documents" y busca el archivo "My Clippings.txt".' />
-                                <FaqItem question="¿Es una alternativa gratis a Readwise?" answer="Sí. Citando Ando es gratuito, open source y no requiere suscripción. Nos mantenemos gracias a las donaciones de café de los usuarios." />
-                                <FaqItem question="¿Funciona con otros e-readers?" answer="Por ahora está optimizado para el formato estándar de Kindle, pero planeamos agregar soporte para Kobo en el futuro." />
+                                <button onClick={triggerFileUpload} className="text-primary text-sm font-bold hover:underline">+ Importar nuevo archivo</button>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                                {library.map((book) => (<BookCard key={book.title} book={book} onClick={() => setSelectedBook(book)} />))}
                             </div>
                         </div>
-                    </div>
-                )}
-
-                {/* --- ESTADO 2: BIBLIOTECA (DARK) --- */}
-                {rawClippings.length > 0 && !selectedBook && (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <h2 className="text-xl font-bold mb-8 flex items-center gap-3 text-white">
-                            <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-400"><Book size={20} /></div>
-                            Tu Biblioteca <span className="text-slate-500 font-normal text-sm ml-2">({library.length} libros)</span>
-                        </h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                            {library.map((book) => (<BookCard key={book.title} book={book} onClick={() => setSelectedBook(book)} />))}
-                        </div>
-                    </div>
-                )}
-
-                {/* --- ESTADO 3: DETALLE DE LIBRO (DARK) --- */}
-                {selectedBook && (
-                    <div className="animate-in fade-in slide-in-from-right-8 duration-300 max-w-4xl mx-auto">
-                        <button onClick={() => setSelectedBook(null)} className="mb-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium px-4 py-2 hover:bg-slate-900 rounded-lg w-fit">
-                            <ChevronLeft size={16} /> Volver a la biblioteca
-                        </button>
-
-                        <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl">
-                            <div className="mb-10 border-b border-slate-800 pb-8">
-                                <h1 className="text-3xl font-bold text-white mb-2">{selectedBook.title}</h1>
-                                <p className="text-lg text-indigo-400">{selectedBook.author}</p>
+                    ) : (
+                        <div className="animate-in fade-in slide-in-from-right-8 duration-300 max-w-4xl mx-auto">
+                            <button onClick={() => setSelectedBook(null)} className="mb-8 flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium">
+                                <ChevronLeft size={20} /> Volver a la biblioteca
+                            </button>
+                            <div className="bg-white rounded-3xl p-8 border border-primary/10 shadow-sm">
+                                <div className="mb-10 border-b border-gray-100 pb-6">
+                                    <h1 className="text-3xl font-bold mb-2">{selectedBook.title}</h1>
+                                    <p className="text-lg text-primary">{selectedBook.author}</p>
+                                </div>
+                                <div className="space-y-8">
+                                    {selectedBook.clippings.map((clip: any) => (
+                                        <div key={clip.id} className="pl-6 border-l-4 border-gray-100 hover:border-primary transition-colors group">
+                                            <p className="text-lg text-gray-700 font-serif italic mb-3">"{clip.content}"</p>
+                                            <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button onClick={() => { navigator.clipboard.writeText(clip.content); alert('Copiado!') }} className="text-xs font-bold text-gray-400 hover:text-gray-700 flex items-center gap-1"><Copy size={14} /> Copiar</button>
+                                                <button onClick={() => setClipToShare(clip)} className="text-xs font-bold text-primary hover:text-purple-700 flex items-center gap-1"><Share2 size={14} /> Crear Post</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="space-y-8">
-                                {selectedBook.clippings.map((clip) => (
-                                    <div key={clip.id} className="group relative pl-6 border-l-2 border-slate-700 hover:border-indigo-500 transition-colors">
-                                        <p className="text-lg text-slate-300 leading-relaxed font-serif italic selection:bg-indigo-500/40">"{clip.content}"</p>
-                                        <div className="mt-4 flex items-center gap-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                                            <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mr-auto bg-slate-950 px-2 py-1 rounded border border-slate-800">{clip.type}</span>
-                                            <button onClick={() => handleCopy(clip.content, selectedBook.author)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-colors border border-slate-700"><Copy size={14} /> Copiar</button>
-                                            <button onClick={() => setClipToShare(clip)} className="flex items-center gap-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-lg transition-colors shadow-lg shadow-indigo-500/20"><Share2 size={14} /> Crear Post</button>
+                        </div>
+                    )}
+                </main>
+
+                {/* INPUT OCULTO SIEMPRE PRESENTE */}
+                <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+                {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
+            </div>
+        );
+    }
+
+    // --- VISTA: LANDING PAGE (Si no hay datos) ---
+    return (
+        <div className="bg-background-light font-display text-[#140d1c] transition-colors duration-300">
+
+            {/* HEADER LANDING */}
+            <header className="sticky top-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-primary/10 px-6 lg:px-40 py-3">
+                <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                            <BookOpen size={20} />
+                        </div>
+                        <h2 className="text-xl font-extrabold tracking-tight">CitandoAndo</h2>
+                    </div>
+                    <nav className="hidden md:flex items-center gap-8">
+                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#como-funciona">Cómo funciona</a>
+                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">Beneficios</a>
+                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#preview">Preview</a>
+                    </nav>
+                    <button onClick={triggerFileUpload} className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20">
+                        Empezar ahora
+                    </button>
+                </div>
+            </header>
+
+            <main className="max-w-[1200px] mx-auto">
+
+                {/* HERO SECTION */}
+                <section className="px-6 lg:px-20 py-16 md:py-24">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <div className="flex flex-col gap-8">
+                            <div className="flex flex-col gap-4">
+                                <span className="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold w-fit uppercase tracking-widest">Beta abierta</span>
+                                <h1 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight text-[#140d1c]">
+                                    Tus lecturas merecen ser <span className="text-primary">compartidas</span>
+                                </h1>
+                                <p className="text-lg md:text-xl opacity-80 leading-relaxed max-w-lg">
+                                    Transforma tus highlights de Kindle en arte listo para tus redes sociales en segundos. Sin descargas, directo desde tu navegador.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-4">
+                                <button onClick={triggerFileUpload} className="bg-primary text-white h-14 px-8 rounded-xl font-bold text-lg hover:scale-105 transition-transform flex items-center gap-2 shadow-xl shadow-primary/30">
+                                    Probar gratis <ArrowRight size={20} />
+                                </button>
+                                <div className="flex items-center gap-3 px-4">
+                                    <div className="flex -space-x-3">
+                                        {[1, 2, 3].map(i => <div key={i} className="size-10 rounded-full border-2 border-white bg-gray-200" />)}
+                                    </div>
+                                    <span className="text-sm font-medium opacity-70">+2k lectores ya lo usan</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* HERO VISUAL / MOCKUP */}
+                        <div className="relative">
+                            <div className="absolute -inset-4 bg-primary/20 blur-3xl rounded-full"></div>
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+                                <div className="aspect-4/3 bg-linear-to-br from-primary/30 to-purple-500/20 flex items-center justify-center p-8">
+                                    <div onClick={triggerFileUpload} className="cursor-pointer group relative w-full h-full bg-white/40 backdrop-blur-xl rounded-xl border-2 border-dashed border-white/50 flex flex-col items-center justify-center text-center gap-4 hover:bg-white/60 transition-all">
+                                        <div className="size-20 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                            <UploadCloud size={40} />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-lg">Sube tu archivo aquí</h3>
+                                            <p className="text-sm opacity-60">My Clippings.txt</p>
                                         </div>
                                     </div>
-                                ))}
+                                </div>
                             </div>
                         </div>
                     </div>
-                )}
+                </section>
 
-                {/* COMPONENTES GLOBALES */}
-                {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
-                {toastMessage && (
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                        <div className="bg-slate-800 text-white px-5 py-3 rounded-full shadow-2xl shadow-black/50 border border-slate-700 flex items-center gap-3">
-                            <CheckCircle2 size={18} className="text-emerald-400" />
-                            <p className="text-sm font-medium">{toastMessage}</p>
+                {/* SOCIAL PROOF */}
+                <div className="px-6 py-10 opacity-50 grayscale hover:grayscale-0 transition-all flex flex-wrap justify-center items-center gap-12 text-sm font-bold uppercase tracking-widest border-y border-primary/10">
+                    <span>TechCrunch</span><span>Product Hunt</span><span>The Verge</span><span>Wired</span><span>Medium</span>
+                </div>
+
+                {/* HOW IT WORKS */}
+                <section className="px-6 py-20" id="como-funciona">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Comparte en 3 simples pasos</h2>
+                        <p className="text-lg opacity-70">Olvídate de capturas de pantalla feas y texto plano.</p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            { num: 1, title: 'Conecta tu Kindle', text: 'Sincroniza tus notas vía USB o correo electrónico de forma segura.', icon: Usb },
+                            { num: 2, title: 'Elige tu cita', text: 'Navega por tus libros y selecciona el fragmento que más te inspiró.', icon: Quote },
+                            { num: 3, title: 'Comparte en IG', text: 'Personaliza el diseño y expórtalo directamente a tus historias.', icon: Share2 }
+                        ].map((step) => (
+                            <div key={step.num} className="group bg-white p-8 rounded-2xl border border-primary/10 hover:border-primary/40 transition-all shadow-sm">
+                                <div className="size-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 font-black text-2xl group-hover:bg-primary group-hover:text-white transition-colors">{step.num}</div>
+                                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                                <p className="opacity-70 leading-relaxed mb-6">{step.text}</p>
+                                <div className="w-full h-32 bg-background-light rounded-xl flex items-center justify-center text-primary/20">
+                                    <step.icon size={48} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* PWA FEATURES */}
+                <section className="px-6 py-20 bg-primary/5 rounded-[3rem]" id="features">
+                    <div className="max-w-4xl mx-auto text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-extrabold mb-4">¿Por qué una PWA?</h2>
+                        <p className="text-lg opacity-70 italic">La potencia de una app nativa con la agilidad de la web.</p>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {[
+                            { title: 'Sin descargas', text: 'Accede instantáneamente sin pasar por la App Store.', icon: DownloadCloud },
+                            { title: 'Modo Offline', text: '¿Sin internet en el metro? No hay problema. Tus citas están disponibles.', icon: WifiOff },
+                            { title: 'Siempre al día', text: 'Actualizaciones automáticas invisibles. Disfruta de nuevas funciones.', icon: RefreshCw }
+                        ].map((feat, i) => (
+                            <div key={i} className="bg-white/60 backdrop-blur-md p-8 rounded-2xl shadow-lg border border-white/50">
+                                <feat.icon className="text-primary mb-4" size={32} />
+                                <h4 className="text-lg font-bold mb-2">{feat.title}</h4>
+                                <p className="text-sm opacity-70">{feat.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* PREVIEW SECTION (STATIC VISUAL) */}
+                <section className="px-6 py-24 my-20" id="preview">
+                    <div className="bg-white/50 border border-primary/10 rounded-[3rem] p-12 overflow-hidden relative">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#8c25f4_1px,transparent_1px)] bg-size-[20px_20px] opacity-[0.03]"></div>
+                        <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                            <div>
+                                <h2 className="text-4xl font-extrabold mb-6">Playground Interactivo</h2>
+                                <p className="text-lg opacity-70 mb-8">
+                                    El estudio creativo donde tus lecturas cobran vida. Personaliza colores, fuentes y fondos en tiempo real antes de compartir.
+                                </p>
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-primary/10">
+                                        <Palette className="text-primary" />
+                                        <span className="font-bold">Múltiples temas de color</span>
+                                        <BadgeCheck className="text-green-500 ml-auto" />
+                                    </div>
+                                    <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-primary/10">
+                                        <Menu className="text-primary" />
+                                        <span className="font-bold">Fuentes Serif & Sans</span>
+                                        <BadgeCheck className="text-green-500 ml-auto" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="relative flex justify-center">
+                                <div className="absolute inset-0 bg-primary/20 blur-[80px] rounded-full"></div>
+                                {/* Mockup simplificado */}
+                                <div className="relative w-[280px] h-[580px] bg-gray-900 rounded-[3rem] border-8 border-gray-800 shadow-2xl overflow-hidden flex flex-col">
+                                    <div className="h-full bg-linear-to-br from-primary to-purple-800 p-8 flex flex-col justify-center text-white text-center">
+                                        <Quote className="mx-auto mb-6 opacity-50" size={32} />
+                                        <p className="font-serif italic text-xl leading-relaxed">"La lectura es una conversación con las mejores mentes..."</p>
+                                        <div className="mt-8 pt-4 border-t border-white/20">
+                                            <p className="text-xs font-bold uppercase tracking-widest">René Descartes</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                )}
-            </div>
+                </section>
+
+                {/* FOOTER CTA */}
+                <footer className="px-6 py-20">
+                    <div className="bg-primary rounded-[3rem] p-12 md:p-24 text-center text-white relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full bg-linear-to-br from-white/10 to-transparent pointer-events-none"></div>
+                        <div className="relative z-10 flex flex-col items-center gap-8">
+                            <h2 className="text-4xl md:text-6xl font-black max-w-2xl leading-tight">¿Listo para darle vida a tus notas?</h2>
+                            <button onClick={triggerFileUpload} className="bg-white text-primary h-16 px-12 rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-2xl">
+                                Empezar ahora gratis
+                            </button>
+                        </div>
+                    </div>
+                    <div className="mt-12 text-center text-sm opacity-50 font-medium">
+                        <p>© 2026 CitandoAndo. Hecho con ❤️ para lectores.</p>
+                    </div>
+                </footer>
+
+            </main>
+
+            {/* INPUT FILE OCULTO (Necesario para la landing también) */}
+            <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
         </div>
     );
 }
