@@ -10,8 +10,49 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "CitandoAndo",
-  description: "Tus lecturas merecen ser compartidas.",
+  metadataBase: new URL('https://citando-ando.vercel.app'),
+  title: {
+    default: "CitandoAndo | Tu Segundo Cerebro para Kindle",
+    template: "%s | CitandoAndo"
+  },
+  description: "Transforma tus highlights de Kindle en contenido visual y compártelo en redes sociales. Herramienta gratuita, sin registro y privada.",
+  keywords: ["Kindle", "Highlights", "Notas", "Instagram", "Stories", "Generador de imágenes", "Lectura", "Libros", "Citas"],
+  authors: [{ name: "Danidev", url: "https://twitter.com/devdanipena" }],
+  creator: "Danidev",
+  publisher: "Danidev",
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'CitandoAndo | Comparte tus lecturas con estilo',
+    description: 'Convierte tus subrayados de Kindle en imágenes hermosas para tus stories. Sin instalar nada.',
+    url: 'https://citando-ando.vercel.app',
+    siteName: 'CitandoAndo',
+    locale: 'es_LA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CitandoAndo - Kindle Highlights a Instagram',
+    description: 'Dale vida a tus notas de lectura. Gratis y sin registro.',
+    creator: '@devdanipena',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: '/icon',
+    apple: '/icon',
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

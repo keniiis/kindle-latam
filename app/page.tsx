@@ -23,6 +23,31 @@ export default function Page() {
          Next.js renderizará el HTML inicial estático que pueda, 
          y luego "hidratará" la interactividad en el navegador.
       */}
+            {/* Structured Data for SEO */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "WebApplication",
+                        "name": "CitandoAndo",
+                        "url": "https://citando-ando.vercel.app",
+                        "description": "Herramienta gratuita para transformar tus highlights de Kindle en imágenes para redes sociales.",
+                        "applicationCategory": "UtilitiesApplication",
+                        "operatingSystem": "Any",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "0",
+                            "priceCurrency": "USD"
+                        },
+                        "author": {
+                            "@type": "Person",
+                            "name": "Danidev"
+                        },
+                        "featureList": "Kindle Clipping Parsing, Instagram Story Generator, Reading Analytics"
+                    })
+                }}
+            />
             <KindleApp />
 
             {/* FOOTER SEO: 
