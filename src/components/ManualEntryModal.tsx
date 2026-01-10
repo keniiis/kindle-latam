@@ -6,6 +6,8 @@ import { X, Book, User, Quote, Check, Plus, Loader2, Search, HelpCircle } from '
 interface ManualEntryModalProps {
     onClose: () => void;
     onSave: (title: string, author: string, content: string) => void;
+    initialTitle?: string;
+    initialAuthor?: string;
 }
 
 interface BookSuggestion {
@@ -15,9 +17,9 @@ interface BookSuggestion {
     coverUrl?: string;
 }
 
-export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalProps) {
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
+export default function ManualEntryModal({ onClose, onSave, initialTitle = '', initialAuthor = '' }: ManualEntryModalProps) {
+    const [title, setTitle] = useState(initialTitle);
+    const [author, setAuthor] = useState(initialAuthor);
     const [content, setContent] = useState('');
 
     // Search states

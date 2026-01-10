@@ -20,6 +20,7 @@ export default function KindleApp() {
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [showManualModal, setShowManualModal] = useState(false);
+    const [manualEntryData, setManualEntryData] = useState<{ title: string, author: string } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Carga inicial
@@ -57,10 +58,16 @@ export default function KindleApp() {
         // Agregar al principio
         setRawClippings(prev => [newClipping, ...prev]);
         setShowManualModal(false);
+        setManualEntryData(null);
         // Seleccionar directamente este libro/autor
         // setBook(..)? Por ahora solo agregamos.
         // Scroll al top para ver resultado
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleAddHighlight = (bookTitle: string, bookAuthor: string) => {
+        setManualEntryData({ title: bookTitle, author: bookAuthor });
+        setShowManualModal(true);
     };
 
     const triggerFileUpload = () => fileInputRef.current?.click();
@@ -105,7 +112,10 @@ export default function KindleApp() {
                         </div>
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={() => setShowManualModal(true)}
+                                onClick={() => {
+                                    setManualEntryData(null);
+                                    setShowManualModal(true);
+                                }}
                                 className="hidden md:flex items-center gap-2 bg-purple-50 text-primary px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-100 transition-colors"
                             >
                                 <Plus size={16} /> Crear
@@ -142,13 +152,21 @@ export default function KindleApp() {
                             onBack={() => setSelectedBook(null)}
                             onShare={setClipToShare}
                             onUpdateBook={handleUpdateBook}
+                            onAddHighlight={() => handleAddHighlight(selectedBook.title, selectedBook.author)}
                         />
                     )}
                 </main>
 
                 <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
                 {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
-                {showManualModal && <ManualEntryModal onClose={() => setShowManualModal(false)} onSave={handleManualSave} />}
+                {showManualModal && (
+                    <ManualEntryModal
+                        onClose={() => setShowManualModal(false)}
+                        onSave={handleManualSave}
+                        initialTitle={manualEntryData?.title}
+                        initialAuthor={manualEntryData?.author}
+                    />
+                )}
             </div>
         );
     }
@@ -156,9 +174,22 @@ export default function KindleApp() {
     // --- VISTA: LANDING PAGE (Si no hay datos) ---
     return (
         <>
-            <LandingPage onStart={triggerFileUpload} onManualEntry={() => setShowManualModal(true)} />
+            <LandingPage
+                onStart={triggerFileUpload}
+                onManualEntry={() => {
+                    setManualEntryData(null);
+                    setShowManualModal(true);
+                }}
+            />
             <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
-            {showManualModal && <ManualEntryModal onClose={() => setShowManualModal(false)} onSave={handleManualSave} />}
+            {showManualModal && (
+                <ManualEntryModal
+                    onClose={() => setShowManualModal(false)}
+                    onSave={handleManualSave}
+                    initialTitle={manualEntryData?.title}
+                    initialAuthor={manualEntryData?.author}
+                />
+            )}
         </>
     );
 }
