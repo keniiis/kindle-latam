@@ -48,7 +48,7 @@ export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalPr
         setIsSearching(true);
         try {
             const response = await fetch(
-                `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&fields=key,title,author_name,cover_i&limit=5`
+                `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&language=spa&fields=key,title,author_name,cover_i&limit=5`
             );
             const data = await response.json();
             setSuggestions(data.docs || []);

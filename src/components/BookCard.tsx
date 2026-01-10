@@ -49,7 +49,7 @@ const BookCard = ({ book, onClick }: BookCardProps) => {
 
             // Estrategia 2: OpenLibrary (Fallback si Google falla)
             try {
-                const olRes = await fetch(`https://openlibrary.org/search.json?title=${queryTitle}&author=${queryAuthor}&limit=1&fields=cover_i`);
+                const olRes = await fetch(`https://openlibrary.org/search.json?title=${queryTitle}&author=${queryAuthor}&language=spa&limit=1&fields=cover_i`);
                 const olData = await olRes.json();
                 if (isMounted && olData.docs?.length > 0 && olData.docs[0].cover_i) {
                     setCoverUrl(`https://covers.openlibrary.org/b/id/${olData.docs[0].cover_i}-L.jpg`);
