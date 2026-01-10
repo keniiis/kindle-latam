@@ -114,7 +114,7 @@ export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalPr
 
                 <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
                     {/* Campos de Libro y Autor */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <div className="space-y-2 relative" ref={wrapperRef}>
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                                 <Book size={14} /> Título del Libro
