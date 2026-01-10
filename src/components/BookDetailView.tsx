@@ -1,15 +1,28 @@
 'use client';
 
-import { ChevronLeft, Copy, Share2, Quote, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X } from 'lucide-react';
 import { Clipping } from '@/lib/parser';
 
 interface BookDetailViewProps {
     book: any;
     onBack: () => void;
     onShare: (clip: Clipping) => void;
+    onUpdateBook?: (oldTitle: string, newTitle: string, newAuthor: string) => void;
 }
 
-export default function BookDetailView({ book, onBack, onShare }: BookDetailViewProps) {
+export default function BookDetailView({ book, onBack, onShare, onUpdateBook }: BookDetailViewProps) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState(book.title);
+    const [editAuthor, setEditAuthor] = useState(book.author);
+
+    const handleSave = () => {
+        if (onUpdateBook && editTitle.trim()) {
+            onUpdateBook(book.title, editTitle, editAuthor);
+            setIsEditing(false);
+        }
+    };
+
     return (
         <div className="animate-in fade-in slide-in-from-right-8 duration-300 max-w-4xl mx-auto">
             <button
@@ -22,11 +35,65 @@ export default function BookDetailView({ book, onBack, onShare }: BookDetailView
 
             <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
                 {/* Cabecera del Libro */}
-                <div className="p-10 md:p-14 pb-8">
-                    <h1 className="text-4xl md:text-5xl font-serif font-black text-[#140d1c] mb-3 leading-tight tracking-tight">
-                        {book.title}
-                    </h1>
-                    <p className="text-lg md:text-xl font-medium text-primary mb-8">{book.author}</p>
+                <div className="p-10 md:p-14 pb-8 group/header relative">
+                    <div className="absolute top-10 right-10 flex gap-2 opacity-0 group-hover/header:opacity-100 transition-opacity">
+                        {!isEditing ? (
+                            <button
+                                onClick={() => {
+                                    setEditTitle(book.title);
+                                    setEditAuthor(book.author);
+                                    setIsEditing(true);
+                                }}
+                                className="p-2 text-slate-400 hover:text-primary hover:bg-purple-50 rounded-full transition-colors"
+                                title="Editar título y autor"
+                            >
+                                <Edit2 size={20} />
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={handleSave}
+                                    className="p-2 text-green-500 hover:bg-green-50 rounded-full transition-colors"
+                                    title="Guardar"
+                                >
+                                    <Check size={20} />
+                                </button>
+                                <button
+                                    onClick={() => setIsEditing(false)}
+                                    className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                                    title="Cancelar"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    {isEditing ? (
+                        <div className="space-y-4 mb-4 pr-12">
+                            <input
+                                type="text"
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                                className="w-full text-4xl md:text-5xl font-serif font-black text-[#140d1c] bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                                placeholder="Título del libro"
+                            />
+                            <input
+                                type="text"
+                                value={editAuthor}
+                                onChange={(e) => setEditAuthor(e.target.value)}
+                                className="w-full text-lg md:text-xl font-medium text-primary bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                                placeholder="Autor"
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <h1 className="text-4xl md:text-5xl font-serif font-black text-[#140d1c] mb-3 leading-tight tracking-tight pr-12">
+                                {book.title}
+                            </h1>
+                            <p className="text-lg md:text-xl font-medium text-primary mb-8">{book.author}</p>
+                        </>
+                    )}
                     <div className="h-1 w-20 bg-purple-100 rounded-full"></div>
                 </div>
 

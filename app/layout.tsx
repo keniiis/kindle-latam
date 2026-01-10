@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   description: "Transforma tus highlights de Kindle en contenido visual y compártelo en redes sociales. Herramienta gratuita, sin registro y privada.",
   keywords: ["Kindle", "Highlights", "Notas", "Instagram", "Stories", "Generador de imágenes", "Lectura", "Libros", "Citas"],
-  authors: [{ name: "Danidev", url: "https://twitter.com/devdanipena" }],
+  authors: [{ name: "Danidev", url: "https://x.com/Danipena3488" }],
   creator: "Danidev",
   publisher: "Danidev",
   alternates: {

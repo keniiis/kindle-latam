@@ -27,7 +27,9 @@ export default function Page() {
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
+                    __html: `
+                    [
+                        ${JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "WebApplication",
                         "name": "CitandoAndo",
@@ -40,12 +42,31 @@ export default function Page() {
                             "price": "0",
                             "priceCurrency": "USD"
                         },
-                        "author": {
-                            "@type": "Person",
-                            "name": "Danidev"
-                        },
-                        "featureList": "Kindle Clipping Parsing, Instagram Story Generator, Reading Analytics"
-                    })
+                    })},
+                        ${JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "FAQPage",
+                        "mainEntity": [
+                            {
+                                "@type": "Question",
+                                "name": "¿Cómo encuentro el archivo My Clippings.txt?",
+                                "acceptedAnswer": {
+                                    "@type": "Answer",
+                                    "text": "Conecta tu Kindle a tu PC con el cable USB. Aparecerá como una memoria externa. Entra a la carpeta 'documents' y ahí encontrarás el archivo 'My Clippings.txt'."
+                                }
+                            },
+                            {
+                                "@type": "Question",
+                                "name": "¿Es seguro? ¿Guardan mis notas?",
+                                "acceptedAnswer": {
+                                    "@type": "Answer",
+                                    "text": "Totalmente seguro. CitandoAndo funciona 100% en tu navegador. Tus notas NO se suben a ningún servidor, todo el procesamiento es local en tu dispositivo."
+                                }
+                            }
+                        ]
+                    })}
+                    ]
+                    `
                 }}
             />
             <KindleApp />

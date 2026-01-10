@@ -7,16 +7,19 @@ import LandingPage from '@/components/LandingPage';
 import LibraryView from '@/components/LibraryView';
 import BookDetailView from '@/components/BookDetailView';
 import {
-    BookOpen, Trash2, Coffee, Quote, Calendar
+    BookOpen, Trash2, Coffee, Quote, Calendar, Plus
 } from 'lucide-react';
 
 const STORAGE_KEY = 'kindle-latam-library';
+
+import ManualEntryModal from '@/components/ManualEntryModal';
 
 export default function KindleApp() {
     const [rawClippings, setRawClippings] = useState<Clipping[]>([]);
     const [selectedBook, setSelectedBook] = useState<any | null>(null);
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [showManualModal, setShowManualModal] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Carga inicial
@@ -40,10 +43,41 @@ export default function KindleApp() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleManualSave = (title: string, author: string, content: string) => {
+        const newClipping: Clipping = {
+            id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
+            title,
+            author,
+            content,
+            meta: `Manual Entry | Added on ${new Date().toLocaleDateString()}`,
+            type: 'Highlight',
+            date: new Date()
+        };
+
+        // Agregar al principio
+        setRawClippings(prev => [newClipping, ...prev]);
+        setShowManualModal(false);
+        // Seleccionar directamente este libro/autor
+        // setBook(..)? Por ahora solo agregamos.
+        // Scroll al top para ver resultado
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const triggerFileUpload = () => fileInputRef.current?.click();
 
     const handleClearData = () => {
         if (confirm('¿Borrar todo?')) { localStorage.removeItem(STORAGE_KEY); setRawClippings([]); setSelectedBook(null); }
+    };
+
+    const handleUpdateBook = (oldTitle: string, newTitle: string, newAuthor: string) => {
+        setRawClippings(prev => prev.map(clip =>
+            clip.title === oldTitle
+                ? { ...clip, title: newTitle, author: newAuthor }
+                : clip
+        ));
+
+        // Update selected book immediately so UI doesn't flicker/break
+        setSelectedBook((prev: any) => prev ? { ...prev, title: newTitle, author: newAuthor } : null);
     };
 
     const library = useMemo(() => {
@@ -70,6 +104,12 @@ export default function KindleApp() {
                             <h2 className="text-xl font-extrabold tracking-tight text-slate-900">CitandoAndo</h2>
                         </div>
                         <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setShowManualModal(true)}
+                                className="hidden md:flex items-center gap-2 bg-purple-50 text-primary px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-100 transition-colors"
+                            >
+                                <Plus size={16} /> Crear
+                            </button>
                             <button
                                 onClick={handleClearData}
                                 className="size-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
@@ -101,12 +141,14 @@ export default function KindleApp() {
                             book={selectedBook}
                             onBack={() => setSelectedBook(null)}
                             onShare={setClipToShare}
+                            onUpdateBook={handleUpdateBook}
                         />
                     )}
                 </main>
 
                 <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
                 {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
+                {showManualModal && <ManualEntryModal onClose={() => setShowManualModal(false)} onSave={handleManualSave} />}
             </div>
         );
     }
@@ -114,8 +156,9 @@ export default function KindleApp() {
     // --- VISTA: LANDING PAGE (Si no hay datos) ---
     return (
         <>
-            <LandingPage onStart={triggerFileUpload} />
+            <LandingPage onStart={triggerFileUpload} onManualEntry={() => setShowManualModal(true)} />
             <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+            {showManualModal && <ManualEntryModal onClose={() => setShowManualModal(false)} onSave={handleManualSave} />}
         </>
     );
 }
