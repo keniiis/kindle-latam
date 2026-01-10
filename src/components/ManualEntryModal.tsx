@@ -12,7 +12,7 @@ interface BookSuggestion {
     key: string;
     title: string;
     author_name?: string[];
-    cover_i?: number;
+    coverUrl?: string;
 }
 
 export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalProps) {
@@ -47,11 +47,20 @@ export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalPr
 
         setIsSearching(true);
         try {
+            // Usamos Google Books API que tiene mejor soporte para español y miniaturas
             const response = await fetch(
-                `https://openlibrary.org/search.json?q=${encodeURIComponent(query + ' language:spa')}&fields=key,title,author_name,cover_i&limit=5`
+                `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&langRestrict=es&maxResults=5&printType=books`
             );
             const data = await response.json();
-            setSuggestions(data.docs || []);
+
+            const results: BookSuggestion[] = (data.items || []).map((item: any) => ({
+                key: item.id,
+                title: item.volumeInfo.title,
+                author_name: item.volumeInfo.authors || ['Autor desconocido'],
+                coverUrl: item.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:')
+            }));
+
+            setSuggestions(results);
             setShowSuggestions(true);
         } catch (error) {
             console.error('Error searching books:', error);
@@ -149,9 +158,9 @@ export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalPr
                                             onClick={() => handleSelectBook(book)}
                                             className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 flex items-start gap-3 group"
                                         >
-                                            {book.cover_i ? (
+                                            {book.coverUrl ? (
                                                 <img
-                                                    src={`https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg`}
+                                                    src={book.coverUrl}
                                                     alt={book.title}
                                                     className="w-8 h-12 object-cover rounded shadow-sm bg-slate-200"
                                                 />
