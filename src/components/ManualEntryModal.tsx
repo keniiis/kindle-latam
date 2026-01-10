@@ -261,5 +261,6 @@ export default function ManualEntryModal({ onClose, onSave }: ManualEntryModalPr
                     </form>
                 </div>
             </div>
-            );
+        </div>
+    );
 }
