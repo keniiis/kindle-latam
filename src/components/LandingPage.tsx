@@ -34,7 +34,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
     };
 
     return (
-        <div className="bg-background-light font-display text-[#140d1c] transition-colors duration-300">
+        <div className="bg-white font-display text-[#140d1c] transition-colors duration-300">
 
             {/* HEADER LANDING */}
             <header className="sticky top-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-primary/10 px-6 lg:px-40 py-3">
