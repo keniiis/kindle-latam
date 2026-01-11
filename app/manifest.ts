@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'Citando Ando',
-        short_name: 'Citando',
+        name: 'CitandoAndo',
+        short_name: 'CitandoAndo',
         description: 'Tu segundo cerebro para notas de Kindle',
         start_url: '/',
         display: 'standalone',
