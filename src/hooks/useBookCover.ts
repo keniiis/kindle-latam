@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 // Clave: "Title|Author" -> Valor: URL string | null (si falló)
 const coverCache = new Map<string, string | null>();
 
-export function useBookCover(title: string, author: string) {
+export function useBookCover(title: string, author: string, delay?: number) {
     const [coverUrl, setCoverUrl] = useState<string | null>(() => {
         const key = `${title}|${author}`;
 
@@ -112,11 +112,14 @@ export function useBookCover(title: string, author: string) {
             }
         };
 
-        const timeoutId = setTimeout(fetchCover, Math.random() * 800 + 200); // Random delay
+        // Si delay es explícito (ej: 0), usarlo. Si es undefined, usar random para listas.
+        const waitTime = delay !== undefined ? delay : (Math.random() * 800 + 200);
+
+        const timeoutId = setTimeout(fetchCover, waitTime);
 
         return () => { isMounted = false; clearTimeout(timeoutId); };
 
-    }, [title, author, coverUrl]); // Dependencia coverUrl para no volver a ejecutar si ya lo tenemos
+    }, [title, author, coverUrl, delay]); // Dependencia coverUrl para no volver a ejecutar si ya lo tenemos
 
     return coverUrl;
 }

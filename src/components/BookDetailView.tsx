@@ -21,7 +21,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(book.title);
     const [editAuthor, setEditAuthor] = useState(book.author);
-    const coverUrl = useBookCover(book.title, book.author);
+    const coverUrl = useBookCover(book.title, book.author, 0); // 0 delay for instant fetch
     const [isExporting, setIsExporting] = useState(false);
     const pdfTemplateRef = useRef<HTMLDivElement>(null);
 
@@ -79,15 +79,23 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
         if (dates.length === 0) return 'Recién importado';
 
-        const latest = Math.max(...dates);
-        const diff = Date.now() - latest;
+        const latestTimestamp = Math.max(...dates);
+        const latestDate = new Date(latestTimestamp);
+
+        const diff = Date.now() - latestTimestamp;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-        if (days === 0) return 'Actualizado hoy';
-        if (days === 1) return 'Actualizado ayer';
-        if (days < 30) return `Actualizado hace ${days} días`;
-        if (days < 365) return `Actualizado hace ${Math.floor(days / 30)} meses`;
-        return 'Actualizado hace más de un año';
+        const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+        // const formattedDate = latestDate.toLocaleDateString('es-ES', options); // Ya no se muestra la fecha explícita
+
+        let relativeText = '';
+        if (days === 0) relativeText = 'hoy';
+        else if (days === 1) relativeText = 'ayer';
+        else if (days < 30) relativeText = `hace ${days} días`;
+        else if (days < 365) relativeText = `hace ${Math.floor(days / 30)} meses`;
+        else relativeText = 'hace más de un año';
+
+        return `Actualizado ${relativeText}`;
     }, [book.clippings]);
 
     const handleSave = () => {
@@ -217,6 +225,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                                     "{clip.content}"
                                 </p>
 
+
                                 <div className="flex flex-wrap items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
                                     <button
                                         onClick={() => { navigator.clipboard.writeText(clip.content); alert('Copiado!') }}
@@ -249,7 +258,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                             <span>{book.clippings.length} Highlights</span>
                         </div>
                         <div className="items-center gap-2 text-slate-500 text-xs font-medium hidden sm:flex">
-                            <Calendar size={14} className="text-primary" />
+                            <Calendar size={14} className="text-purple-600" />
                             <span>{lastUpdateLabel}</span>
                         </div>
                     </div>

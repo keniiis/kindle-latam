@@ -306,6 +306,9 @@ export default function KindleApp() {
         );
     }
 
+    // Evitar parpadeo de Landing Page mientras cargamos datos
+    if (!isLoaded) return null;
+
     // --- VISTA: LANDING PAGE (Si no hay datos) ---
     return (
         <>
