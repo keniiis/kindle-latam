@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, Book, User, Quote, Check, Plus, Loader2, Search, HelpCircle } from 'lucide-react';
+import { X, Book, User, Quote, Check, Plus, Loader2, Search, HelpCircle, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 
 interface ManualEntryModalProps {
     onClose: () => void;
@@ -30,6 +30,9 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
     const searchTimeout = useRef<NodeJS.Timeout | null>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
+    const LIMIT = 500;
+    const isOverLimit = content.length > LIMIT;
+
     // Close suggestions on click outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -50,7 +53,6 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
 
         setIsSearching(true);
         try {
-            // Usamos Google Books API que tiene mejor soporte para español y miniaturas
             const response = await fetch(
                 `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&langRestrict=es&maxResults=5&printType=books`
             );
@@ -107,23 +109,17 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
     };
 
     return (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-                <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
+                <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="size-10 bg-purple-100 text-primary rounded-xl flex items-center justify-center">
+                        <div className="size-10 bg-purple-100 text-primary rounded-xl flex items-center justify-center shadow-inner">
                             <Plus size={20} strokeWidth={3} />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
                                 <h3 className="font-black text-xl text-slate-900">Crear Manualmente</h3>
-                                <button
-                                    onClick={() => setShowTips(!showTips)}
-                                    className="p-1 text-slate-400 hover:text-purple-600 transition-colors"
-                                    title="Ver tips de importación"
-                                >
-                                    <HelpCircle size={16} />
-                                </button>
+                                <HelpCircle size={16} className="text-slate-300" />
                             </div>
                             <p className="text-xs text-slate-500 font-medium">Agrega una cita de cualquier libro físico o app.</p>
                         </div>
@@ -134,38 +130,51 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
                 </div>
 
                 <div className="overflow-y-auto p-6 md:p-8 space-y-6">
-                    {/* Tips de Importación */}
-                    {showTips && (
-                        <div className="bg-purple-50 rounded-xl p-4 text-xs space-y-3 animate-in fade-in slide-in-from-top-2">
-                            <h4 className="font-bold text-primary flex items-center gap-2">
-                                <HelpCircle size={14} /> Cómo importar de otras apps
-                            </h4>
-                            <ul className="space-y-2 text-slate-600 pl-4 list-disc marker:text-purple-300">
-                                <li>
-                                    <strong>Apple Books:</strong> Selecciona el texto, elige "Compartir" y copia el texto aquí.
-                                </li>
-                                <li>
-                                    <strong>Google Play Books:</strong> Abre el documento de Google Docs automático con tus notas y copia el contenido.
-                                </li>
-                                <li>
-                                    <strong>Kobo:</strong> Recomendamos copiar manualmente tus frases favoritas.
-                                </li>
-                            </ul>
-                        </div>
-                    )}
+                    {/* Collapsible Tips */}
+                    <div className="space-y-2">
+                        <button
+                            type="button"
+                            onClick={() => setShowTips(!showTips)}
+                            className="w-full flex items-center justify-between bg-slate-50 hover:bg-slate-100 p-4 rounded-xl transition-colors border border-slate-100 group"
+                        >
+                            <span className="flex items-center gap-2 text-xs font-bold text-slate-600 group-hover:text-purple-700">
+                                <div className="size-5 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
+                                    <HelpCircle size={12} />
+                                </div>
+                                ¿Cómo importar de otras apps?
+                            </span>
+                            {showTips ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+                        </button>
+
+                        {showTips && (
+                            <div className="bg-white border border-slate-100 rounded-xl p-4 text-xs space-y-3 animate-in fade-in slide-in-from-top-1 shadow-sm">
+                                <ul className="space-y-2 text-slate-600 pl-4 list-disc marker:text-purple-300">
+                                    <li>
+                                        <strong>Apple Books:</strong> Selecciona el texto, elige "Compartir" y copia el texto aquí.
+                                    </li>
+                                    <li>
+                                        <strong>Google Play Books:</strong> Abre el documento de Google Docs automático con tus notas y copia el contenido.
+                                    </li>
+                                    <li>
+                                        <strong>Kobo:</strong> Recomendamos copiar manualmente tus frases favoritas.
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Campos de Libro y Autor */}
                         <div className="grid grid-cols-1 gap-4">
                             <div className="space-y-2 relative" ref={wrapperRef}>
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                <label className="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">
                                     <Book size={14} /> Título del Libro
                                 </label>
                                 <div className="relative">
                                     <input
                                         type="text"
                                         placeholder="Ej: Hábitos Atómicos"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all pr-10"
+                                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all pr-10 shadow-sm"
                                         value={title}
                                         onChange={handleTitleChange}
                                         onFocus={() => {
@@ -219,13 +228,13 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                <label className="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">
                                     <User size={14} /> Autor
                                 </label>
                                 <input
                                     type="text"
                                     placeholder="Ej: James Clear"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
+                                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
                                     value={author}
                                     onChange={(e) => setAuthor(e.target.value)}
                                 />
@@ -234,20 +243,31 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
 
                         {/* Área de la Cita */}
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                            <label className="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">
                                 <Quote size={14} /> Tu Cita / Highlight
                             </label>
                             <div className="relative">
                                 <textarea
                                     placeholder="Escribe o pega aquí el texto que quieres convertir en imagen..."
-                                    className="w-full h-40 bg-slate-50 border border-slate-200 rounded-2xl p-5 text-base font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all resize-none leading-relaxed"
+                                    className={`w-full h-40 bg-white border rounded-2xl p-5 text-base font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 transition-all resize-none leading-relaxed shadow-sm ${isOverLimit
+                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
+                                            : 'border-slate-200 focus:border-purple-500 focus:ring-purple-500/20'
+                                        }`}
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     required
                                 />
-                                <div className="absolute bottom-4 right-4 text-[10px] font-bold text-slate-300 pointer-events-none bg-slate-50 px-2 py-1 rounded">
-                                    {content.length} caracteres
+                                <div className={`absolute bottom-4 right-4 text-[10px] font-bold pointer-events-none bg-white border px-2 py-1 rounded-lg flex items-center gap-2 shadow-sm ${isOverLimit ? 'text-red-500 border-red-200 bg-red-50/50' : 'text-slate-400 border-slate-100'
+                                    }`}>
+                                    <div className={`size-2 rounded-full ${isOverLimit ? 'bg-red-500' : 'bg-slate-200'}`}></div>
+                                    {content.length} / {LIMIT}
                                 </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                {isOverLimit && <AlertCircle size={12} className="text-red-500" />}
+                                <p className={`text-[10px] italic transition-colors ${isOverLimit ? 'text-red-500 font-medium' : 'text-slate-300'}`}>
+                                    Límite recomendado para historias: 500 caracteres.
+                                </p>
                             </div>
                         </div>
 

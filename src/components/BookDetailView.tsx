@@ -1,8 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book } from 'lucide-react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book, Loader2 } from 'lucide-react';
 import { Clipping } from '@/lib/parser';
+import { PdfExportTemplate } from './PdfExportTemplate';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 interface BookDetailViewProps {
     book: any;
@@ -12,45 +15,80 @@ interface BookDetailViewProps {
     onAddHighlight?: () => void;
 }
 
+import { useBookCover } from '@/hooks/useBookCover';
+
 export default function BookDetailView({ book, onBack, onShare, onUpdateBook, onAddHighlight }: BookDetailViewProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(book.title);
     const [editAuthor, setEditAuthor] = useState(book.author);
-    const [coverUrl, setCoverUrl] = useState<string | null>(null);
+    const coverUrl = useBookCover(book.title, book.author);
+    const [isExporting, setIsExporting] = useState(false);
+    const pdfTemplateRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        let isMounted = true;
+    const handleExportPdf = async () => {
+        if (!pdfTemplateRef.current) return;
+        setIsExporting(true);
+        try {
+            // Breve espera para asegurar que el renderizado oculto esté listo (fuentes/imgs)
+            // html2canvas maneja imágenes externas si useCORS: true, pero a veces necesita un tick.
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Espera generosa para fuentes e imágenes
 
-        const findCover = async () => {
-            const cleanTitle = book.title.split('(')[0].split(':')[0].split(';')[0].trim();
-            const cleanAuthor = book.author.replace(/[\(\)]/g, '').split(',')[0].trim();
-            const queryTitle = encodeURIComponent(cleanTitle);
-            const queryAuthor = encodeURIComponent(cleanAuthor);
+            const canvas = await html2canvas(pdfTemplateRef.current, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true, // Permite taint pero useCORS debería manejarlo
+                backgroundColor: '#ffffff',
+                logging: false,
+                imageTimeout: 0, // Esperar a que carguen las img
+                windowWidth: 1200, // Asegurar que el viewport virtual sea suficiente
+                windowHeight: 1600
+            });
 
-            try {
-                const googleRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${queryTitle}+inauthor:${queryAuthor}&maxResults=1&langRestrict=es`);
-                const googleData = await googleRes.json();
-                if (isMounted && googleData.items?.length > 0 && googleData.items[0].volumeInfo.imageLinks?.thumbnail) {
-                    // Pedimos imagen más grande si es posible cambiando curl por zoom o similar si estuviera disponible, 
-                    // o simplemente usamos la thumbnail
-                    setCoverUrl(googleData.items[0].volumeInfo.imageLinks.thumbnail.replace('http:', 'https:'));
-                    return;
-                }
-            } catch (err) { console.warn("Google Books API failed", err); }
+            // A4 en px a 72dpi es aprox 595x842, pero jsPDF usa unidades.
+            // Creamos PDF con el tamaño exacto del canvas (en puntos/px) para que no escale raro.
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
-            // Fallback
-            try {
-                const olRes = await fetch(`https://openlibrary.org/search.json?title=${queryTitle}&author=${queryAuthor}&limit=1`);
-                const olData = await olRes.json();
-                if (isMounted && olData.docs?.length > 0 && olData.docs[0].cover_i) {
-                    setCoverUrl(`https://covers.openlibrary.org/b/id/${olData.docs[0].cover_i}-L.jpg`);
-                }
-            } catch (err) { console.warn("OpenLibrary API failed", err); }
-        };
+            // Crear PDF en formato Carta (Letter)
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'letter'
+            });
 
-        findCover();
-        return () => { isMounted = false; };
-    }, [book.title, book.author]);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            // Al haber ajustado el template a ratio Letter, podemos estirar para cubrir
+            // cualquier pequeña diferencia de píxeles sin deformar visiblemente.
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            const fileName = `${book.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_highlights.pdf`;
+            pdf.save(fileName);
+
+        } catch (error) {
+            console.error("Error exporting PDF:", error);
+            alert("Hubo un error al generar el PDF. Intenta nuevamente.");
+        } finally {
+            setIsExporting(false);
+        }
+    };
+
+    const lastUpdateLabel = useMemo(() => {
+        const dates = book.clippings
+            .map((c: any) => c.date ? new Date(c.date).getTime() : 0)
+            .filter((t: number) => t > 0);
+
+        if (dates.length === 0) return 'Recién importado';
+
+        const latest = Math.max(...dates);
+        const diff = Date.now() - latest;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        if (days === 0) return 'Actualizado hoy';
+        if (days === 1) return 'Actualizado ayer';
+        if (days < 30) return `Actualizado hace ${days} días`;
+        if (days < 365) return `Actualizado hace ${Math.floor(days / 30)} meses`;
+        return 'Actualizado hace más de un año';
+    }, [book.clippings]);
 
     const handleSave = () => {
         if (onUpdateBook && editTitle.trim()) {
@@ -60,20 +98,30 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Template Oculto para PDF (Fuera de la vista pero renderizado) */}
+            <div style={{ position: 'absolute', top: -10000, left: -10000, pointerEvents: 'none' }}>
+                <div ref={pdfTemplateRef}>
+                    <PdfExportTemplate book={book} coverUrl={coverUrl} />
+                </div>
+            </div>
+
+            {/* Botón Volver - Fuera del contenedor */}
+            <div className="max-w-5xl mx-auto px-6 pt-2">
+                <button
+                    onClick={onBack}
+                    className="flex items-center gap-2 text-primary hover:text-purple-700 transition-colors font-bold text-xs uppercase tracking-wider group"
+                >
+                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                    Volver a la biblioteca
+                </button>
+            </div>
+
             {/* Header Libro */}
             <div className="bg-white sticky top-0 z-40 border-b border-slate-100/80 backdrop-blur-md shadow-sm rounded-3xl overflow-hidden group/header">
                 <div className="max-w-5xl mx-auto px-6 py-8 md:py-12">
                     {/* Navegación y Acciones Sup. */}
-                    <div className="flex items-center justify-between mb-8 md:mb-10">
-                        <button
-                            onClick={onBack}
-                            className="flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors font-bold text-xs uppercase tracking-wider group"
-                        >
-                            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                            Volver a la biblioteca
-                        </button>
-
+                    <div className="flex items-center justify-end mb-8 md:mb-10">
                         <div className="flex items-center gap-3">
                             {/* Botón Añadir Cita */}
                             {onAddHighlight && (
@@ -202,13 +250,18 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                         </div>
                         <div className="items-center gap-2 text-slate-500 text-xs font-medium hidden sm:flex">
                             <Calendar size={14} className="text-primary" />
-                            <span>Actualizado hace 2 días</span>
+                            <span>{lastUpdateLabel}</span>
                         </div>
                     </div>
                     <div className="flex gap-3">
                         {/* Botones footer */}
-                        <button className="px-5 py-2.5 bg-primary text-white text-xs font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors hover:-translate-y-0.5 transform">
-                            Exportar PDF
+                        <button
+                            onClick={handleExportPdf}
+                            disabled={isExporting}
+                            className="px-5 py-2.5 bg-primary text-white text-xs font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors hover:-translate-y-0.5 transform disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                            {isExporting && <Loader2 size={14} className="animate-spin" />}
+                            {isExporting ? 'Generando...' : 'Exportar PDF'}
                         </button>
                     </div>
                 </div>

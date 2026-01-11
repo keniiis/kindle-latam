@@ -62,8 +62,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${jakarta.variable}`}>
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet" />
+      </head>
       {/* Forzamos la clase font-display y el fondo base aquí */}
-      <body className="font-display bg-[#f7f5f8] text-[#140d1c] antialiased">
+      <body className="font-display bg-[#f7f5f8] text-[#140d1c] antialiased" suppressHydrationWarning={true}>
         {children}
       </body>
     </html>

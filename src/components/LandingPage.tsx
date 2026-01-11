@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Mail, Twitter } from 'lucide-react';
+import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Twitter, Pencil } from 'lucide-react';
 
 interface LandingPageProps {
     onStart: () => void;
@@ -23,10 +23,6 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                     <nav className="hidden md:flex items-center gap-8">
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#como-funciona">Cómo funciona</a>
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">Beneficios</a>
-                        <button onClick={onManualEntry} className="text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
-                            <div className="size-2 rounded-full bg-green-400 animate-pulse"></div>
-                            Modo Manual
-                        </button>
                     </nav>
                     <button onClick={onStart} className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20">
                         Empezar ahora
@@ -54,7 +50,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                 </p>
                             </div>
 
-                            {/* Avatares */}
+                            {/* Avatares (Oculto temporalmente)
                             <div className="flex items-center gap-4">
                                 <div className="flex -space-x-4">
                                     {[
@@ -74,39 +70,52 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                     <span className="text-sm font-bold text-slate-700 mt-1">+2k lectores ya lo usan</span>
                                 </div>
                             </div>
+                            */}
                         </div>
 
                         {/* HERO UPLOAD ZONE */}
-                        <div className="relative group w-full max-w-md mx-auto lg:max-w-none">
-                            {/* Efecto Glow de fondo */}
-                            <div className="absolute -inset-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-[3rem] blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                        <div className="relative w-full max-w-md mx-auto lg:max-w-none group perspective-1000">
+                            {/* Glow Effect - Matches reference purple haze */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-purple-500/20 rounded-full blur-[80px] pointer-events-none"></div>
 
                             <div
                                 onClick={onStart}
-                                className="relative aspect-[4/3] bg-gradient-to-br from-[#E2D1F9] to-[#D1C4E9] rounded-[2.5rem] border border-[#d8b4fe] flex flex-col items-center justify-center text-center p-8 cursor-pointer hover:-translate-y-1 transition-transform duration-300 shadow-2xl shadow-purple-900/10"
+                                className="relative bg-white rounded-[2.5rem] border border-white/50 p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:scale-[1.02] transition-transform duration-500 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_40px_80px_-20px_rgba(147,51,234,0.15)] bg-gradient-to-br from-white to-purple-50/30"
                             >
-                                <div className="size-20 bg-[#a855f7] rounded-full flex items-center justify-center text-white mb-6 shadow-xl shadow-purple-500/20 group-hover:scale-110 transition-transform duration-300 ring-4 ring-white/20">
-                                    <UploadCloud size={40} strokeWidth={2.5} />
+                                {/* Upload Icon Circle */}
+                                <div className="size-24 bg-[#A855F7] rounded-full flex items-center justify-center text-white mb-8 shadow-xl shadow-purple-500/30 group-hover:scale-110 -translate-y-2 group-hover:translate-y-0 transition-all duration-500 ease-out">
+                                    <UploadCloud size={44} strokeWidth={2.5} />
                                 </div>
 
-                                <h3 className="text-2xl font-black text-[#2e1065] mb-2 tracking-tight">Sube tu archivo</h3>
-                                <p className="text-[#581c87] font-medium mb-8 max-w-[240px] leading-relaxed text-sm">
-                                    Arrastra tu <span className="font-bold bg-white/40 px-1 rounded text-[#4c1d95]">My Clippings.txt</span> o haz clic para buscarlo.
+                                {/* Main Title */}
+                                <h3 className="text-3xl font-black text-[#0f0a16] mb-3 tracking-tight">Sube tu archivo</h3>
+
+                                {/* Subtitle with Code Style */}
+                                <p className="text-slate-500 font-medium mb-8 max-w-[260px] leading-relaxed text-sm">
+                                    Arrastra tu <code className="font-bold bg-purple-50 text-purple-600 px-2 py-0.5 rounded border border-purple-100/50">My Clippings.txt</code> o haz clic para buscarlo.
                                 </p>
 
-                                <div className="flex items-center gap-4 text-[10px] font-bold tracking-[0.2em] text-[#6b21a8] uppercase opacity-60 mb-2">
-                                    <span>Kindle</span>
-                                    <div className="size-1 rounded-full bg-current"></div>
-                                    <span>Kobo</span>
-                                    <div className="size-1 rounded-full bg-current"></div>
-                                    <span>Pocket</span>
+                                {/* Platform Tags */}
+                                <div className="flex items-center justify-center gap-3 mb-10">
+                                    {['KINDLE', 'KOBO', 'POCKET'].map((tag, i) => (
+                                        <div key={tag} className="flex items-center gap-3">
+                                            <span className="text-[10px] font-bold tracking-[0.15em] text-slate-400/80 uppercase hover:text-purple-500 transition-colors">{tag}</span>
+                                            {i < 2 && <div className="size-1 rounded-full bg-purple-200"></div>}
+                                        </div>
+                                    ))}
                                 </div>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); onManualEntry(); }}
-                                    className="text-xs font-bold text-[#8c25f4] hover:text-[#7c1be2] hover:bg-white/50 px-3 py-1.5 rounded-lg transition-colors"
-                                >
-                                    ¿No tienes archivo? <span className="underline decoration-2">Crear manualmente</span>
-                                </button>
+
+                                {/* Manual Entry Button Section */}
+                                <div className="mt-2 space-y-3 w-full">
+                                    <p className="text-xs font-bold text-slate-400">¿No tienes archivo?</p>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); onManualEntry(); }}
+                                        className="w-full flex items-center justify-center gap-2 border border-purple-200 hover:border-purple-300 bg-purple-50/50 hover:bg-purple-50 text-purple-600 px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-0.5"
+                                    >
+                                        <Pencil size={16} />
+                                        <span>Crear manualmente</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -429,11 +438,11 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         <div className="text-center border-t border-slate-100 pt-16">
                             <p className="text-slate-400 font-bold mb-6">¿Aún tienes dudas?</p>
                             <div className="flex justify-center gap-8">
-                                <a href="mailto:hola@citandoando.com" className="flex items-center gap-2 text-[#8c25f4] font-bold hover:text-purple-700 transition-colors">
+                                {/* <a href="mailto:hola@citandoando.com" className="flex items-center gap-2 text-[#8c25f4] font-bold hover:text-purple-700 transition-colors">
                                     <Mail size={18} />
                                     <span>Contáctanos</span>
-                                </a>
-                                <a href="https://twitter.com/devdanipena" target="_blank" className="flex items-center gap-2 text-[#8c25f4] font-bold hover:text-purple-700 transition-colors">
+                                </a> */}
+                                <a href="https://x.com/Danipena3488" target="_blank" className="flex items-center gap-2 text-[#8c25f4] font-bold hover:text-purple-700 transition-colors">
                                     <Twitter size={18} />
                                     <span>Twitter / X</span>
                                 </a>

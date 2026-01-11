@@ -11,8 +11,10 @@ import {
 } from 'lucide-react';
 
 const STORAGE_KEY = 'kindle-latam-library';
+const STORAGE_BOOK_KEY = 'kindle-latam-selected-book'; // Persistencia del libro seleccionado
 
 import ManualEntryModal from '@/components/ManualEntryModal';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function KindleApp() {
     const [rawClippings, setRawClippings] = useState<Clipping[]>([]);
@@ -23,24 +25,76 @@ export default function KindleApp() {
     const [manualEntryData, setManualEntryData] = useState<{ title: string, author: string } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const [selectedBookIds, setSelectedBookIds] = useState<Set<string>>(new Set());
+    const [isSelectionMode, setIsSelectionMode] = useState(false);
+
+    const [confirmation, setConfirmation] = useState({
+        isOpen: false,
+        title: '',
+        description: '',
+        onConfirm: () => { },
+        isDanger: false,
+        confirmText: 'Confirmar'
+    });
+
+    // ...
+
+    // (Update handleCancelSelection logic in render props)
+
+    // ...
+
+    const library = useMemo(() => {
+        const groups: Record<string, any> = {};
+        rawClippings.forEach((clip) => {
+            if (!groups[clip.title]) groups[clip.title] = { title: clip.title, author: clip.author, clippings: [] };
+            groups[clip.title].clippings.push(clip);
+        });
+        return Object.values(groups).sort((a, b) => b.clippings.length - a.clippings.length);
+    }, [rawClippings]);
+
     // Carga inicial
     useEffect(() => {
         const savedData = localStorage.getItem(STORAGE_KEY);
-        if (savedData) { try { setRawClippings(JSON.parse(savedData)); } catch (e) { console.error(e); } }
+        if (savedData) {
+            try {
+                setRawClippings(JSON.parse(savedData));
+            } catch (e) { console.error(e); }
+        }
         setIsLoaded(true);
     }, []);
 
-    // Persistencia
+    // Recuperar libro seleccionado después de cargar la librería
+    useEffect(() => {
+        if (!isLoaded || library.length === 0 || selectedBook) return;
+
+        const savedBookTitle = localStorage.getItem(STORAGE_BOOK_KEY);
+        if (savedBookTitle) {
+            const foundBook = library.find(b => b.title === savedBookTitle);
+            if (foundBook) setSelectedBook(foundBook);
+        }
+    }, [isLoaded, library]); // Solo intenta restaurar si cambia la librería o termina de cargar
+
+    // Persistencia: Guardar librería
     useEffect(() => {
         if (isLoaded && rawClippings.length > 0) localStorage.setItem(STORAGE_KEY, JSON.stringify(rawClippings));
     }, [rawClippings, isLoaded]);
+
+    // Persistencia: Guardar libro seleccionado actual
+    useEffect(() => {
+        if (!isLoaded) return;
+        if (selectedBook) {
+            localStorage.setItem(STORAGE_BOOK_KEY, selectedBook.title);
+        } else {
+            localStorage.removeItem(STORAGE_BOOK_KEY);
+        }
+    }, [selectedBook, isLoaded]);
 
     // Manejadores
     const handleFileUpload = async (file: File) => {
         const text = await file.text();
         setRawClippings(parseKindleClippings(text));
         setSelectedBook(null);
-        // Scroll al top cuando se carga
+        localStorage.removeItem(STORAGE_BOOK_KEY);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -55,13 +109,9 @@ export default function KindleApp() {
             date: new Date()
         };
 
-        // Agregar al principio
         setRawClippings(prev => [newClipping, ...prev]);
         setShowManualModal(false);
         setManualEntryData(null);
-        // Seleccionar directamente este libro/autor
-        // setBook(..)? Por ahora solo agregamos.
-        // Scroll al top para ver resultado
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -73,7 +123,19 @@ export default function KindleApp() {
     const triggerFileUpload = () => fileInputRef.current?.click();
 
     const handleClearData = () => {
-        if (confirm('¿Borrar todo?')) { localStorage.removeItem(STORAGE_KEY); setRawClippings([]); setSelectedBook(null); }
+        setConfirmation({
+            isOpen: true,
+            title: '¿Borrar toda la biblioteca?',
+            description: 'Estás a punto de eliminar todos los libros y subrayados. Esta acción es irreversible.',
+            isDanger: true,
+            confirmText: 'Sí, borrar todo',
+            onConfirm: () => {
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(STORAGE_BOOK_KEY);
+                setRawClippings([]);
+                setSelectedBook(null);
+            }
+        });
     };
 
     const handleUpdateBook = (oldTitle: string, newTitle: string, newAuthor: string) => {
@@ -87,16 +149,85 @@ export default function KindleApp() {
         setSelectedBook((prev: any) => prev ? { ...prev, title: newTitle, author: newAuthor } : null);
     };
 
-    const library = useMemo(() => {
-        const groups: Record<string, any> = {};
-        rawClippings.forEach((clip) => {
-            if (!groups[clip.title]) groups[clip.title] = { title: clip.title, author: clip.author, clippings: [] };
-            groups[clip.title].clippings.push(clip);
-        });
-        return Object.values(groups).sort((a, b) => b.clippings.length - a.clippings.length);
-    }, [rawClippings]);
+    const handleToggleBook = (title: string) => {
+        const newSet = new Set(selectedBookIds);
+        if (newSet.has(title)) {
+            newSet.delete(title);
+        } else {
+            newSet.add(title);
+        }
+        setSelectedBookIds(newSet);
+    };
 
-    if (!isLoaded) return null;
+    const handleDeleteSelected = () => {
+        setConfirmation({
+            isOpen: true,
+            title: `¿Eliminar ${selectedBookIds.size} libro(s)?`,
+            description: 'Los libros seleccionados se eliminarán permanentemente de tu biblioteca local.',
+            isDanger: true,
+            confirmText: 'Eliminar',
+            onConfirm: () => {
+                const newClippings = rawClippings.filter(c => !selectedBookIds.has(c.title));
+                setRawClippings(newClippings);
+                setSelectedBookIds(new Set());
+                setIsSelectionMode(false);
+                // Clear local storage book selection if deleted
+                const savedBook = localStorage.getItem(STORAGE_BOOK_KEY);
+                if (savedBook && selectedBookIds.has(savedBook)) {
+                    localStorage.removeItem(STORAGE_BOOK_KEY);
+                }
+            }
+        });
+    };
+
+    // --- HISTORIAL DE NAVEGACIÓN Y BOTÓN ATRÁS ---
+
+    // 1. Manejar el evento PopState (Cuando el usuario presiona Atrás en el navegador)
+    useEffect(() => {
+        const handlePopState = (event: PopStateEvent) => {
+            // Si hay un libro seleccionado y damos atrás -> Volver a librería
+            if (selectedBook) {
+                // event.preventDefault(); // Nota: preventDefault no funciona en popstate
+                setSelectedBook(null); // Cerrar libro
+                return;
+            }
+
+            // Si estamos en la librería (sin libro) y damos atrás
+            // La intención del usuario es salir o volver al landing.
+            if (rawClippings.length > 0) {
+                // Si quisieras volver al landing:
+                // setRawClippings([]);
+                // Pero si solo queremos que el navegador maneje la salida del sitio, no hacemos nada.
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [selectedBook, rawClippings]);
+
+    // 2. Agregar entrada al historial al abrir un libro
+    useEffect(() => {
+        if (selectedBook) {
+            // Solo pushear si no estamos ya ahí
+            if (window.location.hash !== '#book') {
+                window.history.pushState({ view: 'book' }, '', '#book');
+            }
+        } else {
+            // Si cerramos el libro con la UI (botón X), limpiamos el hash para que la URL quede limpia
+            if (window.location.hash === '#book') {
+                // Reemplazamos el estado actual por 'library' para no dejar el hash colgado
+                // pero sin navegar atrás (para no causar líos con el stack)
+                window.history.replaceState({ view: 'library' }, '', '#library');
+            }
+        }
+    }, [selectedBook]);
+
+    // 3. Agregar entrada al historial al cargar la librería (Landing -> Library)
+    useEffect(() => {
+        if (rawClippings.length > 0 && window.location.hash !== '#library' && window.location.hash !== '#book') {
+            window.history.pushState({ view: 'library' }, '', '#library');
+        }
+    }, [rawClippings.length]);
 
     if (rawClippings.length > 0) {
         return (
@@ -111,22 +242,6 @@ export default function KindleApp() {
                             <h2 className="text-xl font-extrabold tracking-tight text-slate-900">CitandoAndo</h2>
                         </div>
                         <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => {
-                                    setManualEntryData(null);
-                                    setShowManualModal(true);
-                                }}
-                                className="hidden md:flex items-center gap-2 bg-purple-50 text-primary px-4 py-2 rounded-full text-xs font-bold hover:bg-purple-100 transition-colors"
-                            >
-                                <Plus size={16} /> Crear
-                            </button>
-                            <button
-                                onClick={handleClearData}
-                                className="size-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
-                                title="Borrar datos"
-                            >
-                                <Trash2 size={20} />
-                            </button>
                             <a
                                 href="https://ko-fi.com/devdanipena"
                                 target="_blank"
@@ -145,6 +260,16 @@ export default function KindleApp() {
                             library={library}
                             onSelectBook={setSelectedBook}
                             onImport={triggerFileUpload}
+                            selectedBooks={selectedBookIds}
+                            onToggleBook={handleToggleBook}
+                            onDeleteSelected={handleDeleteSelected}
+                            onCancelSelection={() => {
+                                setSelectedBookIds(new Set());
+                                setIsSelectionMode(false);
+                            }}
+                            onDeleteAll={handleClearData}
+                            isSelectionMode={isSelectionMode}
+                            onToggleSelectionMode={setIsSelectionMode}
                         />
                     ) : (
                         <BookDetailView
@@ -167,6 +292,16 @@ export default function KindleApp() {
                         initialAuthor={manualEntryData?.author}
                     />
                 )}
+
+                <ConfirmationModal
+                    isOpen={confirmation.isOpen}
+                    onClose={() => setConfirmation(prev => ({ ...prev, isOpen: false }))}
+                    onConfirm={confirmation.onConfirm}
+                    title={confirmation.title}
+                    description={confirmation.description}
+                    isDanger={confirmation.isDanger}
+                    confirmText={confirmation.confirmText}
+                />
             </div>
         );
     }
