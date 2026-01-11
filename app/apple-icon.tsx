@@ -1,33 +1,30 @@
 import { ImageResponse } from 'next/og'
 
-// Configuración de la imagen
 export const runtime = 'edge'
 export const size = {
-    width: 512,
-    height: 512,
+    width: 180,
+    height: 180,
 }
 export const contentType = 'image/png'
 
-// Generación del icono
 export default function Icon() {
     return new ImageResponse(
         (
-            // Elemento JSX que se convertirá en imagen
             <div
                 style={{
-                    background: '#8c25f4', // Color Primary
+                    background: '#8c25f4',
                     width: '100%',
                     height: '100%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderRadius: '20%', // Bordes redondeados
+                    borderRadius: '20%',
                 }}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="300"
-                    height="300"
+                    width="120"
+                    height="120"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="white"
@@ -35,6 +32,7 @@ export default function Icon() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                 >
+
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                 </svg>

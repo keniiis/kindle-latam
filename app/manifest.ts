@@ -7,12 +7,12 @@ export default function manifest(): MetadataRoute.Manifest {
         description: 'Tu segundo cerebro para notas de Kindle',
         start_url: '/',
         display: 'standalone',
-        background_color: '#f8fafc',
-        theme_color: '#4f46e5',
+        background_color: '#f7f5f8',
+        theme_color: '#8c25f4',
         icons: [
             {
                 src: '/icon',
-                sizes: 'any',
+                sizes: '192x192 512x512',
                 type: 'image/png',
             },
         ],
