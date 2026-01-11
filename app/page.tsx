@@ -31,17 +31,24 @@ export default function Page() {
                     [
                         ${JSON.stringify({
                         "@context": "https://schema.org",
-                        "@type": "WebApplication",
+                        "@type": "SoftwareApplication",
                         "name": "CitandoAndo",
-                        "url": "https://citando-ando.vercel.app",
-                        "description": "Herramienta gratuita para transformar tus highlights de Kindle en imágenes para redes sociales.",
-                        "applicationCategory": "UtilitiesApplication",
-                        "operatingSystem": "Any",
+                        "applicationCategory": "ProductivityApplication",
+                        "operatingSystem": "Web, Android, iOS, Windows, MacOS",
                         "offers": {
                             "@type": "Offer",
                             "price": "0",
                             "priceCurrency": "USD"
                         },
+                        "description": "Transforma tus highlights de Kindle en arte listo para tus redes sociales en segundos. Sin descargas ni registros.",
+                        "featureList": "Kindle Clippings Parser, Instagram Image Generator, Twitter Card Creator, Privacy Focused",
+                        "screenshot": "https://citando-ando.vercel.app/opengraph-image",
+                        "softwareVersion": "1.0.0",
+                        "author": {
+                            "@type": "Person",
+                            "name": "Danidev",
+                            "url": "https://x.com/Danipena3488"
+                        }
                     })},
                         ${JSON.stringify({
                         "@context": "https://schema.org",
@@ -61,6 +68,22 @@ export default function Page() {
                                 "acceptedAnswer": {
                                     "@type": "Answer",
                                     "text": "Totalmente seguro. CitandoAndo funciona 100% en tu navegador. Tus notas NO se suben a ningún servidor, todo el procesamiento es local en tu dispositivo."
+                                }
+                            },
+                            {
+                                "@type": "Question",
+                                "name": "¿Funciona con Kobo o Apple Books?",
+                                "acceptedAnswer": {
+                                    "@type": "Answer",
+                                    "text": "¡Sí! Con nuestro nuevo Modo Manual puedes crear diseños hermosos transcribiendo desde libros físicos, PDFs, Apple Books o cualquier otra fuente."
+                                }
+                            },
+                            {
+                                "@type": "Question",
+                                "name": "¿Es realmente gratis?",
+                                "acceptedAnswer": {
+                                    "@type": "Answer",
+                                    "text": "Sí, es un proyecto Open Source creado por amor a la lectura. Si te gusta, puedes invitarme un café, pero todas las funciones son y serán gratuitas."
                                 }
                             }
                         ]
