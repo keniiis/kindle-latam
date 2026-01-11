@@ -340,12 +340,12 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                         </div>
 
                                         <div className="flex-1 flex flex-col justify-center px-10 relative z-10">
-                                            <p className={`text-2xl md:text-3xl leading-relaxed font-medium drop-shadow-sm transition-all duration-300 ${serifFont ? 'font-serif italic' : 'font-sans'}`}>
+                                            <p className={`text-2xl md:text-3xl leading-[0.995] font-medium drop-shadow-sm transition-all duration-300 ${serifFont ? 'font-serif italic' : 'font-sans'}`}>
                                                 "La lectura de todos los buenos libros es como una conversación con las mejores mentes de los siglos pasados."
                                             </p>
                                         </div>
 
-                                        <div className="pb-16 px-10 text-center relative z-10">
+                                        <div className="pb-12 px-10 text-center relative z-10">
                                             <div className="w-16 h-1 mx-auto mb-6 rounded-full transition-colors duration-300" style={{ backgroundColor: previewColor }}></div>
                                             <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1">René Descartes</p>
                                             <p className="text-[9px] opacity-60 font-medium">Discurso del método</p>

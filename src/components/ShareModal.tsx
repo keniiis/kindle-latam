@@ -7,7 +7,7 @@ import {
     ArrowLeft, Trash2, Coffee, BookOpen,
     Palette, Type, LayoutGrid, Image as ImageIcon,
     MoreVertical, Download, Loader2, X, RotateCcw,
-    Smartphone, Square, User, ShieldCheck, Book
+    Smartphone, Square, User, ShieldCheck, Book, Quote
 } from 'lucide-react';
 
 interface ShareModalProps {
@@ -17,14 +17,45 @@ interface ShareModalProps {
     onClose: () => void;
 }
 
-const COLORS = [
-    { name: 'Lavanda', bg: 'bg-[#e0e7ff]', text: 'text-[#1e1b4b]', dot: 'bg-[#e0e7ff] border-indigo-200' },
-    { name: 'Amarillo', bg: 'bg-[#fef9c3]', text: 'text-[#422006]', dot: 'bg-[#fef9c3] border-yellow-200' },
-    { name: 'Rosa', bg: 'bg-[#fee2e2]', text: 'text-[#4c0519]', dot: 'bg-[#fee2e2] border-rose-200' },
-    { name: 'Menta', bg: 'bg-[#d1fae5]', text: 'text-[#064e3b]', dot: 'bg-[#d1fae5] border-emerald-200' },
-    { name: 'Fucsia', bg: 'bg-gradient-to-br from-fuchsia-200 to-purple-300', text: 'text-fuchsia-950', dot: 'bg-fuchsia-300' },
-    { name: 'Oscuro', bg: 'bg-slate-900', text: 'text-white', dot: 'bg-slate-800' },
-];
+const STYLES: Record<string, any> = {
+    'Minimalist': {
+        name: 'Minimalist',
+        bg: 'bg-white',
+        text: 'text-slate-900',
+        accent: '#000000',
+        font: 'font-serif'
+    },
+    'Vibrant Gradient': {
+        name: 'Vibrant Gradient',
+        bg: 'bg-gradient-to-br from-[#8c25f4] to-[#6d28d9]',
+        text: 'text-white',
+        accent: '#ffffff',
+        font: 'font-serif'
+    },
+    'Dark Mode': {
+        name: 'Dark Mode',
+        bg: 'bg-slate-900',
+        text: 'text-white',
+        accent: '#3b82f6',
+        font: 'font-sans'
+    },
+    'Classic Paper': {
+        name: 'Classic Paper',
+        bg: 'bg-[#fcf6e9]',
+        text: 'text-[#431407]',
+        accent: '#92400e',
+        font: 'font-serif'
+    },
+    'Neon Nights': {
+        name: 'Neon Nights',
+        bg: 'bg-black',
+        text: 'text-cyan-400',
+        accent: '#22d3ee',
+        font: 'font-mono'
+    }
+};
+
+const STYLE_KEYS = Object.keys(STYLES);
 
 const FONTS = [
     { name: 'Serif', class: 'font-serif' },
@@ -39,7 +70,8 @@ const ALIGNMENTS = [
 
 export default function ShareModal({ content, title, author, onClose }: ShareModalProps) {
     const ref = useRef<HTMLDivElement>(null);
-    const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+    const [selectedStyle, setSelectedStyle] = useState(STYLES['Vibrant Gradient']);
+    const [accentColor, setAccentColor] = useState(STYLES['Vibrant Gradient'].accent);
     const [selectedFont, setSelectedFont] = useState(FONTS[0]);
     const [selectedAlign, setSelectedAlign] = useState(ALIGNMENTS[0]);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -75,7 +107,9 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
     };
 
     const resetSettings = () => {
-        setSelectedColor(COLORS[0]);
+        const defaultStyle = STYLES['Vibrant Gradient'];
+        setSelectedStyle(defaultStyle);
+        setAccentColor(defaultStyle.accent);
         setSelectedFont(FONTS[0]);
         setSelectedAlign(ALIGNMENTS[0]);
         setFormat('story');
@@ -99,9 +133,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                     <span className="font-bold text-slate-900 tracking-tight">CitandoAndo</span>
                 </div>
                 <div className="flex items-center gap-2 md:gap-4">
-                    <button className="hidden md:flex p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
-                        <Trash2 size={20} />
-                    </button>
+
                     <a href="https://ko-fi.com/devdanipena" target="_blank" className="bg-[#8c25f4] text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold flex gap-2 shadow-lg shadow-purple-500/30 hover:bg-[#7c1be2] transition-colors">
                         <Coffee size={16} strokeWidth={2.5} />
                         <span className="hidden sm:inline">Invítame un café</span>
@@ -115,34 +147,65 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/50 rounded-full blur-3xl -z-10 animate-pulse delay-700"></div>
 
                 <div className={`relative h-full max-h-[65vh] ${format === 'story' ? 'aspect-[9/16]' : 'aspect-square'} shadow-2xl shadow-slate-400/20 mx-auto transition-all duration-500 ease-out hover:scale-[1.01]`}>
-                    <div ref={ref} className={`w-full h-full flex flex-col p-8 sm:p-10 ${selectedColor.bg} transition-colors duration-500 rounded-3xl`}>
-                        {showWatermark && (
-                            <div className={`text-center text-[10px] tracking-[0.3em] font-bold opacity-40 uppercase mb-auto ${selectedColor.text}`}>
-                                # CitandoAndo
-                            </div>
-                        )}
-                        <div className={`my-auto flex flex-col justify-center ${!showWatermark && 'pt-10'}`}>
-                            <p className={`text-2xl sm:text-3xl leading-relaxed italic ${selectedFont.class} font-medium ${selectedAlign.class} ${selectedColor.text}`} style={{ textWrap: 'balance' } as any}>
+                    <div ref={ref} className={`w-full h-full flex flex-col relative overflow-hidden p-8 sm:p-10 ${selectedStyle.bg} ${selectedStyle.text} transition-colors duration-500 rounded-3xl`}>
+
+                        {/* 1. Elemento Decorativo (Comillas) */}
+                        <div
+                            className="absolute top-20 left-8 opacity-20 pointer-events-none transition-colors duration-300"
+                            style={{ color: accentColor }}
+                        >
+                            <Quote size={format === 'story' ? 40 : 32} fill="currentColor" />
+                        </div>
+
+                        {/* 2. Contenido Central (Texto) */}
+                        <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 relative z-10 pt-12">
+                            <p
+                                className={`leading-[0.995] italic ${selectedFont.class} font-medium ${selectedAlign.class} ${selectedStyle.text}`}
+                                style={{
+                                    textWrap: 'balance',
+                                    fontSize: content.length > 200 ? '1.15rem' : '1.675rem' // Ajuste dinámico de tamaño
+                                } as any}
+                            >
                                 "{content}"
                             </p>
                         </div>
-                        <div className={`mt-auto pt-8 border-t ${selectedColor.name === 'Oscuro' ? 'border-zinc-700' : 'border-black/5'} text-center flex flex-col items-center gap-1`}>
-                            {showTitle && (
-                                <h3 className={`font-bold uppercase tracking-wider text-xs sm:text-sm ${selectedColor.text}`}>
-                                    {title}
-                                </h3>
+
+                        {/* 3. Metadatos (Autor y Título) */}
+                        <div className={`text-center relative z-10 ${format === 'story' ? 'pb-12' : 'pb-8'}`}>
+                            {/* Línea de acento */}
+                            {showWatermark && (
+                                <div
+                                    className="w-16 h-1 mx-auto mb-6 rounded-full transition-colors duration-300"
+                                    style={{ backgroundColor: accentColor }}
+                                ></div>
                             )}
+
                             {showAuthor && (
-                                <p className={`text-[10px] sm:text-xs opacity-60 ${selectedColor.text}`}>
+                                <p className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-1 ${selectedStyle.text}`}>
                                     {author}
                                 </p>
                             )}
-                            {showWatermark && (
-                                <p className={`mt-4 text-[7px] tracking-[0.2em] opacity-30 uppercase ${selectedColor.text}`}>
-                                    citando-ando.vercel.app
+
+                            {showTitle && (
+                                <p className={`text-[9px] opacity-60 font-medium ${selectedStyle.text}`}>
+                                    {title}
                                 </p>
                             )}
                         </div>
+
+                        {/* 4. Footer (@citandoando) */}
+                        {showWatermark && (
+                            <div className={`absolute bottom-6 left-0 w-full px-8 flex justify-between items-center opacity-40 text-[9px] ${selectedStyle.text}`}>
+                                <div className="flex items-center gap-1.5">
+                                    <div
+                                        className="size-3 rounded-full"
+                                        style={{ backgroundColor: accentColor }}
+                                    ></div>
+                                    <span>@citandoando</span>
+                                </div>
+                                <BookOpen size={12} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>
@@ -247,21 +310,41 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                     <div className="bg-white px-6 py-3 rounded-full shadow-xl shadow-slate-200/50 border border-slate-100 flex items-center gap-6 md:gap-8">
                         {/* Selector de Color */}
                         <div className="flex items-center gap-4 pr-6 border-r border-slate-100">
-
                             <div className="flex items-center gap-2">
-                                {COLORS.map((c) => (
-                                    <button
-                                        key={c.name}
-                                        onClick={() => setSelectedColor(c)}
-                                        className={`size-8 rounded-full border-2 transition-all duration-300 ${c.dot} ${selectedColor.name === c.name ? 'border-purple-500 scale-110 ring-2 ring-purple-100' : 'border-slate-100 hover:scale-105'}`}
-                                        title={c.name}
-                                    />
-                                ))}
+                                {STYLE_KEYS.map((key) => {
+                                    const s = STYLES[key];
+                                    return (
+                                        <button
+                                            key={key}
+                                            onClick={() => {
+                                                setSelectedStyle(s);
+                                            }}
+                                            className={`size-8 rounded-full border-2 transition-all duration-300 ${selectedStyle.name === s.name ? 'border-purple-500 scale-110 ring-2 ring-purple-100 ring-offset-2' : 'border-slate-100 hover:scale-105'}`}
+                                            title={s.name}
+                                            style={{ backgroundColor: s.accent }} // Preview dot uses accent color
+                                        />
+                                    );
+                                })}
                             </div>
                         </div>
 
                         {/* Herramientas Funcionales */}
                         <div className="flex items-center gap-6 text-slate-400">
+
+                            {/* Color Picker Button */}
+                            <label className="flex flex-col items-center gap-1.5 hover:text-slate-800 transition-colors group cursor-pointer">
+                                <div className="p-1 group-hover:bg-slate-50 rounded-lg transition-colors">
+                                    <Palette size={18} />
+                                </div>
+                                <span className="text-[9px] font-bold tracking-wider">DETALLES</span>
+                                <input
+                                    type="color"
+                                    value={accentColor}
+                                    onChange={(e) => setAccentColor(e.target.value)}
+                                    className="absolute opacity-0 w-0 h-0"
+                                />
+                            </label>
+
                             <button onClick={toggleFont} className="flex flex-col items-center gap-1.5 hover:text-slate-800 transition-colors group">
                                 <div className="p-1 group-hover:bg-slate-50 rounded-lg transition-colors"><Type size={18} /></div>
                                 <span className="text-[9px] font-bold tracking-wider">LETRA</span>
