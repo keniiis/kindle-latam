@@ -154,7 +154,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                 <section className="px-6 py-20" id="como-funciona">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Comparte en 3 simples pasos</h2>
-                        <p className="text-lg opacity-70">Olvídate de capturas de pantalla feas y texto plano.</p>
+                        <p className="text-lg text-slate-600">Olvídate de capturas de pantalla feas y texto plano.</p>
                     </div>
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
@@ -165,7 +165,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                             <div key={step.num} className="group bg-white p-8 rounded-2xl border border-primary/10 hover:border-primary/40 transition-all shadow-sm">
                                 <div className="size-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 font-black text-2xl group-hover:bg-primary group-hover:text-white transition-colors">{step.num}</div>
                                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                                <p className="opacity-70 leading-relaxed mb-6">{step.text}</p>
+                                <p className="text-slate-600 leading-relaxed mb-6">{step.text}</p>
                                 <div className="w-full h-32 bg-background-light rounded-xl flex items-center justify-center text-primary/20">
                                     <step.icon size={48} />
                                 </div>
@@ -179,7 +179,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                     <div className="max-w-[1200px] mx-auto">
                         <div className="mb-14">
                             <h2 className="text-4xl md:text-5xl font-black mb-4">Playground Interactivo</h2>
-                            <p className="text-lg opacity-60 md:w-1/2">
+                            <p className="text-lg text-slate-600 md:w-1/2">
                                 El estudio creativo donde tus lecturas cobran vida. Personaliza cada detalle y previsualiza en tiempo real.
                             </p>
                         </div>
@@ -412,7 +412,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-bold text-[#140d1c] mb-3">{feature.title}</h3>
-                                        <p className="text-slate-600 leading-relaxed font-medium text-base opacity-90">
+                                        <p className="text-slate-600 leading-relaxed font-medium text-base">
                                             {feature.desc}
                                         </p>
                                     </div>
