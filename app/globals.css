@@ -38,6 +38,12 @@
   }
 }
 
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
 .animate-in {
   animation-duration: 300ms;
   animation-fill-mode: forwards;
@@ -50,6 +56,10 @@
 
 .slide-in-from-bottom-4 {
   animation-name: enter;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
 .glass-card {

@@ -11,6 +11,51 @@ interface LandingPageProps {
 export default function LandingPage({ onStart, onManualEntry }: LandingPageProps) {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
+    // Playground States
+    const [previewStyle, setPreviewStyle] = useState('Vibrant Gradient');
+    const [previewColor, setPreviewColor] = useState('#8c25f4');
+    const [serifFont, setSerifFont] = useState(true);
+
+    const STYLES: any = {
+        'Minimalist': {
+            bg: 'bg-white',
+            text: 'text-slate-900',
+            accent: '#000000',
+            font: true // serif
+        },
+        'Vibrant Gradient': {
+            bg: 'bg-gradient-to-br from-[#8c25f4] to-[#6d28d9]',
+            text: 'text-white',
+            accent: '#8c25f4',
+            font: true
+        },
+        'Dark Mode': {
+            bg: 'bg-slate-900',
+            text: 'text-white',
+            accent: '#3b82f6',
+            font: false // sans
+        },
+        'Classic Paper': {
+            bg: 'bg-[#fcf6e9]',
+            text: 'text-[#431407]',
+            accent: '#92400e',
+            font: true
+        },
+        'Neon Nights': {
+            bg: 'bg-black',
+            text: 'text-cyan-400',
+            accent: '#22d3ee',
+            font: false
+        }
+    };
+
+    const handleStyleChange = (styleName: string) => {
+        setPreviewStyle(styleName);
+        const style = STYLES[styleName];
+        setPreviewColor(style.accent);
+        setSerifFont(style.font);
+    };
+
     useEffect(() => {
         const handler = (e: any) => {
             e.preventDefault();
@@ -194,47 +239,43 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                             {
                                                 name: 'Minimalist',
                                                 desc: 'Elegancia pura en blanco y negro.',
-                                                icon: <div className="size-6 border-2 border-slate-800 bg-white"></div>,
-                                                active: false
+                                                icon: <div className="size-6 border-2 border-slate-800 bg-white"></div>
                                             },
                                             {
                                                 name: 'Vibrant Gradient',
                                                 desc: 'Colores fluidos para redes modernas.',
-                                                icon: <div className="size-6 rounded bg-gradient-to-br from-purple-400 to-indigo-600"></div>,
-                                                active: true
+                                                icon: <div className="size-6 rounded bg-gradient-to-br from-purple-400 to-indigo-600"></div>
                                             },
                                             {
                                                 name: 'Dark Mode',
                                                 desc: 'Estilo nocturno sofisticado.',
-                                                icon: <div className="size-6 rounded bg-slate-900 border border-slate-700"></div>,
-                                                active: false
+                                                icon: <div className="size-6 rounded bg-slate-900 border border-slate-700"></div>
                                             },
                                             {
                                                 name: 'Classic Paper',
                                                 desc: 'Textura de libro antiguo.',
-                                                icon: <div className="size-6 rounded bg-[#f5e6d3] border border-[#d4c5b0]"></div>,
-                                                active: false
+                                                icon: <div className="size-6 rounded bg-[#f5e6d3] border border-[#d4c5b0]"></div>
                                             },
                                             {
                                                 name: 'Neon Nights',
                                                 desc: 'Contraste cyberpunk de alta tecnología.',
-                                                icon: <div className="size-6 rounded bg-black border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>,
-                                                active: false
+                                                icon: <div className="size-6 rounded bg-black border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"></div>
                                             }
                                         ].map((style) => (
                                             <div
                                                 key={style.name}
+                                                onClick={() => handleStyleChange(style.name)}
                                                 className={`
                                                   group p-4 rounded-2xl cursor-pointer transition-all duration-300 flex items-center gap-5 border-2
-                                                  ${style.active ? 'bg-white border-primary shadow-xl shadow-primary/10 scale-[1.02]' : 'bg-white border-transparent hover:border-slate-100 hover:shadow-lg'}
+                                                  ${previewStyle === style.name ? 'bg-white border-primary shadow-xl shadow-primary/10 scale-[1.02]' : 'bg-white border-transparent hover:border-slate-100 hover:shadow-lg'}
                                                 `}
                                             >
                                                 <div className="shrink-0">{style.icon}</div>
                                                 <div className="flex-1">
-                                                    <h4 className={`font-bold text-base ${style.active ? 'text-primary' : 'text-slate-800'}`}>{style.name}</h4>
+                                                    <h4 className={`font-bold text-base ${previewStyle === style.name ? 'text-primary' : 'text-slate-800'}`}>{style.name}</h4>
                                                     <p className="text-xs text-slate-600 font-medium mt-0.5">{style.desc}</p>
                                                 </div>
-                                                {style.active && (
+                                                {previewStyle === style.name && (
                                                     <div className="bg-primary text-white rounded-full p-1 shadow-md animate-in fade-in zoom-in">
                                                         <CheckCircle2 size={14} strokeWidth={3} />
                                                     </div>
@@ -251,13 +292,17 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                     <div className="space-y-6">
                                         <div>
                                             <label className="text-xs font-bold text-slate-600 mb-3 block">Acento de Color</label>
-                                            <div className="flex gap-3">
-                                                {['#8c25f4', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'].map((color) => (
-                                                    <div key={color} className="size-8 rounded-full cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: color }}></div>
+                                            <div className="flex gap-3 flex-wrap">
+                                                {['#ffffff', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#000000'].map((color) => (
+                                                    <div
+                                                        key={color}
+                                                        onClick={() => setPreviewColor(color)}
+                                                        className={`size-8 rounded-full cursor-pointer hover:scale-110 transition-all shadow-sm flex items-center justify-center ring-2 ring-offset-2 border border-slate-200 ${previewColor === color ? 'ring-slate-900 scale-110' : 'ring-transparent'}`}
+                                                        style={{ backgroundColor: color }}
+                                                    >
+                                                        {previewColor === color && <CheckCircle2 size={14} className="text-white drop-shadow-md" />}
+                                                    </div>
                                                 ))}
-                                                <button className="size-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
-                                                    <span className="text-xs">+</span>
-                                                </button>
                                             </div>
                                         </div>
 
@@ -266,8 +311,11 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                                 <div className="font-serif text-lg italic font-bold">Tt</div>
                                                 <span className="text-sm font-bold text-slate-700">Fuente Serif</span>
                                             </div>
-                                            <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-pointer">
-                                                <div className="absolute left-1 top-1 bg-white size-4 rounded-full shadow-sm"></div>
+                                            <div
+                                                onClick={() => setSerifFont(!serifFont)}
+                                                className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors duration-300 ${serifFont ? 'bg-primary' : 'bg-slate-200'}`}
+                                            >
+                                                <div className={`absolute top-1 bg-white size-4 rounded-full shadow-sm transition-all duration-300 ${serifFont ? 'left-7' : 'left-1'}`}></div>
                                             </div>
                                         </div>
                                     </div>
@@ -284,7 +332,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                     <div className="absolute top-0 inset-x-0 h-7 bg-[#1a1a1a] z-50 rounded-b-2xl w-40 mx-auto"></div>
 
                                     {/* CONTENIDO PANTALLA */}
-                                    <div className="w-full h-full bg-gradient-to-br from-[#8c25f4] to-[#6d28d9] flex flex-col relative text-white">
+                                    <div className={`w-full h-full flex flex-col relative transition-all duration-500 ${STYLES[previewStyle].bg} ${STYLES[previewStyle].text}`}>
 
                                         {/* Elementos decorativos en pantalla */}
                                         <div className="absolute top-20 left-10 opacity-20">
@@ -292,13 +340,13 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                         </div>
 
                                         <div className="flex-1 flex flex-col justify-center px-10 relative z-10">
-                                            <p className="font-serif italic text-2xl md:text-3xl leading-relaxed font-medium drop-shadow-sm">
+                                            <p className={`text-2xl md:text-3xl leading-relaxed font-medium drop-shadow-sm transition-all duration-300 ${serifFont ? 'font-serif italic' : 'font-sans'}`}>
                                                 "La lectura de todos los buenos libros es como una conversación con las mejores mentes de los siglos pasados."
                                             </p>
                                         </div>
 
                                         <div className="pb-16 px-10 text-center relative z-10">
-                                            <div className="w-10 h-0.5 bg-white/30 mx-auto mb-6"></div>
+                                            <div className="w-16 h-1 mx-auto mb-6 rounded-full transition-colors duration-300" style={{ backgroundColor: previewColor }}></div>
                                             <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1">René Descartes</p>
                                             <p className="text-[9px] opacity-60 font-medium">Discurso del método</p>
                                         </div>
@@ -306,7 +354,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                         {/* Footer de la app en pantalla */}
                                         <div className="absolute bottom-6 w-full px-6 flex justify-between items-center opacity-40 text-[9px]">
                                             <div className="flex items-center gap-1.5">
-                                                <div className="size-2 bg-white rounded-full"></div>
+                                                <div className="size-3 rounded-full" style={{ backgroundColor: previewColor }}></div>
                                                 <span>@citandoando</span>
                                             </div>
                                             <BookOpen size={12} />
@@ -316,7 +364,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                 </div>
 
                                 {/* Tooltip Flotante "Vista Previa" */}
-                                <div className="absolute top-[30%] -right-4 lg:-right-12 bg-white p-3 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-3 animate-in fade-in slide-in-from-left-4 delay-700 duration-700">
+                                <div className="absolute top-[65%] -right-2 lg:-right-16 z-20 bg-white p-3 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-3 animate-in fade-in slide-in-from-left-4 delay-700 duration-700 animate-float">
                                     <div className="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-primary">
                                         <Smartphone size={20} />
                                     </div>
