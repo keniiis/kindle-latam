@@ -117,7 +117,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                 </div>
 
                                 {/* Main Title */}
-                                <h3 className="text-3xl font-black text-[#0f0a16] mb-3 tracking-tight">Sube tu archivo</h3>
+                                <h2 className="text-3xl font-black text-[#0f0a16] mb-3 tracking-tight">Sube tu archivo</h2>
 
                                 {/* Subtitle with Code Style */}
                                 <p className="text-slate-600 font-medium mb-8 max-w-[260px] leading-relaxed text-sm">
@@ -128,7 +128,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                 <div className="flex items-center justify-center gap-3 mb-10">
                                     {['KINDLE', 'KOBO', 'POCKET'].map((tag, i) => (
                                         <div key={tag} className="flex items-center gap-3">
-                                            <span className="text-[10px] font-bold tracking-[0.15em] text-slate-500/80 uppercase hover:text-purple-500 transition-colors">{tag}</span>
+                                            <span className="text-[10px] font-bold tracking-[0.15em] text-slate-600/80 uppercase hover:text-purple-500 transition-colors">{tag}</span>
                                             {i < 2 && <div className="size-1 rounded-full bg-purple-200"></div>}
                                         </div>
                                     ))}
@@ -136,7 +136,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                                 {/* Manual Entry Button Section */}
                                 <div className="mt-2 space-y-3 w-full">
-                                    <p className="text-xs font-bold text-slate-500">¿No tienes archivo?</p>
+                                    <p className="text-xs font-bold text-slate-600">¿No tienes archivo?</p>
                                     <button
                                         onClick={(e) => { e.stopPropagation(); onManualEntry(); }}
                                         className="w-full flex items-center justify-center gap-2 border border-purple-200 hover:border-purple-300 bg-purple-50/50 hover:bg-purple-50 text-purple-600 px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-0.5"
@@ -232,7 +232,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                                 <div className="shrink-0">{style.icon}</div>
                                                 <div className="flex-1">
                                                     <h4 className={`font-bold text-base ${style.active ? 'text-primary' : 'text-slate-800'}`}>{style.name}</h4>
-                                                    <p className="text-xs text-slate-500 font-medium mt-0.5">{style.desc}</p>
+                                                    <p className="text-xs text-slate-600 font-medium mt-0.5">{style.desc}</p>
                                                 </div>
                                                 {style.active && (
                                                     <div className="bg-primary text-white rounded-full p-1 shadow-md animate-in fade-in zoom-in">
@@ -250,12 +250,12 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                                     <div className="space-y-6">
                                         <div>
-                                            <label className="text-xs font-bold text-slate-500 mb-3 block">Acento de Color</label>
+                                            <label className="text-xs font-bold text-slate-600 mb-3 block">Acento de Color</label>
                                             <div className="flex gap-3">
                                                 {['#8c25f4', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'].map((color) => (
                                                     <div key={color} className="size-8 rounded-full cursor-pointer hover:scale-110 transition-transform shadow-sm" style={{ backgroundColor: color }}></div>
                                                 ))}
-                                                <button className="size-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                                                <button className="size-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
                                                     <span className="text-xs">+</span>
                                                 </button>
                                             </div>
@@ -321,7 +321,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                         <Smartphone size={20} />
                                     </div>
                                     <div className="pr-2">
-                                        <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Vista Previa</p>
+                                        <p className="text-[9px] font-bold text-slate-600 uppercase tracking-wider">Vista Previa</p>
                                         <p className="text-xs font-bold text-slate-800">1080 x 1920 (9:16)</p>
                                     </div>
                                 </div>
@@ -465,7 +465,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                         {/* Still have questions? */}
                         <div className="text-center border-t border-slate-100 pt-16">
-                            <p className="text-slate-500 font-bold mb-6">¿Aún tienes dudas?</p>
+                            <p className="text-slate-600 font-bold mb-6">¿Aún tienes dudas?</p>
                             <div className="flex justify-center gap-8">
                                 {/* <a href="mailto:hola@citandoando.com" className="flex items-center gap-2 text-[#8c25f4] font-bold hover:text-purple-700 transition-colors">
                                     <Mail size={18} />
