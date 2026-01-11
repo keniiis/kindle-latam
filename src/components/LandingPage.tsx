@@ -1,6 +1,7 @@
 'use client';
 
-import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Twitter, Pencil } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Twitter, Pencil, Download } from 'lucide-react';
 
 interface LandingPageProps {
     onStart: () => void;
@@ -8,6 +9,30 @@ interface LandingPageProps {
 }
 
 export default function LandingPage({ onStart, onManualEntry }: LandingPageProps) {
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+    useEffect(() => {
+        const handler = (e: any) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+
+    const handleInstallClick = async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                setDeferredPrompt(null);
+            }
+        } else {
+            // Si no se puede instalar (o ya está instalada/es iOS), ejecutamos la acción por defecto
+            onStart();
+        }
+    };
+
     return (
         <div className="bg-background-light font-display text-[#140d1c] transition-colors duration-300">
 
@@ -24,8 +49,12 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#como-funciona">Cómo funciona</a>
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">Beneficios</a>
                     </nav>
-                    <button onClick={onStart} className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20">
-                        Empezar ahora
+                    <button
+                        onClick={handleInstallClick}
+                        className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                    >
+                        {deferredPrompt ? <Download size={18} /> : null}
+                        {deferredPrompt ? 'Instalar App' : 'Abrir App'}
                     </button>
                 </div>
             </header>
