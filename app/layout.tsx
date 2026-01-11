@@ -53,6 +53,9 @@ export const metadata: Metadata = {
     apple: '/icon',
   },
   manifest: '/manifest.json',
+  verification: {
+    google: "QXZblOlOyRPQN1NNk49XkmgYepZASrS4jLIgwT8QDXA",
+  },
 };
 
 export default function RootLayout({
