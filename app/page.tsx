@@ -99,10 +99,10 @@ export default function Page() {
          esté presente en el HTML inicial, independientemente de la carga de la app.
       */}
             <footer className="mt-auto py-6 border-t border-slate-200 text-center bg-slate-50">
-                <p className="text-slate-400 text-xs mb-2">
+                <p className="text-slate-600 text-xs mb-2">
                     Hecho con <span className="text-red-400">❤</span> en Chiloé por <a href="https://ko-fi.com/devdanipena" target="_blank" className="hover:text-indigo-600 underline font-medium">Danidev</a>
                 </p>
-                <div className="flex justify-center gap-4 text-[10px] text-slate-300 uppercase tracking-widest font-bold">
+                <div className="flex justify-center gap-4 text-[10px] text-slate-500 uppercase tracking-widest font-bold">
                     <span>Kindle Parser</span> • <span>Next.js PWA</span> • <span>Open Source</span>
                 </div>
             </footer>
