@@ -48,10 +48,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  icons: {
-    icon: '/icon',
-    apple: '/icon',
-  },
+
   manifest: '/manifest.json',
   verification: {
     google: "QXZblOlOyRPQN1NNk49XkmgYepZASrS4jLIgwT8QDXA",
