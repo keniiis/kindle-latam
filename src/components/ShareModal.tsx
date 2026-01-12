@@ -23,6 +23,7 @@ const STYLES: Record<string, any> = {
         bg: 'bg-white',
         text: 'text-slate-900',
         accent: '#000000',
+        preview: '#ffffff',
         font: 'font-serif'
     },
     'Vibrant Gradient': {
@@ -30,6 +31,7 @@ const STYLES: Record<string, any> = {
         bg: 'bg-gradient-to-br from-[#8c25f4] to-[#6d28d9]',
         text: 'text-white',
         accent: '#ffffff',
+        preview: '#8c25f4',
         font: 'font-serif'
     },
     'Dark Mode': {
@@ -37,6 +39,7 @@ const STYLES: Record<string, any> = {
         bg: 'bg-slate-900',
         text: 'text-white',
         accent: '#3b82f6',
+        preview: '#0f172a',
         font: 'font-sans'
     },
     'Classic Paper': {
@@ -44,6 +47,7 @@ const STYLES: Record<string, any> = {
         bg: 'bg-[#fcf6e9]',
         text: 'text-[#431407]',
         accent: '#92400e',
+        preview: '#fcf6e9',
         font: 'font-serif'
     },
     'Neon Nights': {
@@ -51,6 +55,7 @@ const STYLES: Record<string, any> = {
         bg: 'bg-black',
         text: 'text-cyan-400',
         accent: '#22d3ee',
+        preview: '#22d3ee',
         font: 'font-mono'
     }
 };
@@ -78,6 +83,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
 
     // Opciones del Modal
     const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+    const [isBackgroundMenuOpen, setIsBackgroundMenuOpen] = useState(false);
     const [format, setFormat] = useState<'story' | 'post'>('story');
     const [showAuthor, setShowAuthor] = useState(true);
     const [showWatermark, setShowWatermark] = useState(true);
@@ -142,7 +148,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
             </header>
 
             {/* 2. MAIN CANVAS AREA */}
-            <main className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
+            <main className="flex-1 flex items-center justify-center p-4 pb-40 md:p-8 overflow-hidden relative">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-200/50 rounded-full blur-3xl -z-10 animate-pulse"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/50 rounded-full blur-3xl -z-10 animate-pulse delay-700"></div>
 
@@ -304,10 +310,43 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                 </div>
             )}
 
+            {/* MODAL DE FONDO (Nuevo) */}
+            {isBackgroundMenuOpen && (
+                <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                            <h3 className="font-bold text-lg text-slate-800">Estilo de Fondo</h3>
+                            <button onClick={() => setIsBackgroundMenuOpen(false)} className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-6 grid grid-cols-3 gap-4">
+                            {STYLE_KEYS.map((key) => {
+                                const s = STYLES[key];
+                                return (
+                                    <button
+                                        key={key}
+                                        onClick={() => { setSelectedStyle(s); setIsBackgroundMenuOpen(false); }}
+                                        className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${selectedStyle.name === s.name ? 'border-purple-500 bg-purple-50' : 'border-slate-100 hover:border-purple-200'}`}
+                                    >
+                                        <div
+                                            className="size-12 rounded-full shadow-sm border border-black/5"
+                                            style={{ backgroundColor: s.preview }}
+                                        />
+                                        <span className="text-xs font-bold text-slate-600 text-center leading-tight">{s.name}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* 4. BOTTOM FLOATING BAR */}
-            <footer className="p-6 pb-8 md:pb-10 flex justify-center sticky bottom-0 z-20 pointer-events-none">
-                <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 pointer-events-auto animate-in slide-in-from-bottom-10 duration-500">
-                    <div className="bg-white px-6 py-3 rounded-full shadow-xl shadow-slate-200/50 border border-slate-100 flex items-center gap-6 md:gap-8">
+            {/* 4. DESKTOP FOOTER (Pill Design) */}
+            <footer className="hidden md:flex p-10 justify-center sticky bottom-0 z-20 pointer-events-none">
+                <div className="flex items-center gap-6 pointer-events-auto animate-in slide-in-from-bottom-10 duration-500">
+                    <div className="bg-white px-6 py-3 rounded-full shadow-xl shadow-slate-200/50 border border-slate-100 flex items-center gap-8">
                         {/* Selector de Color */}
                         <div className="flex items-center gap-4 pr-6 border-r border-slate-100">
                             <div className="flex items-center gap-2">
@@ -321,7 +360,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                                             }}
                                             className={`size-8 rounded-full border-2 transition-all duration-300 ${selectedStyle.name === s.name ? 'border-purple-500 scale-110 ring-2 ring-purple-100 ring-offset-2' : 'border-slate-100 hover:scale-105'}`}
                                             title={s.name}
-                                            style={{ backgroundColor: s.accent }} // Preview dot uses accent color
+                                            style={{ backgroundColor: s.preview }}
                                         />
                                     );
                                 })}
@@ -330,8 +369,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
 
                         {/* Herramientas Funcionales */}
                         <div className="flex items-center gap-6 text-slate-400">
-
-                            {/* Color Picker Button */}
+                            {/* Color Picker */}
                             <label className="flex flex-col items-center gap-1.5 hover:text-slate-800 transition-colors group cursor-pointer">
                                 <div className="p-1 group-hover:bg-slate-50 rounded-lg transition-colors">
                                     <Palette size={18} />
@@ -353,7 +391,6 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                                 <div className="p-1 group-hover:bg-slate-50 rounded-lg transition-colors"><LayoutGrid size={18} /></div>
                                 <span className="text-[9px] font-bold tracking-wider">DISEÑO</span>
                             </button>
-                            {/* Opciones Avanzadas */}
                             <button onClick={() => setIsOptionsOpen(true)} className="p-2 hover:bg-slate-50 rounded-full text-slate-300 hover:text-slate-600 transition-colors">
                                 <MoreVertical size={18} />
                             </button>
@@ -363,6 +400,57 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                     <button onClick={handleDownload} disabled={isGenerating} className="bg-[#8c25f4] text-white h-[58px] px-8 rounded-full font-bold text-sm shadow-xl shadow-purple-500/30 hover:bg-[#7c1be2] hover:scale-105 hover:shadow-purple-500/40 transition-all flex items-center gap-3 whitespace-nowrap">
                         {isGenerating ? <Loader2 size={20} className="animate-spin" /> : <Download size={20} className="stroke-2" />}
                         <span className="tracking-wide">Descargar Story</span>
+                    </button>
+                </div>
+            </footer>
+
+            {/* 5. MOBILE FOOTER (Bottom Bar Design) */}
+            <footer className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none">
+                {/* Botón Flotante */}
+                <div className="flex justify-center pb-6 pointer-events-auto animate-in slide-in-from-bottom-10 duration-500">
+                    <button
+                        onClick={handleDownload}
+                        disabled={isGenerating}
+                        className="bg-[#8c25f4] text-white px-8 py-3 rounded-full font-bold text-sm shadow-xl shadow-purple-500/30 hover:bg-[#7c1be2] active:scale-95 transition-all flex items-center gap-2"
+                    >
+                        {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} className="stroke-2" />}
+                        <span>Descargar Story</span>
+                    </button>
+                </div>
+
+                {/* Barra Blanca Inferior con Diseño Unificado */}
+                <div className="bg-white border-t border-slate-100 px-6 py-4 flex items-center pointer-events-auto pb-6 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] justify-around w-full">
+
+                    {/* Botón FONDO (Abre menú) */}
+                    <button onClick={() => setIsBackgroundMenuOpen(true)} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors">
+                        <div className="p-1 text-slate-600"><Square size={20} /></div>
+                        <span className="text-[9px] font-bold tracking-wider">FONDO</span>
+                    </button>
+
+                    <label className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors cursor-pointer">
+                        <div className="p-1 text-slate-600"><Palette size={20} /></div>
+                        <span className="text-[9px] font-bold tracking-wider">DETALLES</span>
+                        <input
+                            type="color"
+                            value={accentColor}
+                            onChange={(e) => setAccentColor(e.target.value)}
+                            className="absolute opacity-0 w-0 h-0"
+                        />
+                    </label>
+
+                    <button onClick={toggleFont} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors">
+                        <div className="p-1 text-slate-600"><Type size={20} /></div>
+                        <span className="text-[9px] font-bold tracking-wider">LETRA</span>
+                    </button>
+
+                    <button onClick={toggleAlign} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors">
+                        <div className="p-1 text-slate-600"><LayoutGrid size={20} /></div>
+                        <span className="text-[9px] font-bold tracking-wider">DISEÑO</span>
+                    </button>
+
+                    <button onClick={() => setIsOptionsOpen(true)} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors">
+                        <div className="p-1 text-slate-600"><MoreVertical size={20} /></div>
+                        <span className="text-[9px] font-bold tracking-wider">MAS</span>
                     </button>
                 </div>
             </footer>

@@ -443,8 +443,8 @@ export default function KindleApp() {
         return (
             <div className="min-h-screen bg-background-light font-display text-[#140d1c]">
                 {/* Header App */}
-                <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 lg:px-12 py-4">
-                    <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+                <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 lg:px-20 py-4">
+                    <div className="max-w-[1200px] mx-auto flex items-center justify-between">
                         <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleSetSelectedBook(null)}>
                             <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
                                 <BookOpen size={22} strokeWidth={2.5} />

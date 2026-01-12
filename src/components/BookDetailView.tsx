@@ -296,18 +296,18 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                                             "{clip.content}"
                                         </p>
 
-                                        <div className="flex flex-wrap items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="flex flex-wrap items-center gap-2 md:gap-3 opacity-100 md:opacity-60 md:group-hover:opacity-100 transition-opacity duration-300">
                                             <button
                                                 onClick={() => { navigator.clipboard.writeText(clip.content); alert('Copiado!') }}
-                                                className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
+                                                className="flex items-center gap-1.5 px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors flex-1 md:flex-none justify-center"
                                             >
-                                                <Copy size={14} /> Copiar Texto
+                                                <Copy size={14} /> Copiar
                                             </button>
 
                                             {onUpdateClip && (
                                                 <button
                                                     onClick={() => startEditingClip(clip)}
-                                                    className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors flex-1 md:flex-none justify-center"
                                                 >
                                                     <Edit2 size={14} /> Editar
                                                 </button>
@@ -315,9 +315,9 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
                                             <button
                                                 onClick={() => onShare(clip)}
-                                                className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
+                                                className="flex items-center gap-1.5 px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors flex-1 md:flex-none justify-center"
                                             >
-                                                <Share2 size={14} /> Crear Story
+                                                <Share2 size={14} /> Story
                                             </button>
                                         </div>
                                     </>
