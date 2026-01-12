@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { UploadCloud, Trash2, MoreVertical, Twitter, Plus, Clock, ArrowDownAZ, Tag, ChevronDown, Check, X } from 'lucide-react';
+import { UploadCloud, Trash2, MoreVertical, Twitter, Plus, Clock, ArrowDownAZ, Tag, ChevronDown, Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import BookCard from '@/components/BookCard';
 
 export type SortOption = 'recent' | 'title';
@@ -93,6 +93,40 @@ export default function LibraryView({
                 return result;
         }
     }, [library, sortBy, selectedGenre]);
+
+    // PAGINACIÓN
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(15); // Default mobile
+
+    // Ajustar items por página según ancho de pantalla
+    useEffect(() => {
+        const handleResize = () => {
+            // "30 libros en desktop (>768px), 15 en movil"
+            if (window.innerWidth >= 768) {
+                setItemsPerPage(30);
+            } else {
+                setItemsPerPage(15);
+            }
+        };
+
+        // Ejecutar al inicio
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Resetear a página 1 si cambian filtros o items por página
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [itemsPerPage, selectedGenre, library]);
+
+    const totalPages = Math.ceil(processedLibrary.length / itemsPerPage);
+
+    const paginatedLibrary = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return processedLibrary.slice(start, start + itemsPerPage);
+    }, [processedLibrary, currentPage, itemsPerPage]);
 
     return (
         <>
@@ -244,7 +278,7 @@ export default function LibraryView({
 
                 {/* GRID DE LIBROS */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-12">
-                    {processedLibrary.map((book) => (
+                    {paginatedLibrary.map((book) => (
                         <BookCard
                             key={(book.title + book.author).replace(/\s+/g, '-')}
                             book={book}
@@ -282,6 +316,31 @@ export default function LibraryView({
                         </div>
                     )}
                 </div>
+
+                {/* PAGINATION CONTROLS */}
+                {totalPages > 1 && (
+                    <div className="mt-16 flex items-center justify-center gap-4">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="p-3 bg-white border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white transition-colors text-slate-600"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+
+                        <span className="text-sm font-bold text-slate-600">
+                            Página {currentPage} de {totalPages}
+                        </span>
+
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="p-3 bg-white border border-slate-200 rounded-full hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white transition-colors text-slate-600"
+                        >
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+                )}
 
                 {/* FOOTER COPYRIGHT */}
                 <div className="mt-24 text-center border-t border-slate-100 pt-8 pb-8">

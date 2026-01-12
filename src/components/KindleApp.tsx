@@ -16,6 +16,7 @@ const STORAGE_BOOK_KEY = 'kindle-latam-selected-book'; // Persistencia del libro
 
 import ManualEntryModal from '@/components/ManualEntryModal';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { ToastProvider } from '@/components/Toast';
 
 export default function KindleApp() {
     const [rawClippings, setRawClippings] = useState<Clipping[]>([]);
@@ -441,93 +442,95 @@ export default function KindleApp() {
 
     if (rawClippings.length > 0) {
         return (
-            <div className="min-h-screen bg-background-light font-display text-[#140d1c]">
-                {/* Header App */}
-                <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 lg:px-20 py-4">
-                    <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleSetSelectedBook(null)}>
-                            <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
-                                <BookOpen size={22} strokeWidth={2.5} />
+            <ToastProvider>
+                <div className="min-h-screen bg-background-light font-display text-[#140d1c]">
+                    {/* Header App */}
+                    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 lg:px-20 py-4">
+                        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+                            <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleSetSelectedBook(null)}>
+                                <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
+                                    <BookOpen size={22} strokeWidth={2.5} />
+                                </div>
+                                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">CitandoAndo</h2>
                             </div>
-                            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">CitandoAndo</h2>
+                            <div className="flex items-center gap-4">
+                                <a
+                                    href="https://ko-fi.com/devdanipena"
+                                    target="_blank"
+                                    className="hidden sm:flex bg-gradient-to-r from-primary to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all items-center gap-2"
+                                >
+                                    <Coffee size={18} strokeWidth={2.5} />
+                                    <span>Invítame un café</span>
+                                </a>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <a
-                                href="https://ko-fi.com/devdanipena"
-                                target="_blank"
-                                className="hidden sm:flex bg-gradient-to-r from-primary to-purple-600 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all items-center gap-2"
-                            >
-                                <Coffee size={18} strokeWidth={2.5} />
-                                <span>Invítame un café</span>
-                            </a>
-                        </div>
-                    </div>
-                </header>
+                    </header>
 
-                <main className="max-w-[1200px] mx-auto px-6 lg:px-20 py-10">
-                    {!selectedBook ? (
-                        <LibraryView
-                            library={library}
-                            onSelectBook={handleSetSelectedBook}
-                            onImport={triggerFileUpload}
-                            onManualEntry={() => {
-                                setManualEntryData(null);
-                                setShowManualModal(true);
-                            }}
-                            selectedBooks={selectedBookIds}
-                            onToggleBook={handleToggleBook}
-                            onDeleteSelected={handleDeleteSelected}
-                            onCancelSelection={() => {
-                                setSelectedBookIds(new Set());
-                                setIsSelectionMode(false);
-                            }}
-                            onDeleteAll={handleClearData}
-                            isSelectionMode={isSelectionMode}
-                            onToggleSelectionMode={setIsSelectionMode}
+                    <main className="max-w-[1200px] mx-auto px-6 lg:px-20 py-10">
+                        {!selectedBook ? (
+                            <LibraryView
+                                library={library}
+                                onSelectBook={handleSetSelectedBook}
+                                onImport={triggerFileUpload}
+                                onManualEntry={() => {
+                                    setManualEntryData(null);
+                                    setShowManualModal(true);
+                                }}
+                                selectedBooks={selectedBookIds}
+                                onToggleBook={handleToggleBook}
+                                onDeleteSelected={handleDeleteSelected}
+                                onCancelSelection={() => {
+                                    setSelectedBookIds(new Set());
+                                    setIsSelectionMode(false);
+                                }}
+                                onDeleteAll={handleClearData}
+                                isSelectionMode={isSelectionMode}
+                                onToggleSelectionMode={setIsSelectionMode}
 
-                            // Lifted Props
-                            selectedGenre={selectedGenre}
-                            onSelectGenre={setSelectedGenre}
-                            sortBy={sortBy}
-                            onSortChange={setSortBy}
-                            activeTransitionTitle={transitioningTitle}
-                            activeTransitionCoverUrl={transitioningCoverUrl}
-                        />
-                    ) : (
-                        <BookDetailView
-                            book={selectedBook}
-                            initialCoverUrl={selectedBookCover || undefined}
-                            onBack={() => handleSetSelectedBook(null)}
-                            onShare={setClipToShare}
-                            onUpdateBook={handleUpdateBook}
-                            onAddHighlight={() => handleAddHighlight(selectedBook.title, selectedBook.author)}
-                            onUpdateClip={handleUpdateClip}
-                            onUpdateCover={setSelectedBookCover}
+                                // Lifted Props
+                                selectedGenre={selectedGenre}
+                                onSelectGenre={setSelectedGenre}
+                                sortBy={sortBy}
+                                onSortChange={setSortBy}
+                                activeTransitionTitle={transitioningTitle}
+                                activeTransitionCoverUrl={transitioningCoverUrl}
+                            />
+                        ) : (
+                            <BookDetailView
+                                book={selectedBook}
+                                initialCoverUrl={selectedBookCover || undefined}
+                                onBack={() => handleSetSelectedBook(null)}
+                                onShare={setClipToShare}
+                                onUpdateBook={handleUpdateBook}
+                                onAddHighlight={() => handleAddHighlight(selectedBook.title, selectedBook.author)}
+                                onUpdateClip={handleUpdateClip}
+                                onUpdateCover={setSelectedBookCover}
+                            />
+                        )}
+                    </main>
+
+                    <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+                    {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
+                    {showManualModal && (
+                        <ManualEntryModal
+                            onClose={() => setShowManualModal(false)}
+                            onSave={handleManualSave}
+                            initialTitle={manualEntryData?.title}
+                            initialAuthor={manualEntryData?.author}
                         />
                     )}
-                </main>
 
-                <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
-                {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
-                {showManualModal && (
-                    <ManualEntryModal
-                        onClose={() => setShowManualModal(false)}
-                        onSave={handleManualSave}
-                        initialTitle={manualEntryData?.title}
-                        initialAuthor={manualEntryData?.author}
+                    <ConfirmationModal
+                        isOpen={confirmation.isOpen}
+                        onClose={() => setConfirmation(prev => ({ ...prev, isOpen: false }))}
+                        onConfirm={confirmation.onConfirm}
+                        title={confirmation.title}
+                        description={confirmation.description}
+                        isDanger={confirmation.isDanger}
+                        confirmText={confirmation.confirmText}
                     />
-                )}
-
-                <ConfirmationModal
-                    isOpen={confirmation.isOpen}
-                    onClose={() => setConfirmation(prev => ({ ...prev, isOpen: false }))}
-                    onConfirm={confirmation.onConfirm}
-                    title={confirmation.title}
-                    description={confirmation.description}
-                    isDanger={confirmation.isDanger}
-                    confirmText={confirmation.confirmText}
-                />
-            </div>
+                </div>
+            </ToastProvider>
         );
     }
 
@@ -536,7 +539,7 @@ export default function KindleApp() {
 
     // --- VISTA: LANDING PAGE (Si no hay datos) ---
     return (
-        <>
+        <ToastProvider>
             <LandingPage
                 onStart={triggerFileUpload}
                 onManualEntry={() => {
@@ -553,6 +556,6 @@ export default function KindleApp() {
                     initialAuthor={manualEntryData?.author}
                 />
             )}
-        </>
+        </ToastProvider>
     );
 }

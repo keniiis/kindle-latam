@@ -19,6 +19,7 @@ interface BookDetailViewProps {
 }
 
 import { useBookCover } from '@/hooks/useBookCover';
+import { useToast } from '@/components/Toast';
 
 export default function BookDetailView({ book, onBack, onShare, onUpdateBook, onAddHighlight, onUpdateClip, initialCoverUrl, onUpdateCover }: BookDetailViewProps) {
     const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +30,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
     const [editingClipId, setEditingClipId] = useState<string | null>(null);
     const [editingContent, setEditingContent] = useState('');
 
+    const { showToast } = useToast();
     const fetchedCoverUrl = useBookCover(book.title, book.author, 0); // 0 delay for instant fetch
     const coverUrl = initialCoverUrl || fetchedCoverUrl;
 
@@ -74,7 +76,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
         } catch (error) {
             console.error("Error exporting PDF:", error);
-            alert("Hubo un error al generar el PDF. Intenta nuevamente.");
+            showToast("Hubo un error al generar el PDF. Intenta nuevamente.", "error");
         } finally {
             setIsExporting(false);
         }
@@ -298,7 +300,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
                                         <div className="flex flex-wrap items-center gap-2 md:gap-3 opacity-100 md:opacity-60 md:group-hover:opacity-100 transition-opacity duration-300">
                                             <button
-                                                onClick={() => { navigator.clipboard.writeText(clip.content); alert('Copiado!') }}
+                                                onClick={() => { navigator.clipboard.writeText(clip.content); showToast('¡Copiado al portapapeles!', 'success') }}
                                                 className="flex items-center gap-1.5 px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors flex-1 md:flex-none justify-center"
                                             >
                                                 <Copy size={14} /> Copiar
