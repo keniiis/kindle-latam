@@ -458,7 +458,7 @@ export default function KindleApp() {
                                 <a
                                     href="https://ko-fi.com/devdanipena"
                                     target="_blank"
-                                    className="hidden sm:flex bg-gradient-to-r from-[#A67B5B] to-[#8B5E3C] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-[#8B5E3C]/25 hover:shadow-[#8B5E3C]/40 hover:-translate-y-0.5 transition-all items-center gap-2 animate-radar-ring"
+                                    className="flex bg-gradient-to-r from-[#A67B5B] to-[#8B5E3C] text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-lg shadow-[#8B5E3C]/25 hover:shadow-[#8B5E3C]/40 hover:-translate-y-0.5 transition-all items-center gap-2 animate-radar-ring"
                                 >
                                     <Coffee size={18} strokeWidth={2.5} />
                                     <span>Invítame un café</span>
