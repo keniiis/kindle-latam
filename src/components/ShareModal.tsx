@@ -140,7 +140,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                 </div>
                 <div className="flex items-center gap-2 md:gap-4">
 
-                    <a href="https://ko-fi.com/devdanipena" target="_blank" className="bg-[#8c25f4] text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold flex gap-2 shadow-lg shadow-purple-500/30 hover:bg-[#7c1be2] transition-colors">
+                    <a href="https://ko-fi.com/devdanipena" target="_blank" className="bg-[#8B5E3C] text-white px-4 py-2 rounded-full text-xs md:text-sm font-bold flex gap-2 shadow-lg shadow-[#8B5E3C]/30 hover:bg-[#70482D] transition-colors animate-radar-ring">
                         <Coffee size={16} strokeWidth={2.5} />
                         <span className="hidden sm:inline">Invítame un café</span>
                     </a>

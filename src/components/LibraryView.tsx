@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { UploadCloud, Trash2, MoreVertical, Twitter, Plus, Clock, ArrowDownAZ, Tag, ChevronDown, Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { UploadCloud, Trash2, MoreVertical, Twitter, Plus, Clock, ArrowDownAZ, Tag, ChevronDown, Check, X, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import BookCard from '@/components/BookCard';
 
 export type SortOption = 'recent' | 'title';
@@ -20,6 +20,8 @@ interface LibraryViewProps {
     onToggleSelectionMode: (enabled: boolean) => void;
 
     // New Props for lifted state
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
     selectedGenre: string | null;
     onSelectGenre: (genre: string | null) => void;
     sortBy: SortOption;
@@ -41,6 +43,8 @@ export default function LibraryView({
     onDeleteAll,
     isSelectionMode,
     onToggleSelectionMode,
+    searchQuery,
+    onSearchChange,
     selectedGenre,
     onSelectGenre,
     sortBy,
@@ -80,6 +84,14 @@ export default function LibraryView({
             result = result.filter(book => book.genre === selectedGenre);
         }
 
+        if (searchQuery.trim()) {
+            const q = searchQuery.toLowerCase();
+            result = result.filter(book =>
+                book.title.toLowerCase().includes(q) ||
+                book.author.toLowerCase().includes(q)
+            );
+        }
+
         switch (sortBy) {
             case 'recent':
                 return result.sort((a, b) => {
@@ -92,7 +104,7 @@ export default function LibraryView({
             default:
                 return result;
         }
-    }, [library, sortBy, selectedGenre]);
+    }, [library, sortBy, selectedGenre, searchQuery]);
 
     // PAGINACIÓN
     const [currentPage, setCurrentPage] = useState(1);
@@ -187,6 +199,30 @@ export default function LibraryView({
 
                     {/* BARRA DE FILTROS Y ORDENAMIENTO */}
                     <div className="flex flex-wrap items-center gap-4">
+                        {/* Buscador */}
+                        <div className="relative group flex-1 min-w-[200px] max-w-md">
+                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                <Search size={16} className="text-slate-400 group-focus-within:text-purple-500 transition-colors" />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Buscar autor, título..."
+                                value={searchQuery}
+                                onChange={(e) => onSearchChange(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all placeholder:text-slate-400"
+                            />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => onSearchChange('')}
+                                    className="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="h-8 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+
                         <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-2xl shadow-sm">
                             <button
                                 onClick={() => onSortChange('recent')}
