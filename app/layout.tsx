@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -8,6 +8,10 @@ const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta', // Esta variable la usa Tailwind
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://citando-ando.vercel.app'),
