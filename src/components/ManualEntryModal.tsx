@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, Book, User, Quote, Check, Plus, Loader2, Search, HelpCircle, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
+import { X, Book, User, Quote, Check, Plus, Loader2, Search, HelpCircle, ChevronDown, ChevronUp, AlertCircle, Tag } from 'lucide-react';
 
 interface ManualEntryModalProps {
     onClose: () => void;
-    onSave: (title: string, author: string, content: string) => void;
+    onSave: (title: string, author: string, content: string, genre?: string) => void;
     initialTitle?: string;
     initialAuthor?: string;
 }
@@ -15,11 +15,13 @@ interface BookSuggestion {
     title: string;
     author_name?: string[];
     coverUrl?: string;
+    genre?: string;
 }
 
 export default function ManualEntryModal({ onClose, onSave, initialTitle = '', initialAuthor = '' }: ManualEntryModalProps) {
     const [title, setTitle] = useState(initialTitle);
     const [author, setAuthor] = useState(initialAuthor);
+    const [genre, setGenre] = useState('');
     const [content, setContent] = useState('');
 
     // Search states
@@ -62,7 +64,8 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
                 key: item.id,
                 title: item.volumeInfo.title,
                 author_name: item.volumeInfo.authors || ['Autor desconocido'],
-                coverUrl: item.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:')
+                coverUrl: item.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:'),
+                genre: item.volumeInfo.categories?.[0] || ''
             }));
 
             setSuggestions(results);
@@ -98,6 +101,9 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
         if (book.author_name && book.author_name.length > 0) {
             setAuthor(book.author_name[0]);
         }
+        if (book.genre) {
+            setGenre(book.genre);
+        }
         setShowSuggestions(false);
         setSuggestions([]);
     };
@@ -105,7 +111,7 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!content.trim()) return;
-        onSave(title.trim() || 'Sin título', author.trim() || 'Autor desconocido', content.trim());
+        onSave(title.trim() || 'Sin título', author.trim() || 'Autor desconocido', content.trim(), genre.trim());
     };
 
     return (
@@ -227,17 +233,32 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
                                     </div>
                                 )}
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">
-                                    <User size={14} /> Autor
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Ej: James Clear"
-                                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
-                                    value={author}
-                                    onChange={(e) => setAuthor(e.target.value)}
-                                />
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">
+                                        <User size={14} /> Autor
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: James Clear"
+                                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
+                                        value={author}
+                                        onChange={(e) => setAuthor(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center gap-2">
+                                        <Tag size={14} /> Género (Opcional)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Ej: Autoayuda"
+                                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all shadow-sm"
+                                        value={genre}
+                                        onChange={(e) => setGenre(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -250,8 +271,8 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
                                 <textarea
                                     placeholder="Escribe o pega aquí el texto que quieres convertir en imagen..."
                                     className={`w-full h-40 bg-white border rounded-2xl p-5 text-base font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 transition-all resize-none leading-relaxed shadow-sm ${isOverLimit
-                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
-                                            : 'border-slate-200 focus:border-purple-500 focus:ring-purple-500/20'
+                                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
+                                        : 'border-slate-200 focus:border-purple-500 focus:ring-purple-500/20'
                                         }`}
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}

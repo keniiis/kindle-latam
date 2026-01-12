@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { parseKindleClippings, Clipping } from '@/lib/parser';
 import ShareModal from '@/components/ShareModal';
 import LandingPage from '@/components/LandingPage';
-import LibraryView from '@/components/LibraryView';
+import LibraryView, { SortOption } from '@/components/LibraryView';
 import BookDetailView from '@/components/BookDetailView';
 import {
     BookOpen, Trash2, Coffee, Quote, Calendar, Plus
@@ -46,7 +47,12 @@ export default function KindleApp() {
     const library = useMemo(() => {
         const groups: Record<string, any> = {};
         rawClippings.forEach((clip) => {
-            if (!groups[clip.title]) groups[clip.title] = { title: clip.title, author: clip.author, clippings: [] };
+            if (!groups[clip.title]) groups[clip.title] = {
+                title: clip.title,
+                author: clip.author,
+                clippings: [],
+                genre: clip.genre
+            };
             groups[clip.title].clippings.push(clip);
         });
         return Object.values(groups).sort((a, b) => b.clippings.length - a.clippings.length);
@@ -98,7 +104,127 @@ export default function KindleApp() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleManualSave = (title: string, author: string, content: string) => {
+    // Mapa de traducción de géneros
+    const GENRE_TRANSLATIONS: Record<string, string> = {
+        'Fiction': 'Ficción',
+        'Juvenile Fiction': 'Ficción Juvenil',
+        'Science Fiction': 'Ciencia Ficción',
+        'Fantasy': 'Fantasía',
+        'Business & Economics': 'Negocios',
+        'Self-Help': 'Autoayuda',
+        'Psychology': 'Psicología',
+        'Philosophy': 'Filosofía',
+        'Biography & Autobiography': 'Biografía',
+        'History': 'Historia',
+        'Religion': 'Religión',
+        'Social Science': 'Ciencias Sociales',
+        'Computers': 'Tecnología',
+        'Technology': 'Tecnología',
+        'Science': 'Ciencia',
+        'Health & Fitness': 'Salud y Bienestar',
+        'Cooking': 'Cocina',
+        'Art': 'Arte',
+        'Travel': 'Viajes',
+        'Poetry': 'Poesía',
+        'Comics & Graphic Novels': 'Cómics',
+        'Drama': 'Drama',
+        'Literary Criticism': 'Crítica Literaria',
+        'Political Science': 'Política',
+        'Education': 'Educación',
+        'Foreign Language Study': 'Idiomas',
+        'Body, Mind & Spirit': 'Espiritualidad',
+        'Family & Relationships': 'Familia',
+        'Humor': 'Humor',
+        'Performing Arts': 'Artes Escénicas',
+        'Sports & Recreation': 'Deportes',
+        'Adventure': 'Aventura',
+        'Literary Collections': 'Colecciones Literarias',
+        'Literature': 'Literatura',
+        'Classics': 'Clásicos',
+        'Novel': 'Novela'
+    };
+
+    const translateGenre = (genre: string): string => {
+        // Búsqueda directa
+        if (GENRE_TRANSLATIONS[genre]) return GENRE_TRANSLATIONS[genre];
+
+        // Búsqueda parcial case-insensitive
+        const key = Object.keys(GENRE_TRANSLATIONS).find(k =>
+            genre.toLowerCase().includes(k.toLowerCase())
+        );
+        return key ? GENRE_TRANSLATIONS[key] : genre;
+    };
+
+    // Helper para buscar género (puedes moverlo fuera del componente si prefieres)
+    const fetchBookGenre = async (title: string, author: string) => {
+        try {
+            const query = `intitle:${encodeURIComponent(title)}+inauthor:${encodeURIComponent(author)}`;
+            const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`);
+            const data = await res.json();
+            if (data.items?.[0]?.volumeInfo?.categories?.length > 0) {
+                const rawGenre = data.items[0].volumeInfo.categories[0];
+                return translateGenre(rawGenre);
+            }
+            return 'General'; // Fallback si no encuentra
+        } catch (e) {
+            return 'General';
+        }
+    };
+
+    // Efecto para enriquecer automáticamente con géneros
+    useEffect(() => {
+        if (!isLoaded || rawClippings.length === 0) return;
+
+        // 1. Traducir géneros existentes que estén en inglés (usando el helper completo)
+        let translationUpdate = false;
+        const translatedClippings = rawClippings.map(clip => {
+            if (clip.genre) {
+                const translated = translateGenre(clip.genre);
+                if (translated !== clip.genre) {
+                    translationUpdate = true;
+                    return { ...clip, genre: translated };
+                }
+            }
+            return clip;
+        });
+
+        if (translationUpdate) {
+            setRawClippings(translatedClippings);
+            return; // Esperar al siguiente render
+        }
+
+        const enrichLibrary = async () => {
+            // 1. Identificar libros sin género
+            const booksWithoutGenre = new Set<string>();
+            rawClippings.forEach(c => {
+                if (!c.genre) booksWithoutGenre.add(c.title);
+            });
+
+            if (booksWithoutGenre.size === 0) return;
+
+            // 2. Procesar uno por uno para no saturar la API (o en lotes pequeños)
+            // Tomamos el primero que encontremos para ir "rellenando" progresivamente
+            const titleToUpdate = Array.from(booksWithoutGenre)[0];
+            // Encontrar el autor de este libro
+            const validClip = rawClippings.find(c => c.title === titleToUpdate);
+            if (!validClip) return;
+
+            const genre = await fetchBookGenre(titleToUpdate, validClip.author);
+
+            // 3. Actualizar el estado
+            setRawClippings(prev => prev.map(clip =>
+                clip.title === titleToUpdate
+                    ? { ...clip, genre: genre }
+                    : clip
+            ));
+        };
+
+        // Debounce simple para no bloquear
+        const timeout = setTimeout(enrichLibrary, 1000);
+        return () => clearTimeout(timeout);
+    }, [rawClippings, isLoaded]);
+
+    const handleManualSave = (title: string, author: string, content: string, genre?: string) => {
         const newClipping: Clipping = {
             id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
             title,
@@ -106,7 +232,8 @@ export default function KindleApp() {
             content,
             meta: `Manual Entry | Added on ${new Date().toLocaleDateString()}`,
             type: 'Highlight',
-            date: new Date()
+            date: new Date(),
+            genre: genre || 'General'
         };
 
         setRawClippings(prev => [newClipping, ...prev]);
@@ -147,6 +274,25 @@ export default function KindleApp() {
 
         // Update selected book immediately so UI doesn't flicker/break
         setSelectedBook((prev: any) => prev ? { ...prev, title: newTitle, author: newAuthor } : null);
+    };
+
+    const handleUpdateClip = (clipId: string, newContent: string) => {
+        setRawClippings(prev => prev.map(clip =>
+            clip.id === clipId
+                ? { ...clip, content: newContent }
+                : clip
+        ));
+
+        // Update selected book immediately
+        setSelectedBook((prev: any) => {
+            if (!prev) return null;
+            return {
+                ...prev,
+                clippings: prev.clippings.map((c: any) =>
+                    c.id === clipId ? { ...c, content: newContent } : c
+                )
+            };
+        });
     };
 
     const handleToggleBook = (title: string) => {
@@ -229,13 +375,77 @@ export default function KindleApp() {
         }
     }, [rawClippings.length]);
 
+    const [selectedBookCover, setSelectedBookCover] = useState<string | null>(null);
+
+    // Lifted State for Library Filters
+    const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+    const [sortBy, setSortBy] = useState<SortOption>('recent');
+
+    // State for View Transitions (avoid rendering bugs)
+    const [transitioningTitle, setTransitioningTitle] = useState<string | null>(null);
+    const [transitioningCoverUrl, setTransitioningCoverUrl] = useState<string | null>(null);
+    const [scrollPos, setScrollPos] = useState(0);
+
+    // Helper para transiciones de vista (View Transition API)
+    const handleSetSelectedBook = (book: any | null, coverUrl?: string) => {
+        if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+
+            // PREPARAR ESTADO DE TRANSICIÓN (Síncrono antes de iniciar)
+            flushSync(() => {
+                if (book) {
+                    setScrollPos(window.scrollY);
+                    setTransitioningTitle(book.title);
+                    if (coverUrl) setTransitioningCoverUrl(coverUrl);
+                } else {
+                    // CERRANDO: Asegurar que título y cover estén listos para el aterrizaje
+                    if (selectedBook) setTransitioningTitle(selectedBook.title);
+                    setTransitioningCoverUrl(selectedBookCover);
+                }
+            });
+
+            (document as any).startViewTransition(() => {
+                flushSync(() => {
+                    setSelectedBook(book);
+                    if (coverUrl) setSelectedBookCover(coverUrl);
+                    else if (!book) setSelectedBookCover(null);
+                });
+
+                // RESTAURAR SCROLL AL CERRAR
+                if (!book) {
+                    window.scrollTo(0, scrollPos);
+                } else {
+                    // RESETEAR SCROLL AL ABRIR (Top)
+                    window.scrollTo(0, 0);
+                }
+            });
+        } else {
+            if (book) {
+                setScrollPos(window.scrollY);
+                setTransitioningTitle(book.title);
+                if (coverUrl) setTransitioningCoverUrl(coverUrl);
+            } else if (selectedBook) {
+                setTransitioningTitle(selectedBook.title);
+                setTransitioningCoverUrl(selectedBookCover);
+            }
+
+            setSelectedBook(book);
+            if (coverUrl) setSelectedBookCover(coverUrl);
+            else if (!book) {
+                setSelectedBookCover(null);
+                setTimeout(() => window.scrollTo(0, scrollPos), 0);
+            } else {
+                window.scrollTo(0, 0);
+            }
+        }
+    };
+
     if (rawClippings.length > 0) {
         return (
             <div className="min-h-screen bg-background-light font-display text-[#140d1c]">
                 {/* Header App */}
                 <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 lg:px-12 py-4">
                     <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedBook(null)}>
+                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleSetSelectedBook(null)}>
                             <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
                                 <BookOpen size={22} strokeWidth={2.5} />
                             </div>
@@ -258,8 +468,12 @@ export default function KindleApp() {
                     {!selectedBook ? (
                         <LibraryView
                             library={library}
-                            onSelectBook={setSelectedBook}
+                            onSelectBook={handleSetSelectedBook}
                             onImport={triggerFileUpload}
+                            onManualEntry={() => {
+                                setManualEntryData(null);
+                                setShowManualModal(true);
+                            }}
                             selectedBooks={selectedBookIds}
                             onToggleBook={handleToggleBook}
                             onDeleteSelected={handleDeleteSelected}
@@ -270,14 +484,25 @@ export default function KindleApp() {
                             onDeleteAll={handleClearData}
                             isSelectionMode={isSelectionMode}
                             onToggleSelectionMode={setIsSelectionMode}
+
+                            // Lifted Props
+                            selectedGenre={selectedGenre}
+                            onSelectGenre={setSelectedGenre}
+                            sortBy={sortBy}
+                            onSortChange={setSortBy}
+                            activeTransitionTitle={transitioningTitle}
+                            activeTransitionCoverUrl={transitioningCoverUrl}
                         />
                     ) : (
                         <BookDetailView
                             book={selectedBook}
-                            onBack={() => setSelectedBook(null)}
+                            initialCoverUrl={selectedBookCover || undefined}
+                            onBack={() => handleSetSelectedBook(null)}
                             onShare={setClipToShare}
                             onUpdateBook={handleUpdateBook}
                             onAddHighlight={() => handleAddHighlight(selectedBook.title, selectedBook.author)}
+                            onUpdateClip={handleUpdateClip}
+                            onUpdateCover={setSelectedBookCover}
                         />
                     )}
                 </main>

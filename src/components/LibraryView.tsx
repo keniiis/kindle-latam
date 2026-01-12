@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { UploadCloud, Trash2, MoreVertical, Twitter } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { UploadCloud, Trash2, MoreVertical, Twitter, Plus, Clock, ArrowDownAZ, Tag, ChevronDown, Check, X } from 'lucide-react';
 import BookCard from '@/components/BookCard';
+
+export type SortOption = 'recent' | 'title';
 
 interface LibraryViewProps {
     library: any[];
-    onSelectBook: (book: any) => void;
+    onSelectBook: (book: any, coverUrl?: string) => void;
     onImport: () => void;
+    onManualEntry: () => void;
     selectedBooks: Set<string>;
     onToggleBook: (title: string) => void;
     onDeleteSelected: () => void;
@@ -15,86 +18,269 @@ interface LibraryViewProps {
     onDeleteAll: () => void;
     isSelectionMode: boolean;
     onToggleSelectionMode: (enabled: boolean) => void;
+
+    // New Props for lifted state
+    selectedGenre: string | null;
+    onSelectGenre: (genre: string | null) => void;
+    sortBy: SortOption;
+    onSortChange: (option: SortOption) => void;
+
+    activeTransitionTitle?: string | null;
+    activeTransitionCoverUrl?: string | null;
 }
 
 export default function LibraryView({
     library,
     onSelectBook,
     onImport,
+    onManualEntry,
     selectedBooks,
     onToggleBook,
     onDeleteSelected,
     onCancelSelection,
     onDeleteAll,
     isSelectionMode,
-    onToggleSelectionMode
+    onToggleSelectionMode,
+    selectedGenre,
+    onSelectGenre,
+    sortBy,
+    onSortChange,
+    activeTransitionTitle,
+    activeTransitionCoverUrl
 }: LibraryViewProps) {
     const [showMenu, setShowMenu] = useState(false);
 
+    // Genre Filter
+    const [isGenreMenuOpen, setIsGenreMenuOpen] = useState(false);
+    const genreMenuRef = useRef<HTMLDivElement>(null);
+
+    // Extract unique genres
+    const availableGenres = useMemo(() => {
+        const genres = new Set<string>();
+        library.forEach((book: any) => {
+            if (book.genre) genres.add(book.genre);
+        });
+        return Array.from(genres).sort();
+    }, [library]);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (genreMenuRef.current && !genreMenuRef.current.contains(event.target as Node)) {
+                setIsGenreMenuOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const processedLibrary = useMemo(() => {
+        let result = [...library];
+
+        if (selectedGenre) {
+            result = result.filter(book => book.genre === selectedGenre);
+        }
+
+        switch (sortBy) {
+            case 'recent':
+                return result.sort((a, b) => {
+                    const dateA = Math.max(...a.clippings.map((c: any) => new Date(c.date).getTime()));
+                    const dateB = Math.max(...b.clippings.map((c: any) => new Date(c.date).getTime()));
+                    return dateB - dateA;
+                });
+            case 'title':
+                return result.sort((a, b) => a.title.localeCompare(b.title));
+            default:
+                return result;
+        }
+    }, [library, sortBy, selectedGenre]);
+
     return (
         <>
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-32" onClick={() => setShowMenu(false)}>
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12" onClick={() => setShowMenu(false)}>
                 {/* HEADER SECCIÓN BIBLIOTECA */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                        <h1 className="text-4xl md:text-5xl font-black text-[#140d1c] tracking-tight mb-3">Tu Biblioteca</h1>
-                        <div className="flex items-center gap-3">
-                            <span className="bg-gray-100 text-gray-600 font-bold px-3 py-1 rounded-lg text-sm">{library.length}</span>
-                            <p className="text-gray-400 font-medium">libros importados</p>
+                <div className="flex flex-col gap-8 mb-12">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <h1 className="text-4xl md:text-5xl font-black text-[#140d1c] tracking-tight mb-3">Tu Biblioteca</h1>
+                            <div className="flex items-center gap-3">
+                                <span className="bg-gray-100 text-gray-600 font-bold px-3 py-1 rounded-lg text-sm">{processedLibrary.length}</span>
+                                <p className="text-gray-400 font-medium">libros {selectedGenre ? 'filtrados' : 'importados'}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-2 relative">
-                        {/* Importar */}
-                        <button
-                            onClick={onImport}
-                            className="group flex items-center gap-2 px-6 py-3 rounded-full bg-purple-600 text-white font-bold hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-500/30 active:scale-95"
-                        >
-                            <UploadCloud size={20} className="group-hover:animate-bounce" />
-                            <span>Importar</span>
-                        </button>
-
-                        {/* Menú Tres Puntos */}
-                        <div className="relative">
+                        <div className="flex items-center gap-2 relative">
+                            {/* Agregar Manualmente */}
                             <button
-                                onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                                className="p-3 bg-white border border-slate-200 text-slate-500 rounded-full hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                                onClick={onManualEntry}
+                                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all shadow-sm hover:shadow-md"
+                                title="Agregar libro o frase manualmente"
                             >
-                                <MoreVertical size={20} />
+                                <Plus size={20} className="text-purple-600" />
+                                <span className="hidden sm:inline">Agregar</span>
                             </button>
 
-                            {showMenu && (
-                                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-                                    <button
-                                        onClick={() => { onDeleteAll(); setShowMenu(false); }}
-                                        className="flex items-center gap-3 w-full px-4 py-3 text-left text-sm font-bold text-red-500 hover:bg-red-50 transition-colors"
-                                    >
-                                        <Trash2 size={16} />
-                                        Eliminar todo
-                                    </button>
+                            {/* Importar */}
+                            <button
+                                onClick={onImport}
+                                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-purple-600 text-white font-bold hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-500/30 active:scale-95"
+                            >
+                                <UploadCloud size={20} className="group-hover:animate-bounce" />
+                                <span>Importar</span>
+                            </button>
+
+                            {/* Menú Tres Puntos */}
+                            <div className="relative">
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
+                                    className="p-3 bg-white border border-slate-200 text-slate-500 rounded-full hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                                >
+                                    <MoreVertical size={20} />
+                                </button>
+
+                                {showMenu && (
+                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+                                        <button
+                                            onClick={() => { onDeleteAll(); setShowMenu(false); }}
+                                            className="flex items-center gap-3 w-full px-4 py-3 text-left text-sm font-bold text-red-500 hover:bg-red-50 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                            Eliminar todo
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* BARRA DE FILTROS Y ORDENAMIENTO */}
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-2xl shadow-sm">
+                            <button
+                                onClick={() => onSortChange('recent')}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${sortBy === 'recent'
+                                    ? 'bg-purple-100 text-purple-700 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                                    }`}
+                            >
+                                <Clock size={16} />
+                                <span>Recientes</span>
+                            </button>
+                            <button
+                                onClick={() => onSortChange('title')}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${sortBy === 'title'
+                                    ? 'bg-purple-100 text-purple-700 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                                    }`}
+                            >
+                                <ArrowDownAZ size={16} />
+                                <span>A-Z</span>
+                            </button>
+                        </div>
+
+                        <div className="h-8 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+
+                        {/* Dropdown de Género */}
+                        <div className="relative" ref={genreMenuRef}>
+                            <button
+                                onClick={() => setIsGenreMenuOpen(!isGenreMenuOpen)}
+                                className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl text-xs font-bold transition-all border ${selectedGenre || isGenreMenuOpen
+                                    ? 'bg-purple-600 text-white border-purple-600 shadow-lg shadow-purple-500/20'
+                                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                    }`}
+                            >
+                                <Tag size={16} />
+                                <span>{selectedGenre || 'Filtrar por Género'}</span>
+                                <ChevronDown size={14} className={`transition-transform duration-200 ${isGenreMenuOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {isGenreMenuOpen && (
+                                <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+                                    <div className="max-h-64 overflow-y-auto custom-scrollbar">
+                                        <button
+                                            onClick={() => { onSelectGenre(null); setIsGenreMenuOpen(false); }}
+                                            className="w-full px-4 py-3 text-left text-sm font-bold flex items-center justify-between hover:bg-slate-50 transition-colors text-slate-600"
+                                        >
+                                            <span>Todos los libros</span>
+                                            {!selectedGenre && <Check size={16} className="text-purple-600" />}
+                                        </button>
+
+                                        <div className="h-px bg-slate-100 my-1 mx-4"></div>
+
+                                        {availableGenres.length === 0 && (
+                                            <div className="px-4 py-3 text-xs text-slate-400 font-medium italic text-center">
+                                                No hay géneros detectados
+                                            </div>
+                                        )}
+
+                                        {availableGenres.map(genre => (
+                                            <button
+                                                key={genre}
+                                                onClick={() => { onSelectGenre(genre); setIsGenreMenuOpen(false); }}
+                                                className={`w-full px-4 py-2.5 text-left text-sm font-bold flex items-center justify-between transition-colors ${selectedGenre === genre
+                                                    ? 'text-purple-700 bg-purple-50'
+                                                    : 'text-slate-600 hover:bg-slate-50'
+                                                    }`}
+                                            >
+                                                <span>{genre}</span>
+                                                {selectedGenre === genre && <Check size={16} className="text-purple-600" />}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
+
+                        {/* Botón para limpiar filtro (si activo) */}
+                        {selectedGenre && (
+                            <button
+                                onClick={() => onSelectGenre(null)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-red-500 transition-colors animate-in fade-in"
+                            >
+                                <X size={14} />
+                                Limpiar
+                            </button>
+                        )}
                     </div>
                 </div>
 
                 {/* GRID DE LIBROS */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-12">
-                    {library.map((book) => (
+                    {processedLibrary.map((book) => (
                         <BookCard
-                            key={book.title}
+                            key={(book.title + book.author).replace(/\s+/g, '-')}
                             book={book}
-                            onClick={() => {
+                            onClick={(coverUrl) => {
                                 if (selectedBooks.size > 0 || isSelectionMode) {
                                     onToggleBook(book.title);
                                 } else {
-                                    onSelectBook(book);
+                                    onSelectBook(book, coverUrl);
                                 }
                             }}
                             selected={selectedBooks.has(book.title)}
                             onToggleSelection={() => onToggleBook(book.title)}
                             selectionMode={isSelectionMode || selectedBooks.size > 0}
+                            viewTransitionName={activeTransitionTitle === book.title
+                                ? `book-cover-${book.title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`
+                                : undefined}
+                            overrideCoverUrl={activeTransitionTitle === book.title ? activeTransitionCoverUrl || undefined : undefined}
                         />
                     ))}
+
+                    {processedLibrary.length === 0 && (
+                        <div className="col-span-full py-20 text-center text-slate-400">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="bg-slate-100 p-4 rounded-full">
+                                    <Tag size={32} className="text-slate-300" />
+                                </div>
+                                <p className="font-medium">No se encontraron libros con este filtro.</p>
+                                <button
+                                    onClick={() => onSelectGenre(null)}
+                                    className="text-purple-600 font-bold hover:underline text-sm"
+                                >
+                                    Ver todos los libros
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* FOOTER COPYRIGHT */}
@@ -103,13 +289,6 @@ export default function LibraryView({
                         © {new Date().getFullYear()} CitandoAndo. Hecho con pasión para amantes de la lectura.
                     </p>
                     <div className="flex justify-center gap-6">
-                        {/* <a
-                            href="mailto:hola@citandoando.com"
-                            className="flex items-center gap-2 text-slate-400 hover:text-purple-600 transition-colors text-sm font-bold"
-                        >
-                            <Mail size={16} />
-                            <span>Contáctanos</span>
-                        </a> */}
                         <a
                             href="https://x.com/Danipena3488"
                             target="_blank"

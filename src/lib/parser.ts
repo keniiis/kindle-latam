@@ -6,6 +6,7 @@ export interface Clipping {
     meta: string;
     type: "Highlight" | "Note" | "Bookmark";
     date: Date;
+    genre?: string;
 }
 
 export function parseKindleClippings(raw: string): Clipping[] {

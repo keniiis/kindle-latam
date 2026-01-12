@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book, Loader2 } from 'lucide-react';
+import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book, Loader2, Tag } from 'lucide-react';
 import { Clipping } from '@/lib/parser';
 import { PdfExportTemplate } from './PdfExportTemplate';
 import html2canvas from 'html2canvas';
@@ -13,15 +13,31 @@ interface BookDetailViewProps {
     onShare: (clip: Clipping) => void;
     onUpdateBook?: (oldTitle: string, newTitle: string, newAuthor: string) => void;
     onAddHighlight?: () => void;
+    onUpdateClip?: (clipId: string, newContent: string) => void;
+    initialCoverUrl?: string;
+    onUpdateCover?: (url: string) => void;
 }
 
 import { useBookCover } from '@/hooks/useBookCover';
 
-export default function BookDetailView({ book, onBack, onShare, onUpdateBook, onAddHighlight }: BookDetailViewProps) {
+export default function BookDetailView({ book, onBack, onShare, onUpdateBook, onAddHighlight, onUpdateClip, initialCoverUrl, onUpdateCover }: BookDetailViewProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(book.title);
     const [editAuthor, setEditAuthor] = useState(book.author);
-    const coverUrl = useBookCover(book.title, book.author, 0); // 0 delay for instant fetch
+
+    // State for individual clip editing
+    const [editingClipId, setEditingClipId] = useState<string | null>(null);
+    const [editingContent, setEditingContent] = useState('');
+
+    const fetchedCoverUrl = useBookCover(book.title, book.author, 0); // 0 delay for instant fetch
+    const coverUrl = initialCoverUrl || fetchedCoverUrl;
+
+    useEffect(() => {
+        if (fetchedCoverUrl && typeof onUpdateCover === 'function') {
+            onUpdateCover(fetchedCoverUrl);
+        }
+    }, [fetchedCoverUrl, onUpdateCover]);
+
     const [isExporting, setIsExporting] = useState(false);
     const pdfTemplateRef = useRef<HTMLDivElement>(null);
 
@@ -29,26 +45,20 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
         if (!pdfTemplateRef.current) return;
         setIsExporting(true);
         try {
-            // Breve espera para asegurar que el renderizado oculto esté listo (fuentes/imgs)
-            // html2canvas maneja imágenes externas si useCORS: true, pero a veces necesita un tick.
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Espera generosa para fuentes e imágenes
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
             const canvas = await html2canvas(pdfTemplateRef.current, {
                 scale: 2,
                 useCORS: true,
-                allowTaint: true, // Permite taint pero useCORS debería manejarlo
+                allowTaint: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                imageTimeout: 0, // Esperar a que carguen las img
-                windowWidth: 1200, // Asegurar que el viewport virtual sea suficiente
+                imageTimeout: 0,
+                windowWidth: 1200,
                 windowHeight: 1600
             });
 
-            // A4 en px a 72dpi es aprox 595x842, pero jsPDF usa unidades.
-            // Creamos PDF con el tamaño exacto del canvas (en puntos/px) para que no escale raro.
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-            // Crear PDF en formato Carta (Letter)
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
@@ -58,8 +68,6 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            // Al haber ajustado el template a ratio Letter, podemos estirar para cubrir
-            // cualquier pequeña diferencia de píxeles sin deformar visiblemente.
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
             const fileName = `${book.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_highlights.pdf`;
             pdf.save(fileName);
@@ -80,13 +88,10 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
         if (dates.length === 0) return 'Recién importado';
 
         const latestTimestamp = Math.max(...dates);
-        const latestDate = new Date(latestTimestamp);
+        // const latestDate = new Date(latestTimestamp);
 
         const diff = Date.now() - latestTimestamp;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-        const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        // const formattedDate = latestDate.toLocaleDateString('es-ES', options); // Ya no se muestra la fecha explícita
 
         let relativeText = '';
         if (days === 0) relativeText = 'hoy';
@@ -103,6 +108,24 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
             onUpdateBook(book.title, editTitle, editAuthor);
             setIsEditing(false);
         }
+    };
+
+    const startEditingClip = (clip: Clipping) => {
+        setEditingClipId(clip.id);
+        setEditingContent(clip.content);
+    };
+
+    const saveClip = (clipId: string) => {
+        if (onUpdateClip && editingContent.trim()) {
+            onUpdateClip(clipId, editingContent.trim());
+            setEditingClipId(null);
+            setEditingContent('');
+        }
+    };
+
+    const cancelEditingClip = () => {
+        setEditingClipId(null);
+        setEditingContent('');
     };
 
     return (
@@ -159,9 +182,23 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
                     <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-start">
                         {/* Portada del Libro */}
-                        <div className="w-32 md:w-44 aspect-[2/3] shrink-0 rounded-2xl shadow-2xl border-4 border-white overflow-hidden bg-slate-100 flex items-center justify-center transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                        <div
+                            className="w-32 md:w-44 aspect-[2/3] shrink-0 rounded-[2rem] shadow-2xl border-4 border-white overflow-hidden bg-slate-100 flex items-center justify-center transform rotate-1 hover:rotate-0 transition-transform duration-500"
+                            style={{
+                                backgroundImage: coverUrl ? `url(${coverUrl})` : 'none',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                viewTransitionName: `book-cover-${book.title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`
+                            } as any}
+                        >
                             {coverUrl ? (
-                                <img src={coverUrl} alt={book.title} className="w-full h-full object-cover" />
+                                <img
+                                    src={coverUrl}
+                                    alt={book.title}
+                                    loading="eager"
+                                    decoding="sync"
+                                    className="w-full h-full object-cover rounded-[2rem] opacity-0 animate-in fade-in duration-300"
+                                />
                             ) : (
                                 <Book size={48} className="text-slate-300" strokeWidth={1.5} />
                             )}
@@ -205,7 +242,15 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                                             <Edit2 size={18} />
                                         </button>
                                     </div>
-                                    <p className="text-xl font-medium text-primary mb-6">{book.author}</p>
+                                    <p className="text-xl font-medium text-primary mb-4">{book.author}</p>
+
+                                    {book.genre && (
+                                        <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-6 bg-slate-100/80 w-fit px-3 py-1.5 rounded-full border border-slate-200/50">
+                                            <Tag size={12} className="text-purple-500" />
+                                            <span>{book.genre}</span>
+                                        </div>
+                                    )}
+
                                     <div className="h-1.5 w-24 bg-purple-100 rounded-full"></div>
                                 </>
                             )}
@@ -221,25 +266,62 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-200 rounded-full group-hover:bg-primary transition-colors duration-300 md:-ml-6"></div>
 
                             <div className="py-2">
-                                <p className="text-xl md:text-2xl text-slate-700 font-serif leading-relaxed italic mb-6">
-                                    "{clip.content}"
-                                </p>
+                                {editingClipId === clip.id ? (
+                                    <div className="animate-in fade-in duration-200">
+                                        <textarea
+                                            value={editingContent}
+                                            onChange={(e) => setEditingContent(e.target.value)}
+                                            className="w-full p-4 border border-purple-200 rounded-xl text-xl md:text-2xl text-slate-700 font-serif leading-relaxed italic focus:outline-none focus:ring-2 focus:ring-purple-500/20 min-h-[150px] resize-y"
+                                            autoFocus
+                                        />
+                                        <div className="flex items-center gap-2 mt-3 justify-end">
+                                            <button
+                                                onClick={cancelEditingClip}
+                                                className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                onClick={() => saveClip(clip.id)}
+                                                disabled={!editingContent.trim()}
+                                                className="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-purple-700 rounded-lg transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50"
+                                            >
+                                                <Check size={16} /> Guardar
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <p className="text-xl md:text-2xl text-slate-700 font-serif leading-relaxed italic mb-6 cursor-text">
+                                            "{clip.content}"
+                                        </p>
 
+                                        <div className="flex flex-wrap items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                                            <button
+                                                onClick={() => { navigator.clipboard.writeText(clip.content); alert('Copiado!') }}
+                                                className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
+                                            >
+                                                <Copy size={14} /> Copiar Texto
+                                            </button>
 
-                                <div className="flex flex-wrap items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                                    <button
-                                        onClick={() => { navigator.clipboard.writeText(clip.content); alert('Copiado!') }}
-                                        className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
-                                    >
-                                        <Copy size={14} /> Copiar Texto
-                                    </button>
-                                    <button
-                                        onClick={() => onShare(clip)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
-                                    >
-                                        <Share2 size={14} /> Crear Story
-                                    </button>
-                                </div>
+                                            {onUpdateClip && (
+                                                <button
+                                                    onClick={() => startEditingClip(clip)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
+                                                >
+                                                    <Edit2 size={14} /> Editar
+                                                </button>
+                                            )}
+
+                                            <button
+                                                onClick={() => onShare(clip)}
+                                                className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-100 transition-colors"
+                                            >
+                                                <Share2 size={14} /> Crear Story
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
 
                             {/* Separador sutil entre citas */}

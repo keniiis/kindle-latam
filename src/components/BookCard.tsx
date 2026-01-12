@@ -5,29 +5,42 @@ import { useBookCover } from '@/hooks/useBookCover';
 
 interface BookCardProps {
     book: any;
-    onClick: () => void;
+    onClick: (coverUrl?: string) => void;
     selected?: boolean;
     onToggleSelection?: () => void;
     selectionMode?: boolean;
+    viewTransitionName?: string;
+    overrideCoverUrl?: string;
 }
 
-const BookCard = ({ book, onClick, selected, onToggleSelection, selectionMode }: BookCardProps) => {
-    const coverUrl = useBookCover(book.title, book.author);
+const BookCard = ({ book, onClick, selected, onToggleSelection, selectionMode, viewTransitionName, overrideCoverUrl }: BookCardProps) => {
+    const fetchedCoverUrl = useBookCover(book.title, book.author);
+    const coverUrl = overrideCoverUrl || fetchedCoverUrl;
 
     return (
-        <div onClick={onClick} className={`group cursor-pointer flex flex-col gap-3 relative`}>
+        <div onClick={() => onClick(coverUrl || undefined)} className={`group cursor-pointer flex flex-col gap-3 relative`}>
             {/* TARJETA VISUAL (Portada) */}
-            <div className={`relative aspect-[3/4] w-full rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white border ${selected ? 'border-purple-500 ring-2 ring-purple-500 ring-offset-2' : 'border-slate-100 group-hover:border-primary/20'}`}>
+            <div
+                className={`relative aspect-[3/4] w-full rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white border transform-gpu ${selected ? 'border-purple-500 ring-2 ring-purple-500 ring-offset-2' : 'border-slate-100 group-hover:border-primary/20'}`}
+                style={{
+                    backfaceVisibility: 'hidden',
+                    WebkitFontSmoothing: 'subpixel-antialiased',
+                    backgroundImage: coverUrl ? `url(${coverUrl})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    ...(viewTransitionName ? { viewTransitionName } as any : {})
+                }}
+            >
 
                 {/* Check de Selección */}
                 {onToggleSelection && (
                     <div
                         onClick={(e) => { e.stopPropagation(); onToggleSelection(); }}
                         className={`absolute top-4 left-4 z-30 size-8 rounded-full flex items-center justify-center transition-all duration-200 ${selected
-                                ? 'bg-purple-500 text-white scale-100'
-                                : selectionMode
-                                    ? 'bg-white/80 backdrop-blur text-transparent border-2 border-slate-200 scale-100 hover:border-purple-500' // Siempre visible en modo selección
-                                    : 'bg-white/80 backdrop-blur text-transparent border-2 border-slate-200 scale-0 group-hover:scale-100 hover:border-purple-500'
+                            ? 'bg-purple-500 text-white scale-100'
+                            : selectionMode
+                                ? 'bg-white/80 backdrop-blur text-transparent border-2 border-slate-200 scale-100 hover:border-purple-500' // Siempre visible en modo selección
+                                : 'bg-white/80 backdrop-blur text-transparent border-2 border-slate-200 scale-0 group-hover:scale-100 hover:border-purple-500'
                             }`}
                     >
                         <Check size={16} strokeWidth={3} />
@@ -41,7 +54,13 @@ const BookCard = ({ book, onClick, selected, onToggleSelection, selectionMode }:
 
                 {coverUrl ? (
                     <>
-                        <img src={coverUrl} alt={book.title} className="w-full h-full object-cover" />
+                        <img
+                            src={coverUrl}
+                            alt={book.title}
+                            loading="eager"
+                            decoding="sync"
+                            className="w-full h-full object-cover rounded-[2rem] opacity-0 animate-in fade-in duration-300"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90"></div>
                         <span className="absolute bottom-4 left-4 right-4 text-white font-bold text-sm line-clamp-2 leading-tight">
                             {book.title}
