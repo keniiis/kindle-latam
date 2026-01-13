@@ -330,6 +330,33 @@ export default function KindleApp() {
         });
     };
 
+    const handleDeleteClip = (clipId: string) => {
+        setConfirmation({
+            isOpen: true,
+            title: '¿Eliminar cita?',
+            description: 'Esta acción no se puede deshacer.',
+            isDanger: true,
+            confirmText: 'Eliminar',
+            onConfirm: () => {
+                // Delete from Raw Clippings
+                setRawClippings(prev => prev.filter(c => c.id !== clipId));
+
+                // Update selected book immediately
+                setSelectedBook((prev: any) => {
+                    if (!prev) return null;
+                    const updatedClippings = prev.clippings.filter((c: any) => c.id !== clipId);
+
+                    // Si nos quedamos sin citas, quizás deberíamos cerrar el libro o dejarlo vacío?
+                    // Por ahora lo dejamos vacío.
+                    return {
+                        ...prev,
+                        clippings: updatedClippings
+                    };
+                });
+            }
+        });
+    };
+
     const handleToggleBook = (title: string) => {
         const newSet = new Set(selectedBookIds);
         if (newSet.has(title)) {
@@ -541,6 +568,7 @@ export default function KindleApp() {
                                 onUpdateBook={handleUpdateBook}
                                 onAddHighlight={() => handleAddHighlight(selectedBook.title, selectedBook.author)}
                                 onUpdateClip={handleUpdateClip}
+                                onDeleteClip={handleDeleteClip}
                                 onUpdateCover={setSelectedBookCover}
                             />
                         )}

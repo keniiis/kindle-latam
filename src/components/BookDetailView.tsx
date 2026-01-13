@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book, Loader2, Tag } from 'lucide-react';
+import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book, Loader2, Tag, Trash2 } from 'lucide-react';
 import { Clipping } from '@/lib/parser';
 import { PdfExportTemplate } from './PdfExportTemplate';
 import html2canvas from 'html2canvas';
@@ -14,6 +14,7 @@ interface BookDetailViewProps {
     onUpdateBook?: (oldTitle: string, newTitle: string, newAuthor: string) => void;
     onAddHighlight?: () => void;
     onUpdateClip?: (clipId: string, newContent: string) => void;
+    onDeleteClip?: (clipId: string) => void;
     initialCoverUrl?: string;
     onUpdateCover?: (url: string) => void;
 }
@@ -21,7 +22,7 @@ interface BookDetailViewProps {
 import { useBookCover } from '@/hooks/useBookCover';
 import { useToast } from '@/components/Toast';
 
-export default function BookDetailView({ book, onBack, onShare, onUpdateBook, onAddHighlight, onUpdateClip, initialCoverUrl, onUpdateCover }: BookDetailViewProps) {
+export default function BookDetailView({ book, onBack, onShare, onUpdateBook, onAddHighlight, onUpdateClip, onDeleteClip, initialCoverUrl, onUpdateCover }: BookDetailViewProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(book.title);
     const [editAuthor, setEditAuthor] = useState(book.author);
@@ -321,6 +322,16 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                                             >
                                                 <Share2 size={14} /> Story
                                             </button>
+
+                                            {onDeleteClip && (
+                                                <button
+                                                    onClick={() => onDeleteClip(clip.id)}
+                                                    className="flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-500 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-red-100 transition-colors flex-1 md:flex-none justify-center group/delete"
+                                                    title="Eliminar cita"
+                                                >
+                                                    <Trash2 size={14} className="group-hover/delete:fill-current" />
+                                                </button>
+                                            )}
                                         </div>
                                     </>
                                 )}
