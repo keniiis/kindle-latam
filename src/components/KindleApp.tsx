@@ -92,7 +92,11 @@ export default function KindleApp() {
 
             if (sharedContent || title) {
                 const clean = cleanTitle(title);
-                const existingBook = rawClippings.find(c => c.title.toLowerCase() === clean.toLowerCase());
+                const existingBook = rawClippings.find(c => {
+                    const libTitle = c.title.trim().toLowerCase();
+                    const searchTitle = clean.toLowerCase();
+                    return libTitle === searchTitle || (libTitle.includes(searchTitle) && searchTitle.length > 4);
+                });
 
                 setManualEntryData({
                     title: existingBook ? existingBook.title : clean,
