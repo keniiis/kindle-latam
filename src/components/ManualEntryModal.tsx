@@ -9,6 +9,7 @@ interface ManualEntryModalProps {
     initialTitle?: string;
     initialAuthor?: string;
     initialContent?: string;
+    initialGenre?: string;
 }
 
 interface BookSuggestion {
@@ -19,10 +20,10 @@ interface BookSuggestion {
     genre?: string;
 }
 
-export default function ManualEntryModal({ onClose, onSave, initialTitle = '', initialAuthor = '', initialContent = '' }: ManualEntryModalProps) {
+export default function ManualEntryModal({ onClose, onSave, initialTitle = '', initialAuthor = '', initialContent = '', initialGenre = '' }: ManualEntryModalProps) {
     const [title, setTitle] = useState(initialTitle);
     const [author, setAuthor] = useState(initialAuthor);
-    const [genre, setGenre] = useState('');
+    const [genre, setGenre] = useState(initialGenre);
     const [content, setContent] = useState(initialContent);
 
     // Search states
@@ -47,9 +48,9 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [wrapperRef]);
 
-    // Auto-search if initial title is present (Share Target)
+    // Auto-search if initial title is present (Share Target) AND we don't have an author yet
     useEffect(() => {
-        if (initialTitle && initialTitle.length > 2) {
+        if (initialTitle && initialTitle.length > 2 && !initialAuthor) {
             searchBooks(initialTitle);
         }
     }, []);

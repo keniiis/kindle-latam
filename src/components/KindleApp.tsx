@@ -24,7 +24,7 @@ export default function KindleApp() {
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [showManualModal, setShowManualModal] = useState(false);
-    const [manualEntryData, setManualEntryData] = useState<{ title: string, author: string, content?: string } | null>(null);
+    const [manualEntryData, setManualEntryData] = useState<{ title: string, author: string, content?: string, genre?: string } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [selectedBookIds, setSelectedBookIds] = useState<Set<string>>(new Set());
@@ -91,10 +91,14 @@ export default function KindleApp() {
             };
 
             if (sharedContent || title) {
+                const clean = cleanTitle(title);
+                const existingBook = rawClippings.find(c => c.title.toLowerCase() === clean.toLowerCase());
+
                 setManualEntryData({
-                    title: cleanTitle(title),
-                    author: '',
-                    content: sharedContent
+                    title: existingBook ? existingBook.title : clean,
+                    author: existingBook ? existingBook.author : '',
+                    content: sharedContent,
+                    genre: existingBook ? existingBook.genre : ''
                 });
                 setShowManualModal(true);
 
@@ -102,7 +106,7 @@ export default function KindleApp() {
                 window.history.replaceState({}, '', '/');
             }
         }
-    }, [isLoaded]);
+    }, [isLoaded, rawClippings]);
 
     // Recuperar libro seleccionado después de cargar la librería
     useEffect(() => {
@@ -583,6 +587,7 @@ export default function KindleApp() {
                             initialTitle={manualEntryData?.title}
                             initialAuthor={manualEntryData?.author}
                             initialContent={manualEntryData?.content}
+                            initialGenre={manualEntryData?.genre}
                         />
                     )}
 
@@ -621,6 +626,7 @@ export default function KindleApp() {
                     initialTitle={manualEntryData?.title}
                     initialAuthor={manualEntryData?.author}
                     initialContent={manualEntryData?.content}
+                    initialGenre={manualEntryData?.genre}
                 />
             )}
         </ToastProvider>
