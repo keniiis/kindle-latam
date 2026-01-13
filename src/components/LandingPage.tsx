@@ -95,6 +95,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">Beneficios</a>
                     </nav>
                     <button
+                        id="btn-install-app"
                         onClick={handleInstallClick}
                         className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                     >
