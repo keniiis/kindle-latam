@@ -72,7 +72,7 @@ export default function KindleApp() {
 
     // Share Target Handler
     useEffect(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && isLoaded) {
             const params = new URLSearchParams(window.location.search);
             const title = params.get('title') || '';
             const text = params.get('text') || '';
@@ -92,7 +92,18 @@ export default function KindleApp() {
 
             if (sharedContent || title) {
                 const clean = cleanTitle(title);
-                const existingBook = rawClippings.find(c => {
+
+                // Leemos directamente del storage para asegurar que tenemos los datos más frescos
+                // y evitar problemas de sincronización de estado de React.
+                let searchPool = rawClippings;
+                if (searchPool.length === 0) {
+                    try {
+                        const local = localStorage.getItem(STORAGE_KEY);
+                        if (local) searchPool = JSON.parse(local);
+                    } catch (e) { console.error('Error reading local storage for share', e); }
+                }
+
+                const existingBook = searchPool.find(c => {
                     const libTitle = c.title.trim().toLowerCase();
                     const searchTitle = clean.toLowerCase();
                     return libTitle === searchTitle || (libTitle.includes(searchTitle) && searchTitle.length > 4);
@@ -110,7 +121,7 @@ export default function KindleApp() {
                 window.history.replaceState({}, '', '/');
             }
         }
-    }, [isLoaded, rawClippings]);
+    }, [isLoaded]);
 
     // Recuperar libro seleccionado después de cargar la librería
     useEffect(() => {
