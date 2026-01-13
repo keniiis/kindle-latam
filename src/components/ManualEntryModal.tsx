@@ -47,6 +47,13 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [wrapperRef]);
 
+    // Auto-search if initial title is present (Share Target)
+    useEffect(() => {
+        if (initialTitle && initialTitle.length > 2) {
+            searchBooks(initialTitle);
+        }
+    }, []);
+
     const searchBooks = async (query: string) => {
         if (!query.trim()) {
             setSuggestions([]);

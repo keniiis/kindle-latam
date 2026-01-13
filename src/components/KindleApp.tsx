@@ -80,9 +80,19 @@ export default function KindleApp() {
 
             const sharedContent = [text, url].filter(Boolean).join('\n\n');
 
+            const cleanTitle = (raw: string) => {
+                return raw
+                    .replace(/^cita del libro\s+/i, '')
+                    .replace(/^cita de\s+/i, '')
+                    .replace(/^quote from\s+/i, '')
+                    .replace(/^highlight from\s+/i, '')
+                    .replace(/\s+-\s+cita$/i, '')
+                    .trim();
+            };
+
             if (sharedContent || title) {
                 setManualEntryData({
-                    title: title,
+                    title: cleanTitle(title),
                     author: '',
                     content: sharedContent
                 });
