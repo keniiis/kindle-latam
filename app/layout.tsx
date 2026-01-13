@@ -60,6 +60,8 @@ export const metadata: Metadata = {
   },
 };
 
+import PwaUpdater from '@/components/PwaUpdater';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -89,6 +91,7 @@ export default function RootLayout({
           />
         </noscript>
         {children}
+        <PwaUpdater />
       </body>
     </html>
   );
