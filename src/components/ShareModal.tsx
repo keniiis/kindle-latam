@@ -397,7 +397,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                         </div>
                     </div>
 
-                    <button onClick={handleDownload} disabled={isGenerating} className="bg-[#8c25f4] text-white h-[58px] px-8 rounded-full font-bold text-sm shadow-xl shadow-purple-500/30 hover:bg-[#7c1be2] hover:scale-105 hover:shadow-purple-500/40 transition-all flex items-center gap-3 whitespace-nowrap">
+                    <button id="btn-download-desktop" onClick={handleDownload} disabled={isGenerating} className="bg-[#8c25f4] text-white h-[58px] px-8 rounded-full font-bold text-sm shadow-xl shadow-purple-500/30 hover:bg-[#7c1be2] hover:scale-105 hover:shadow-purple-500/40 transition-all flex items-center gap-3 whitespace-nowrap">
                         {isGenerating ? <Loader2 size={20} className="animate-spin" /> : <Download size={20} className="stroke-2" />}
                         <span className="tracking-wide">Descargar Story</span>
                     </button>
@@ -409,6 +409,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                 {/* Botón Flotante */}
                 <div className="flex justify-center pb-6 pointer-events-auto animate-in slide-in-from-bottom-10 duration-500">
                     <button
+                        id="btn-download-mobile"
                         onClick={handleDownload}
                         disabled={isGenerating}
                         className="bg-[#8c25f4] text-white px-8 py-3 rounded-full font-bold text-sm shadow-xl shadow-purple-500/30 hover:bg-[#7c1be2] active:scale-95 transition-all flex items-center gap-2"
