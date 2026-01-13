@@ -24,7 +24,7 @@ export default function KindleApp() {
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [showManualModal, setShowManualModal] = useState(false);
-    const [manualEntryData, setManualEntryData] = useState<{ title: string, author: string } | null>(null);
+    const [manualEntryData, setManualEntryData] = useState<{ title: string, author: string, content?: string } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [selectedBookIds, setSelectedBookIds] = useState<Set<string>>(new Set());
@@ -69,6 +69,30 @@ export default function KindleApp() {
         }
         setIsLoaded(true);
     }, []);
+
+    // Share Target Handler
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const title = params.get('title') || '';
+            const text = params.get('text') || '';
+            const url = params.get('url') || '';
+
+            const sharedContent = [text, url].filter(Boolean).join('\n\n');
+
+            if (sharedContent || title) {
+                setManualEntryData({
+                    title: title,
+                    author: '',
+                    content: sharedContent
+                });
+                setShowManualModal(true);
+
+                // Limpiar URL para que no vuelva a saltar al recargar
+                window.history.replaceState({}, '', '/');
+            }
+        }
+    }, [isLoaded]);
 
     // Recuperar libro seleccionado después de cargar la librería
     useEffect(() => {
@@ -520,6 +544,7 @@ export default function KindleApp() {
                             onSave={handleManualSave}
                             initialTitle={manualEntryData?.title}
                             initialAuthor={manualEntryData?.author}
+                            initialContent={manualEntryData?.content}
                         />
                     )}
 
@@ -557,6 +582,7 @@ export default function KindleApp() {
                     onSave={handleManualSave}
                     initialTitle={manualEntryData?.title}
                     initialAuthor={manualEntryData?.author}
+                    initialContent={manualEntryData?.content}
                 />
             )}
         </ToastProvider>

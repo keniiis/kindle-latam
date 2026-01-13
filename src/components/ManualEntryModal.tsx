@@ -8,6 +8,7 @@ interface ManualEntryModalProps {
     onSave: (title: string, author: string, content: string, genre?: string) => void;
     initialTitle?: string;
     initialAuthor?: string;
+    initialContent?: string;
 }
 
 interface BookSuggestion {
@@ -18,11 +19,11 @@ interface BookSuggestion {
     genre?: string;
 }
 
-export default function ManualEntryModal({ onClose, onSave, initialTitle = '', initialAuthor = '' }: ManualEntryModalProps) {
+export default function ManualEntryModal({ onClose, onSave, initialTitle = '', initialAuthor = '', initialContent = '' }: ManualEntryModalProps) {
     const [title, setTitle] = useState(initialTitle);
     const [author, setAuthor] = useState(initialAuthor);
     const [genre, setGenre] = useState('');
-    const [content, setContent] = useState('');
+    const [content, setContent] = useState(initialContent);
 
     // Search states
     const [suggestions, setSuggestions] = useState<BookSuggestion[]>([]);
