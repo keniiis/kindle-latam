@@ -64,7 +64,7 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
         setIsSearching(true);
         try {
             const response = await fetch(
-                `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&printType=books`
+                `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(query)}&maxResults=10&printType=books`
             );
             const data = await response.json();
 
