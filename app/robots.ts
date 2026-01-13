@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: '/private/',
         },
-        sitemap: 'https://citando-ando.vercel.app/sitemap.xml',
+        sitemap: 'https://citando-ando.vercel.app/sitemap.xml/',
     };
 }
