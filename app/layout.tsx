@@ -1,12 +1,30 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Playfair_Display, Lora, Inter } from "next/font/google";
 import "./globals.css";
 
 // Cargamos la fuente
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: '--font-jakarta', // Esta variable la usa Tailwind
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: '--font-playfair',
+  display: 'swap',
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: '--font-lora',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -61,6 +79,7 @@ export const metadata: Metadata = {
 };
 
 import PwaUpdater from '@/components/PwaUpdater';
+import { ToastProvider } from '@/components/Toast';
 
 export default function RootLayout({
   children,
@@ -68,10 +87,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${jakarta.variable}`}>
+    <html lang="es" className={`${jakarta.variable} ${playfair.variable} ${lora.variable} ${inter.variable}`}>
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet" />
+        {/* Eliminados links de Google Fonts para evitar error CORS con html-to-image */}
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -90,8 +108,10 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
-        {children}
-        <PwaUpdater />
+        <ToastProvider>
+          {children}
+          <PwaUpdater />
+        </ToastProvider>
       </body>
     </html>
   );

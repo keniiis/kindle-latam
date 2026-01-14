@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Twitter, Pencil, Download } from 'lucide-react';
 
@@ -91,6 +92,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         <h2 className="text-xl font-extrabold tracking-tight">CitandoAndo</h2>
                     </div>
                     <nav className="hidden md:flex items-center gap-8">
+                        <Link className="text-sm font-semibold hover:text-primary transition-colors" href="/blog">Blog</Link>
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#como-funciona">Cómo funciona</a>
                         <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">Beneficios</a>
                     </nav>
@@ -541,7 +543,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         </div>
                     </div>
                     <div className="mt-12 text-center text-sm opacity-50 font-medium">
-                        <p>© 2026 CitandoAndo. Hecho con ❤️ para lectores.</p>
+                        <p>© 2026 CitandoAndo. Hecho con ❤️ para lectores. <span className="mx-2">•</span> <Link href="/blog" className="hover:underline">Blog</Link></p>
                     </div>
                 </footer>
             </main>
