@@ -37,20 +37,20 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     return (
         <ToastContext.Provider value={{ showToast }}>
             {children}
-            <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none">
+            <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none" suppressHydrationWarning>
                 {toasts.map((toast) => (
                     <div
                         key={toast.id}
                         className={`pointer-events-auto min-w-[300px] max-w-sm w-full p-4 rounded-2xl shadow-xl border flex items-center gap-3 animate-in slide-in-from-right-full fade-in duration-300 transition-all ${toast.type === 'success'
-                                ? 'bg-white border-green-100 text-slate-800'
-                                : toast.type === 'error'
-                                    ? 'bg-white border-red-100 text-slate-800'
-                                    : 'bg-white border-blue-100 text-slate-800'
+                            ? 'bg-white border-green-100 text-slate-800'
+                            : toast.type === 'error'
+                                ? 'bg-white border-red-100 text-slate-800'
+                                : 'bg-white border-blue-100 text-slate-800'
                             }`}
                     >
                         <div className={`p-2 rounded-full shrink-0 ${toast.type === 'success' ? 'bg-green-50 text-green-600' :
-                                toast.type === 'error' ? 'bg-red-50 text-red-600' :
-                                    'bg-blue-50 text-blue-600'
+                            toast.type === 'error' ? 'bg-red-50 text-red-600' :
+                                'bg-blue-50 text-blue-600'
                             }`}>
                             {toast.type === 'success' && <Check size={18} strokeWidth={3} />}
                             {toast.type === 'error' && <AlertCircle size={18} strokeWidth={3} />}

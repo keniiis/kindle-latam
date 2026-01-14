@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Twitter, Pencil, Download } from 'lucide-react';
+import { BookOpen, ArrowRight, Usb, Quote, Share2, UploadCloud, CheckCircle2, Smartphone, Shield, Zap, Palette, Monitor, Folder, Lock, Image as ImageIcon, HeartHandshake, Twitter, Pencil, Download, Globe } from 'lucide-react';
+import { useLanguage } from '@/store/useLanguage';
+import { translations } from '@/data/translations';
 
 interface LandingPageProps {
     onStart: () => void;
@@ -11,6 +13,16 @@ interface LandingPageProps {
 
 export default function LandingPage({ onStart, onManualEntry }: LandingPageProps) {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const { language, toggleLanguage, setLanguage } = useLanguage();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Evitar mismatch: Durante SSR y primer render, usar 'es'. Luego usar el idioma del store.
+    const currentLang = mounted ? language : 'es';
+    const t = translations[currentLang];
 
     // Playground States
     const [previewStyle, setPreviewStyle] = useState('Vibrant Gradient');
@@ -85,25 +97,34 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
             {/* HEADER LANDING */}
             <header className="sticky top-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-primary/10 px-6 lg:px-40 py-3">
                 <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={toggleLanguage}>
                         <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
                             <BookOpen size={20} />
                         </div>
-                        <h2 className="text-xl font-extrabold tracking-tight">CitandoAndo</h2>
+                        <h2 className="text-xl font-extrabold tracking-tight hidden sm:block">CitandoAndo</h2>
                     </div>
                     <nav className="hidden md:flex items-center gap-8">
-                        <Link className="text-sm font-semibold hover:text-primary transition-colors" href="/blog">Blog</Link>
-                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#como-funciona">Cómo funciona</a>
-                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">Beneficios</a>
+                        <Link className="text-sm font-semibold hover:text-primary transition-colors" href="/blog">{t.landing.nav.blog}</Link>
+                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#como-funciona">{t.landing.nav.how_it_works}</a>
+                        <a className="text-sm font-semibold hover:text-primary transition-colors" href="#features">{t.landing.nav.features}</a>
                     </nav>
-                    <button
-                        id="btn-install-app"
-                        onClick={handleInstallClick}
-                        className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
-                    >
-                        {deferredPrompt ? <Download size={18} /> : null}
-                        {deferredPrompt ? 'Instalar App' : 'Abrir App'}
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={toggleLanguage}
+                            className="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
+                        >
+                            <Globe size={14} />
+                            {currentLang === 'es' ? 'EN' : 'ES'}
+                        </button>
+                        <button
+                            id="btn-install-app"
+                            onClick={handleInstallClick}
+                            className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                        >
+                            {deferredPrompt ? <Download size={18} /> : null}
+                            {deferredPrompt ? 'Instalar App' : t.landing.nav.enter_app}
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -115,39 +136,19 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         <div className="flex flex-col gap-8">
                             <div className="flex flex-col gap-6">
                                 <span className="bg-purple-100 text-purple-700 px-4 py-1.5 rounded-full text-xs font-bold w-fit uppercase tracking-widest shadow-sm border border-purple-200">
-                                    Beta abierta
+                                    {t.landing.hero.badge}
                                 </span>
                                 <h1 className="text-5xl lg:text-7xl font-black leading-[1.0] tracking-tight text-[#140d1c]">
-                                    Tus lecturas <br className="hidden lg:block" />
-                                    merecen ser <br className="hidden lg:block" />
-                                    <span className="text-primary">compartidas</span>
+                                    {t.landing.hero.title_1} <br className="hidden lg:block" />
+                                    {t.landing.hero.title_2} <br className="hidden lg:block" />
+                                    <span className="text-primary">{t.landing.hero.title_highlight}</span>
                                 </h1>
                                 <p className="text-lg lg:text-xl text-slate-600 leading-relaxed max-w-lg font-medium">
-                                    Transforma tus highlights de Kindle en arte listo para tus redes sociales en segundos. Sin descargas.
+                                    {t.landing.hero.subtitle}
                                 </p>
                             </div>
 
-                            {/* Avatares (Oculto temporalmente)
-                            <div className="flex items-center gap-4">
-                                <div className="flex -space-x-4">
-                                    {[
-                                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
-                                        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop",
-                                        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop"
-                                    ].map((img, i) => (
-                                        <div key={i} className="size-12 rounded-full border-4 border-white bg-slate-200 overflow-hidden shadow-sm">
-                                            <img src={img} alt="Usuario" className="w-full h-full object-cover" />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex flex-col">
-                                    <div className="flex items-center gap-1">
-                                        {[1, 2, 3, 4, 5].map(s => <div key={s} className="size-3 text-yellow-400 fill-yellow-400">★</div>)}
-                                    </div>
-                                    <span className="text-sm font-bold text-slate-700 mt-1">+2k lectores ya lo usan</span>
-                                </div>
-                            </div>
-                            */}
+                            {/* Avatares (Oculto temporalmente) */}
                         </div>
 
                         {/* HERO UPLOAD ZONE */}
@@ -165,11 +166,11 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                 </div>
 
                                 {/* Main Title */}
-                                <h2 className="text-3xl font-black text-[#0f0a16] mb-3 tracking-tight">Sube tu archivo</h2>
+                                <h2 className="text-3xl font-black text-[#0f0a16] mb-3 tracking-tight">{t.landing.hero.upload_card_title}</h2>
 
                                 {/* Subtitle with Code Style */}
                                 <p className="text-slate-600 font-medium mb-8 max-w-[260px] leading-relaxed text-sm">
-                                    Arrastra tu <code className="font-bold bg-purple-50 text-purple-600 px-2 py-0.5 rounded border border-purple-100/50">My Clippings.txt</code> o haz clic para buscarlo.
+                                    {t.landing.hero.upload_card_desc} <code className="font-bold bg-purple-50 text-purple-600 px-2 py-0.5 rounded border border-purple-100/50">My Clippings.txt</code>
                                 </p>
 
                                 {/* Platform Tags */}
@@ -184,13 +185,13 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                                 {/* Manual Entry Button Section */}
                                 <div className="mt-2 space-y-3 w-full">
-                                    <p className="text-xs font-bold text-slate-600">¿No tienes archivo?</p>
+                                    <p className="text-xs font-bold text-slate-600">{t.landing.hero.upload_card_no_file}</p>
                                     <button
                                         onClick={(e) => { e.stopPropagation(); onManualEntry(); }}
                                         className="w-full flex items-center justify-center gap-2 border border-purple-200 hover:border-purple-300 bg-purple-50/50 hover:bg-purple-50 text-purple-600 px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-0.5"
                                     >
                                         <Pencil size={16} />
-                                        <span>Crear manualmente</span>
+                                        <span>{t.landing.hero.upload_card_manual}</span>
                                     </button>
                                 </div>
                             </div>
@@ -201,14 +202,14 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                 {/* HOW IT WORKS */}
                 <section className="px-6 py-20" id="como-funciona">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Comparte en 3 simples pasos</h2>
-                        <p className="text-lg text-slate-600">Olvídate de capturas de pantalla feas y texto plano.</p>
+                        <h2 className="text-3xl md:text-5xl font-extrabold mb-4">{t.landing.steps.title}</h2>
+                        <p className="text-lg text-slate-600">{t.landing.steps.subtitle}</p>
                     </div>
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
-                            { num: 1, title: 'Conecta tu Kindle', text: 'Sincroniza tus notas vía USB o correo electrónico de forma segura.', icon: Usb },
-                            { num: 2, title: 'Elige tu cita', text: 'Navega por tus libros y selecciona el fragmento que más te inspiró.', icon: Quote },
-                            { num: 3, title: 'Comparte en IG', text: 'Personaliza el diseño y expórtalo directamente a tus historias.', icon: Share2 }
+                            { num: 1, title: t.landing.steps.s1_title, text: t.landing.steps.s1_desc, icon: Usb },
+                            { num: 2, title: t.landing.steps.s2_title, text: t.landing.steps.s2_desc, icon: Quote },
+                            { num: 3, title: t.landing.steps.s3_title, text: t.landing.steps.s3_desc, icon: Share2 }
                         ].map((step) => (
                             <div key={step.num} className="group bg-white p-8 rounded-2xl border border-primary/10 hover:border-primary/40 transition-all shadow-sm">
                                 <div className="size-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 font-black text-2xl group-hover:bg-primary group-hover:text-white transition-colors">{step.num}</div>
@@ -226,9 +227,9 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                 <section className="px-6 py-20" id="preview">
                     <div className="max-w-[1200px] mx-auto">
                         <div className="mb-14">
-                            <h2 className="text-4xl md:text-5xl font-black mb-4">Playground Interactivo</h2>
+                            <h2 className="text-4xl md:text-5xl font-black mb-4">{t.landing.playground.title}</h2>
                             <p className="text-lg text-slate-600 md:w-1/2">
-                                El estudio creativo donde tus lecturas cobran vida. Personaliza cada detalle y previsualiza en tiempo real.
+                                {t.landing.playground.subtitle}
                             </p>
                         </div>
 
@@ -236,7 +237,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                             {/* Panel de Controles */}
                             <div className="space-y-10">
                                 <div>
-                                    <h3 className="text-xs font-bold text-primary tracking-[0.2em] uppercase mb-6">Presets de Estilo</h3>
+                                    <h3 className="text-xs font-bold text-primary tracking-[0.2em] uppercase mb-6">{t.landing.playground.presets_title}</h3>
                                     <div className="space-y-4">
                                         {[
                                             {
@@ -290,11 +291,11 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                                 {/* Personalización Rápida */}
                                 <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                                    <h3 className="text-xs font-bold text-primary tracking-[0.2em] uppercase mb-6">Personalización Rápida</h3>
+                                    <h3 className="text-xs font-bold text-primary tracking-[0.2em] uppercase mb-6">{t.landing.playground.quick_custom_title}</h3>
 
                                     <div className="space-y-6">
                                         <div>
-                                            <label className="text-xs font-bold text-slate-600 mb-3 block">Acento de Color</label>
+                                            <label className="text-xs font-bold text-slate-600 mb-3 block">{t.landing.playground.color_accent}</label>
                                             <div className="flex gap-3 flex-wrap">
                                                 {['#ffffff', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#000000'].map((color) => (
                                                     <div
@@ -312,7 +313,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                         <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                                             <div className="flex items-center gap-3">
                                                 <div className="font-serif text-lg italic font-bold">Tt</div>
-                                                <span className="text-sm font-bold text-slate-700">Fuente Serif</span>
+                                                <span className="text-sm font-bold text-slate-700">{t.landing.playground.serif_font}</span>
                                             </div>
                                             <div
                                                 onClick={() => setSerifFont(!serifFont)}
@@ -344,14 +345,14 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                                         <div className="flex-1 flex flex-col justify-center px-10 relative z-10">
                                             <p className={`text-2xl md:text-3xl leading-[0.995] font-medium drop-shadow-sm transition-all duration-300 ${serifFont ? 'font-serif italic' : 'font-sans'}`}>
-                                                "La lectura de todos los buenos libros es como una conversación con las mejores mentes de los siglos pasados."
+                                                "{t.landing.playground.phone_quote}"
                                             </p>
                                         </div>
 
                                         <div className="pb-12 px-10 text-center relative z-10">
                                             <div className="w-16 h-1 mx-auto mb-6 rounded-full transition-colors duration-300" style={{ backgroundColor: previewColor }}></div>
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1">René Descartes</p>
-                                            <p className="text-[9px] opacity-60 font-medium">Discurso del método</p>
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1">{t.landing.playground.phone_author}</p>
+                                            <p className="text-[9px] opacity-60 font-medium">{t.landing.playground.phone_book}</p>
                                         </div>
 
                                         {/* Footer de la app en pantalla */}
@@ -372,7 +373,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                         <Smartphone size={20} />
                                     </div>
                                     <div className="pr-2">
-                                        <p className="text-[9px] font-bold text-slate-600 uppercase tracking-wider">Vista Previa</p>
+                                        <p className="text-[9px] font-bold text-slate-600 uppercase tracking-wider">{t.landing.playground.preview_tooltip}</p>
                                         <p className="text-xs font-bold text-slate-800">1080 x 1920 (9:16)</p>
                                     </div>
                                 </div>
@@ -388,12 +389,12 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                         {/* HEADER CENTRADO */}
                         <div className="text-center mb-16 max-w-3xl mx-auto space-y-4">
-                            <span className="text-xs font-bold text-primary tracking-[0.2em] uppercase block mb-2">Tu Segundo Cerebro</span>
+                            <span className="text-xs font-bold text-primary tracking-[0.2em] uppercase block mb-2">{t.landing.benefits.badge}</span>
                             <h2 className="text-4xl md:text-5xl font-black text-[#140d1c] tracking-tight">
-                                Tu biblioteca, <span className="text-primary">reimaginada</span>
+                                {t.landing.benefits.title_1} <span className="text-primary">{t.landing.benefits.title_2}</span>
                             </h2>
                             <p className="text-lg text-slate-600 leading-relaxed font-medium">
-                                Organiza tus pensamientos y haz que tus lecturas cobren vida con nuestra plataforma diseñada para el lector moderno.
+                                {t.landing.benefits.subtitle}
                             </p>
                         </div>
 
@@ -435,26 +436,26 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                                 {
                                     icon: Shield,
                                     color: "bg-purple-100 text-purple-600",
-                                    title: "Privacidad total",
-                                    desc: "Tus datos nunca salen de tu navegador. Disfruta de una experiencia 100% privada y segura gestionando tu archivo personal."
+                                    title: t.landing.benefits.b1_title,
+                                    desc: t.landing.benefits.b1_desc
                                 },
                                 {
                                     icon: Monitor,
                                     color: "bg-pink-100 text-pink-600",
-                                    title: "Multi-dispositivo",
-                                    desc: "Diseñada como PWA para funcionar perfectamente en tu laptop, tablet o móvil. Instálala y lleva tu biblioteca a donde vayas."
+                                    title: t.landing.benefits.b2_title,
+                                    desc: t.landing.benefits.b2_desc
                                 },
                                 {
                                     icon: Zap,
                                     color: "bg-indigo-100 text-indigo-600",
-                                    title: "Sin límites",
-                                    desc: "No importa si tienes 10 o 1,000 libros. CitandoAndo procesa todos tus highlights de forma gratuita y sin restricciones de almacenamiento."
+                                    title: t.landing.benefits.b3_title,
+                                    desc: t.landing.benefits.b3_desc
                                 },
                                 {
                                     icon: Palette,
                                     color: "bg-orange-100 text-orange-600",
-                                    title: "Diseño moderno",
-                                    desc: "Herramientas de edición intuitivas para personalizar tus citas. Crea piezas visuales impactantes optimizadas para Instagram y Twitter."
+                                    title: t.landing.benefits.b4_title,
+                                    desc: t.landing.benefits.b4_desc
                                 }
                             ].map((feature, i) => (
                                 <div key={i} className="flex gap-6 group hover:bg-slate-50 p-4 rounded-3xl transition-colors -ml-4">
@@ -477,31 +478,31 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                 <section className="px-6 py-24 bg-[#fcfcfc]">
                     <div className="max-w-[1000px] mx-auto">
                         <div className="text-center mb-20 space-y-4">
-                            <h2 className="text-4xl md:text-5xl font-black text-[#140d1c] tracking-tight">Preguntas Frecuentes</h2>
-                            <p className="text-lg text-slate-600 font-medium">Todo lo que necesitas saber antes de empezar.</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-[#140d1c] tracking-tight">{t.landing.faq.title}</h2>
+                            <p className="text-lg text-slate-600 font-medium">{t.landing.faq.subtitle}</p>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-8 mb-20">
                             {[
                                 {
                                     icon: Folder,
-                                    q: "¿Cómo encuentro el archivo My Clippings.txt?",
-                                    a: "Conecta tu Kindle a tu PC con el cable USB. Aparecerá como una memoria externa. Entra a la carpeta 'documents' y ahí encontrarás el archivo 'My Clippings.txt'."
+                                    q: t.landing.faq.q1,
+                                    a: t.landing.faq.a1
                                 },
                                 {
                                     icon: Shield,
-                                    q: "¿Es seguro? ¿Guardan mis notas?",
-                                    a: "Totalmente seguro. CitandoAndo funciona 100% en tu navegador. Tus notas NO se suben a ningún servidor, todo el procesamiento es local en tu dispositivo."
+                                    q: t.landing.faq.q2,
+                                    a: t.landing.faq.a2
                                 },
                                 {
                                     icon: ImageIcon,
-                                    q: "¿Funciona con Kobo o Apple Books?",
-                                    a: "¡Sí! Con nuestro nuevo Modo Manual puedes crear diseños hermosos transcribiendo desde libros físicos, PDFs, Apple Books o cualquier otra fuente."
+                                    q: t.landing.faq.q3,
+                                    a: t.landing.faq.a3
                                 },
                                 {
                                     icon: HeartHandshake,
-                                    q: "¿Es realmente gratis?",
-                                    a: "Sí, es un proyecto Open Source creado por amor a la lectura. Si te gusta, puedes invitarme un café, pero todas las funciones son y serán gratuitas."
+                                    q: t.landing.faq.q4,
+                                    a: t.landing.faq.a4
                                 }
                             ].map((faq, i) => (
                                 <div key={i} className="bg-white p-10 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-purple-900/5 transition-all duration-300 group">
@@ -516,7 +517,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
 
                         {/* Still have questions? */}
                         <div className="text-center border-t border-slate-100 pt-16">
-                            <p className="text-slate-600 font-bold mb-6">¿Aún tienes dudas?</p>
+                            <p className="text-slate-600 font-bold mb-6">{t.landing.faq.still_doubts}</p>
                             <div className="flex justify-center gap-8">
                                 {/* <a href="mailto:hola@citandoando.com" className="flex items-center gap-2 text-[#8c25f4] font-bold hover:text-purple-700 transition-colors">
                                     <Mail size={18} />
@@ -536,17 +537,18 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                     <div className="bg-primary rounded-[3rem] p-12 md:p-24 text-center text-white relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-full bg-linear-to-br from-white/10 to-transparent pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center gap-8">
-                            <h2 className="text-4xl md:text-6xl font-black max-w-2xl leading-tight">¿Listo para darle vida a tus notas?</h2>
+                            <h2 className="text-4xl md:text-6xl font-black max-w-2xl leading-tight">{t.landing.footer.title}</h2>
                             <button onClick={onStart} className="bg-white text-primary h-16 px-12 rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-2xl">
-                                Empezar ahora gratis
+                                {t.landing.footer.cta}
                             </button>
                         </div>
                     </div>
                     <div className="mt-12 text-center text-sm opacity-50 font-medium">
-                        <p>© 2026 CitandoAndo. Hecho con ❤️ para lectores. <span className="mx-2">•</span> <Link href="/blog" className="hover:underline">Blog</Link></p>
+                        <p>© 2026 CitandoAndo. {t.landing.footer.made_with} <span className="mx-2">•</span> <Link href="/blog" className="hover:underline">{t.landing.nav.blog}</Link></p>
                     </div>
                 </footer>
             </main>
         </div>
     );
 }
+

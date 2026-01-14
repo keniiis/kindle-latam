@@ -102,7 +102,7 @@ export default function Page() {
                 <p className="text-slate-600 text-xs mb-2">
                     Hecho con <span className="text-red-400">❤</span> en Chiloé por <a href="https://ko-fi.com/devdanipena" target="_blank" className="hover:text-indigo-600 underline font-medium">Danidev</a>
                 </p>
-                <div className="flex justify-center gap-4 text-[10px] text-slate-600 uppercase tracking-widest font-bold">
+                <div className="flex justify-center gap-4 text-[10px] text-slate-600 uppercase tracking-widest font-bold" suppressHydrationWarning>
                     <span>Kindle Parser</span> • <span>Next.js PWA</span> • <span>Open Source</span>
                 </div>
             </footer>

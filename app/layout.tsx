@@ -87,7 +87,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${jakarta.variable} ${playfair.variable} ${lora.variable} ${inter.variable}`}>
+    <html lang="es" className={`${jakarta.variable} ${playfair.variable} ${lora.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         {/* Eliminados links de Google Fonts para evitar error CORS con html-to-image */}
         <Script id="gtm" strategy="afterInteractive">
