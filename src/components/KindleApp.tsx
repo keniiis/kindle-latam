@@ -281,7 +281,7 @@ export default function KindleApp() {
 
     const handleManualSave = (title: string, author: string, content: string, genre?: string) => {
         const newClipping: Clipping = {
-            id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
+            id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
             title,
             author,
             content,
@@ -292,6 +292,18 @@ export default function KindleApp() {
         };
 
         setRawClippings(prev => [newClipping, ...prev]);
+
+        // Actualizar libro seleccionado si coincide (Fix para actualización inmediata)
+        setSelectedBook((prev: any) => {
+            if (prev && prev.title === title) {
+                return {
+                    ...prev,
+                    clippings: [newClipping, ...prev.clippings]
+                };
+            }
+            return prev;
+        });
+
         setShowManualModal(false);
         setManualEntryData(null);
         window.scrollTo({ top: 0, behavior: 'smooth' });
