@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             type: 'article',
             publishedTime: post.date,
             authors: ['Danidev'],
+            images: post.coverImage ? [post.coverImage] : undefined,
         }
     };
 }
