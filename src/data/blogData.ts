@@ -1,20 +1,94 @@
+
 export interface BlogPost {
     slug: string;
     title: string;
-    excerpt: string;
-    content: string; // HTML or Markdown content
-    coverImage: string;
+    description: string;
     date: string;
-    author: string;
     readTime: string;
-    category: string;
+    coverImage?: string;
+    content: string; // MDX or HTML string
+    tags: string[];
 }
 
-export const BLOG_POSTS: BlogPost[] = [
+export const blogPosts: BlogPost[] = [
+    {
+        slug: 'cronologia-outlander',
+        title: 'Cronología Completa de la Saga Outlander',
+        description: 'La guía definitiva para leer los libros de Diana Gabaldon en orden, incluyendo las novelas de Lord John Grey.',
+        date: '2024-01-20',
+        readTime: '8 min lectura',
+        coverImage: '/outlander-cover.png',
+        tags: ['Libros', 'Guía', 'Fantasía'],
+        content: `
+<h2>La Columna Vertebral: Las Novelas Principales</h2>
+<p>Esta es la historia central de Claire y Jamie Fraser. Aunque Diana Gabaldon juega con el tiempo, se recomienda leer estas novelas en el orden de publicación para evitar spoilers y seguir la evolución natural de los personajes.</p>
+
+<h3>1. Forastera (Outlander, 1991)</h3>
+<p>La historia comienza en 1945 (o 1946 en la edición británica), cuando Claire Randall, una enfermera de combate, atraviesa las piedras de Craigh na Dun y aterriza en la Escocia de 1743. Aquí se ve obligada a casarse con el guerrero escocés Jamie Fraser para protegerse del antepasado de su marido, el Capitán "Black Jack" Randall.</p>
+
+<h3>2. Atrapada en el tiempo (Dragonfly in Amber, 1992)</h3>
+<p>La narrativa salta veinte años al futuro, a 1968, donde Claire revela a su hija Brianna la verdad sobre su paternidad. La historia retrocede a la París de 1744, donde Jamie y Claire intentan detener el Levantamiento Jacobita y evitar la masacre de Culloden.</p>
+
+<h3>3. Viajera (Voyager, 1993)</h3>
+<p>Este libro comienza en el campo de batalla de Culloden en 1746, siguiendo la supervivencia de Jamie y sus años de soledad. Paralelamente, en 1968, Claire descubre que Jamie sobrevivió y decide regresar al siglo XVIII para reunirse con él tras veinte años de separación.</p>
+
+<h3>4. Tambores de otoño (Drums of Autumn, 1996)</h3>
+<p>La acción se traslada al Nuevo Mundo. Jamie y Claire intentan establecerse en Carolina del Norte en 1767. Mientras tanto, en el siglo XX, Brianna descubre un recorte de periódico que presagia un desastre para sus padres y decide viajar a través de las piedras para salvarlos, seguida por Roger Wakefield.</p>
+
+<h3>5. La cruz ardiente (The Fiery Cross, 2001)</h3>
+<p>Situada entre 1770 y 1772, esta novela narra los desafíos de la vida en el asentamiento de Fraser's Ridge en medio de las crecientes tensiones políticas que preceden a la Guerra de Independencia de los Estados Unidos. Comienza con un famoso "día largo" durante una reunión de clanes y la boda de Brianna y Roger.</p>
+
+<h3>6. Viento y ceniza (A Breath of Snow and Ashes, 2005)</h3>
+<p>Abarca los años 1773 a 1776. La Revolución Americana se acerca a la puerta de los Fraser. Jamie debe equilibrar su lealtad a la Corona con el conocimiento de Claire sobre el resultado de la guerra, mientras un recorte de periódico predice un incendio fatal en la casa de los Fraser.</p>
+
+<h3>7. Ecos del pasado (An Echo in the Bone, 2009)</h3>
+<p>La guerra está en pleno apogeo (1776-1778). La narrativa se expande para incluir las perspectivas de Lord John Grey y William Ransom (el hijo ilegítimo de Jamie). En el siglo XX, Brianna y Roger enfrentan sus propios peligros en Lallybroch.</p>
+
+<h3>8. Escrito con la sangre de mi corazón (MOBY, 2014)</h3>
+<p>Conocido por los fans como "MOBY", retoma la acción inmediatamente donde la dejó el libro anterior en 1778, en medio de la Batalla de Monmouth. Trata las complejas dinámicas familiares tras el regreso de personajes que se creían muertos.</p>
+
+<h3>9. Cuenta a las abejas que me fui (Go Tell the Bees That I Am Gone, 2021)</h3>
+<p>Ambientada en 1779 y años posteriores, la familia Fraser está reunida en el Ridge, pero las secuelas de la guerra y nuevas amenazas internas ponen en peligro su paz.</p>
+    
+<h3>10. A Blessing For A Warrior Going Out (Próximamente)</h3>
+<p>Confirmado por la autora como el décimo y probablemente último libro de la saga principal de Jamie y Claire.</p>
+
+<hr />
+
+<h2>El Universo Expandido: Lord John Grey</h2>
+<p>Para los lectores que deseen la experiencia completa, Diana Gabaldon ha escrito una serie de misterio centrada en Lord John Grey. La mayoría ocurre durante los años en que Jamie y Claire estuvieron separados.</p>
+
+<h3>Orden de Lectura Sugerido para Completistas</h3>
+
+<ul>
+    <li>
+        <strong>Antes de Forastera:</strong>
+        <br/>Vírgenes (Virgins): Novela corta (Jamie con 19 años).
+        <br/>The Exile: Novela gráfica (Punto de vista de Murtagh).
+    </li>
+    
+    <li>
+        <strong>Durante "Viajera" (1756-1761):</strong>
+        <ul>
+            <li>Lord John y el club Hellfire</li>
+            <li>Lord John y un asunto privado (2003)</li>
+            <li>Lord John y el súcubo</li>
+            <li>Lord John y la hermandad de la espada (2007)</li>
+            <li>El prisionero escocés (2011) - <strong>Esencial</strong></li>
+        </ul>
+    </li>
+</ul>
+
+<div class="my-8 p-6 bg-slate-50 rounded-2xl">
+    <h3>Proyectos Futuros</h3>
+    <p>Diana Gabaldon está trabajando en una precuela sobre los padres de Jamie (Brian y Ellen) y un libro sobre el Maestro Raymond.</p>
+</div>
+`
+    },
     {
         slug: 'del-kindle-a-bookstagram-guia',
-        title: 'Del Kindle a Bookstagram: Guía Completa para Gestionar y Lucir tus Subrayados',
-        excerpt: 'El acto de leer en la era digital ha dejado de ser una actividad de simple absorción para convertirse en un proceso dinámico de captura, organización y redistribución de conocimiento.',
+        title: 'Del Kindle a Bookstagram: Guía Completa',
+        description: 'El acto de leer en la era digital ha dejado de ser una actividad de simple absorción para convertirse en un proceso dinámico de captura, organización y redistribución de conocimiento.',
         content: `
             <p>El acto de leer en la era digital ha dejado de ser una actividad de simple absorción para convertirse en un proceso dinámico de captura, organización y redistribución de conocimiento. El Kindle de Amazon se encuentra en el centro de esta transformación, permitiendo que tus anotaciones trasciendan el dispositivo para integrarse en sistemas de "segundo cerebro" y comunidades visuales como Bookstagram.</p>
             
@@ -52,15 +126,14 @@ export const BLOG_POSTS: BlogPost[] = [
             <p>Al reclamar la propiedad sobre tus subrayados y transformarlos en algo nuevo, estás ejerciendo tu soberanía digital y preservando tu patrimonio intelectual personal.</p>
         `,
         coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2698&auto=format&fit=crop',
-        date: '14 Ene 2026',
-        author: 'Redacción CitandoAndo',
+        date: '2026-01-14',
         readTime: '6 min lectura',
-        category: 'Guías'
+        tags: ['Guías', 'Kindle', 'Bookstagram']
     },
     {
         slug: 'como-exportar-notas-kindle',
-        title: 'Cómo exportar tus notas y subrayados de Kindle fácilmente: Crea tu "Segundo Cerebro"',
-        excerpt: 'Aprende paso a paso cómo extraer tus frases favoritas de tu Amazon Kindle y convertirlas en imágenes compartibles para redes sociales.',
+        title: 'Cómo exportar tus notas y subrayados de Kindle fácilmente',
+        description: 'Aprende paso a paso cómo extraer tus frases favoritas de tu Amazon Kindle y convertirlas en imágenes compartibles para redes sociales.',
         content: `
             <h2>¿Por qué tus notas se quedan atrapadas en el Kindle?</h2>
             <p>El Kindle es una herramienta maravillosa para la lectura, pero su sistema para compartir notas puede sentirse arcaico. Muchos lectores enfrentan la "sobrecarga de información" y necesitan estrategias efectivas para organizar y recuperar lo que leen. Aquí es donde tus subrayados se convierten en la base de un "Segundo Cerebro" o base de conocimiento personal (PKB), un sistema que extiende tus capacidades cognitivas al permitirte revisitar y conectar ideas en el futuro.</p>
@@ -92,15 +165,14 @@ export const BLOG_POSTS: BlogPost[] = [
             <p><strong>Tip extra:</strong> Al organizar tus notas visualmente, no solo guardas información, sino que facilitas el proceso de descubrimiento, permitiéndote aplicar lo aprendido en tu vida diaria o en tus propios proyectos creativos.</p>
         `,
         coverImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=2574&auto=format&fit=crop',
-        date: '14 Ene 2026',
-        author: 'Equipo CitandoAndo',
+        date: '2026-01-14',
         readTime: '5 min lectura',
-        category: 'Tutoriales'
+        tags: ['Tutoriales', 'Kindle', 'Tips']
     },
     {
         slug: 'mejores-frases-libros-2025',
-        title: 'Las 10 frases de libros más compartidas en 2025: El poder de la identidad fragmentada',
-        excerpt: 'Una recopilación de las citas literarias que definieron el discurso digital este año. Desde Rebecca Yarros hasta Suzanne Collins, estas son las palabras que nos marcaron.',
+        title: 'Las 10 frases de libros más compartidas en 2025',
+        description: 'Una recopilación de las citas literarias que definieron el discurso digital este año. Desde Rebecca Yarros hasta Suzanne Collins.',
         content: `
             <p>El panorama literario de 2025 ha consolidado una tendencia donde el valor de un libro ya no solo reside en su trama, sino en su capacidad de ser fragmentado en citas que sirven como herramientas de construcción identitaria y validación emocional. Estas "micro-unidades de sentido" se han vuelto virales en plataformas como BookTok e Instagram, reflejando las preocupaciones de una sociedad marcada por la ansiedad y la búsqueda de conexiones auténticas.</p>
             
@@ -149,9 +221,8 @@ export const BLOG_POSTS: BlogPost[] = [
             <p class="mt-8 border-t pt-4"><strong>Conclusión:</strong> Compartir estas frases en 2025 no es solo un acto de recomendación, sino una moneda social que señala los valores de quien las publica: desde la preocupación por la justicia global hasta la aceptación de la propia fragilidad.</p>
         `,
         coverImage: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop',
-        date: '10 Ene 2026',
-        author: 'Equipo CitandoAndo',
+        date: '2026-01-10',
         readTime: '8 min lectura',
-        category: 'Tendencias'
+        tags: ['Tendencias', 'Citas', '2025']
     }
 ];

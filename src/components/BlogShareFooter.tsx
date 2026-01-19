@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Share2, Quote } from 'lucide-react';
 import { useToast } from '@/components/Toast';
 
-interface LiteraryQuote {
+export interface LiteraryQuote {
     text: string;
     author: string;
     source: string;
@@ -44,7 +44,7 @@ const QUOTES: LiteraryQuote[] = [
     }
 ];
 
-export default function BlogShareFooter() {
+export default function BlogShareFooter({ customQuotes }: { customQuotes?: LiteraryQuote[] }) {
     const [mounted, setMounted] = useState(false);
     const [currentQuote, setCurrentQuote] = useState<LiteraryQuote>(QUOTES[0]);
     const { showToast } = useToast();
@@ -52,12 +52,13 @@ export default function BlogShareFooter() {
     useEffect(() => {
         // Seleccionar aleatoria solo en el cliente para evitar mismatch
         setMounted(true);
-        setCurrentQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
-    }, []);
+        const pool = customQuotes && customQuotes.length > 0 ? customQuotes : QUOTES;
+        setCurrentQuote(pool[Math.floor(Math.random() * pool.length)]);
+    }, [customQuotes]);
 
-    if (!mounted) return null; // Evitar flash de contenido incorrecto o layout shift masivo, o renderizar skeleton
+    if (!mounted) return null; // Evitar flash de contenido incorrecto o layout shift masivo
 
-    const shareUrl = `/?title=${encodeURIComponent(currentQuote.author)}&text=${encodeURIComponent(currentQuote.text)}`;
+    const shareUrl = `/?title=${encodeURIComponent(currentQuote.source)}&author=${encodeURIComponent(currentQuote.author)}&text=${encodeURIComponent(currentQuote.text)}`;
 
     return (
         <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col gap-8 animate-in fade-in duration-500">
@@ -70,7 +71,7 @@ export default function BlogShareFooter() {
                         "{currentQuote.text}"
                     </p>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-sm">
-                        <span className="font-bold text-primary uppercase tracking-wide">— {currentQuote.author}</span>
+                        <span className="font-bold text-purple-600 uppercase tracking-wide">— {currentQuote.author}</span>
                         <span className="hidden sm:inline text-purple-300">•</span>
                         <span className="text-slate-500 italic">{currentQuote.source}</span>
                     </div>
@@ -101,7 +102,7 @@ export default function BlogShareFooter() {
                             showToast('Enlace copiado al portapapeles', 'success');
                         }
                     }}
-                    className="flex items-center gap-2 hover:text-primary transition-colors"
+                    className="flex items-center gap-2 hover:text-purple-600 transition-colors"
                 >
                     <Share2 size={16} />
                     Compartir artículo

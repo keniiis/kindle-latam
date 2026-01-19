@@ -57,6 +57,14 @@ const STYLES: Record<string, any> = {
         accent: '#22d3ee',
         preview: '#22d3ee',
         font: 'font-mono'
+    },
+    'Papel': {
+        name: 'Papel',
+        bg: "bg-[url('/papel.webp')] bg-cover bg-center",
+        text: 'text-slate-900',
+        accent: '#000000',
+        preview: '#e5e5e5',
+        font: 'font-serif'
     }
 };
 
@@ -326,7 +334,11 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                                 return (
                                     <button
                                         key={key}
-                                        onClick={() => { setSelectedStyle(s); setIsBackgroundMenuOpen(false); }}
+                                        onClick={() => {
+                                            setSelectedStyle(s);
+                                            setAccentColor(s.accent);
+                                            setIsBackgroundMenuOpen(false);
+                                        }}
                                         className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${selectedStyle.name === s.name ? 'border-purple-500 bg-purple-50' : 'border-slate-100 hover:border-purple-200'}`}
                                     >
                                         <div
@@ -357,6 +369,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                                             key={key}
                                             onClick={() => {
                                                 setSelectedStyle(s);
+                                                setAccentColor(s.accent);
                                             }}
                                             className={`size-8 rounded-full border-2 transition-all duration-300 ${selectedStyle.name === s.name ? 'border-purple-500 scale-110 ring-2 ring-purple-100 ring-offset-2' : 'border-slate-100 hover:scale-105'}`}
                                             title={s.name}

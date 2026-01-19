@@ -1,165 +1,191 @@
-import { BLOG_POSTS } from '@/data/blogPosts';
-import { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, BookOpen, Share2, Quote } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, BookOpen } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { blogPosts } from '@/data/blogData';
+import { Metadata } from 'next';
 import BlogShareFooter from '@/components/BlogShareFooter';
 
-interface Props {
-    params: Promise<{
-        slug: string;
-    }>;
-}
-
-// Generar rutas estáticas para todos los posts en build time (importante para exportación estática si se usa)
-export async function generateStaticParams() {
-    return BLOG_POSTS.map((post) => ({
-        slug: post.slug,
-    }));
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = await params;
-    const post = BLOG_POSTS.find((p) => p.slug === slug);
+// Esta función permite generar metadatos dinámicos para SEO
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const resolvedParams = await params;
+    const post = blogPosts.find((p) => p.slug === resolvedParams.slug);
     if (!post) return { title: 'Post no encontrado' };
 
     return {
         title: `${post.title} | Blog CitandoAndo`,
-        description: post.excerpt,
-        authors: [{ name: post.author }],
-        alternates: {
-            canonical: `/blog/${post.slug}`,
-        },
+        description: post.description,
         openGraph: {
             title: post.title,
-            description: post.excerpt,
-            url: `/blog/${post.slug}`,
-            siteName: 'CitandoAndo',
-            images: [
-                {
-                    url: post.coverImage,
-                    width: 1200,
-                    height: 630,
-                    alt: post.title,
-                },
-            ],
-            locale: 'es_LA',
+            description: post.description,
             type: 'article',
-            publishedTime: post.date, // Note: post.date might need formatting if strict ISO is required, but string is okay for basic OG
-            authors: [post.author],
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title: post.title,
-            description: post.excerpt,
-            images: [post.coverImage],
-            creator: '@devdanipena', // Or generic app handle
-        },
+            publishedTime: post.date,
+            authors: ['Danidev'],
+        }
     };
 }
 
-export default async function BlogPost({ params }: Props) {
-    const { slug } = await params;
-    const post = BLOG_POSTS.find((p) => p.slug === slug);
+// Esta función genera las rutas estáticas al hacer build
+export async function generateStaticParams() {
+    return blogPosts.map((post) => ({
+        slug: post.slug,
+    }));
+}
+
+const OUTLANDER_QUOTES = [
+    {
+        text: "—Mmmfm. Sí, estamos casados, es cierto. Pero no será una unión legal hasta que no se haya consumado.",
+        author: "Jamie Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Aunque demasiado ávido y demasiado torpe para demostrar ternura, de todos modos hacía el amor con una especie de alegría incansable...",
+        author: "Claire Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Soy tuyo, decía. Y si quieres tenerme, entonces...",
+        author: "Claire Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Eres mía, mo duinne. Solamente mía. Ahora y siempre. Mía. Lo quieras o no.",
+        author: "Jamie Fraser",
+        source: "Escrito con la sangre de mi corazón"
+    },
+    {
+        text: "¿Se acaba alguna vez... este deseo por ti? Incluso después de tenerte te deseo tanto, que me cuesta respirar...",
+        author: "Jamie Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "No he dicho que quisiera una disculpa, ¿verdad? Si mal no recuerdo, lo que he dicho ha sido: 'Muérdeme otra vez'.",
+        author: "Jamie Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Cuando te penetro con fiereza y ansiedad y gimes y forcejeas como si quisieras apartarte, pero sé que sólo pugnas por acercarte más...",
+        author: "Jamie Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Dije que era virgen, no un monje. Si siento que necesito ayuda, te la pediré.",
+        author: "Jamie Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Si yo fuera un caballo, le dejaría llevarme a cualquier parte.",
+        author: "Claire Fraser",
+        source: "Forastera"
+    },
+    {
+        text: "Deseo abrazarte fuerte y besarte y no soltarte nunca. Quiero llevarte a mi cama y usarte...",
+        author: "Jamie Fraser",
+        source: "Forastera"
+    }
+];
+
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const resolvedParams = await params;
+    const post = blogPosts.find((p) => p.slug === resolvedParams.slug);
 
     if (!post) {
         notFound();
     }
 
+    const customQuotes = post.slug === 'cronologia-outlander' ? OUTLANDER_QUOTES : undefined;
+
     return (
-        <div className="min-h-screen bg-white font-display text-[#140d1c]">
-            {/* Header Simplificado */}
-            <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
-                <div className="max-w-[800px] mx-auto flex items-center justify-between relative">
-                    <Link href="/blog" className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold text-sm z-10">
+        <main className="min-h-screen bg-white font-sans selection:bg-purple-100">
+            {/* Header / Nav */}
+            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+                <div className="max-w-[800px] mx-auto grid grid-cols-3 items-center">
+                    {/* Left: Volver */}
+                    <Link href="/blog" className="justify-self-start flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-bold text-sm">
                         <ArrowLeft size={18} />
-                        <span className="hidden sm:inline">Volver al Blog</span>
-                        <span className="sm:hidden">Blog</span>
+                        Volver al Blog
                     </Link>
 
-                    <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 group">
-                        <div className="size-6 bg-primary rounded flex items-center justify-center text-white">
-                            <BookOpen size={14} />
-                        </div>
-                        <span className="font-extrabold tracking-tight text-sm hidden sm:inline">CitandoAndo</span>
-                    </Link>
+                    {/* Center: Logo */}
+                    <div className="justify-self-center">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white group-hover:rotate-3 transition-transform">
+                                <BookOpen size={20} />
+                            </div>
+                            <span className="text-lg font-extrabold tracking-tight text-slate-900">
+                                CitandoAndo
+                            </span>
+                        </Link>
+                    </div>
 
-                    <div className="z-10">
-                        <Link href="/" className="bg-[#140d1c] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-primary transition-colors shadow-lg hover:translate-y-px">
+                    {/* Right: CTA */}
+                    <div className="justify-self-end">
+                        <Link href="/" className="bg-[#140d1c] text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-primary transition-colors shadow-lg hover:translate-y-px">
                             Ir a la App
                         </Link>
                     </div>
                 </div>
-            </header>
+            </nav>
 
-            <article className="max-w-[800px] mx-auto px-6 py-12 md:py-16">
-                {/* Meta Header */}
-                <div className="mb-8 text-center">
-                    <div className="inline-block bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-6">
-                        {post.category}
+            <article className="max-w-[800px] mx-auto px-6 py-12 md:py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {/* Cabecera del Artículo */}
+                <header className="mb-12 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-6">
+                        {post.tags.map(tag => (
+                            <span key={tag} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-bold uppercase tracking-wider">
+                                {tag}
+                            </span>
+                        ))}
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black leading-tight mb-6 tracking-tight text-slate-900">
+                    <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight text-balance">
                         {post.title}
                     </h1>
 
-                    <div className="flex items-center justify-center gap-6 text-sm font-medium text-slate-500">
+                    <div className="flex items-center justify-center gap-6 text-slate-500 text-sm font-medium">
                         <div className="flex items-center gap-2">
-                            <div className="size-8 bg-primary rounded-full flex items-center justify-center text-white shadow-sm ring-2 ring-white">
-                                <BookOpen size={16} strokeWidth={2.5} />
-                            </div>
-                            <span className="font-bold text-slate-700">{post.author}</span>
-                        </div>
-                        <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                        <div className="flex items-center gap-1.5">
                             <Calendar size={16} />
-                            <span>{post.date}</span>
+                            {new Date(post.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
-                        <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-2">
                             <Clock size={16} />
-                            <span>{post.readTime}</span>
+                            {post.readTime}
                         </div>
                     </div>
-                </div>
+                </header>
 
-                {/* Cover Image */}
-                <div className="w-full aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl mb-12 bg-slate-100">
-                    <img
-                        src={post.coverImage}
-                        alt={post.title}
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+                {/* Imagen de Portada */}
+                {post.coverImage && (
+                    <div className="mb-12 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 aspect-video relative">
+                        <img
+                            src={post.coverImage}
+                            alt={post.title}
+                            className="object-cover w-full h-full hover:scale-105 transition-transform duration-700"
+                        />
+                    </div>
+                )}
 
-                {/* Content */}
+                {/* Contenido (Renderizado de HTML seguro) */}
                 <div
-                    className="prose prose-lg md:prose-xl prose-slate mx-auto prose-headings:font-black prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-2xl"
+                    className="prose prose-lg prose-slate prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-600 prose-li:text-slate-600 max-w-none"
                     dangerouslySetInnerHTML={{ __html: post.content }}
                 />
-
-                {/* Share / Footer Article */}
-                {/* Dynamic Share Footer */}
-                <BlogShareFooter />
+                <BlogShareFooter customQuotes={customQuotes} />
             </article>
 
-            {/* CTA App */}
-            <div className="bg-[#1a1520] text-white py-16 md:py-24 mt-12 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/10 blur-[100px] rounded-full"></div>
-
-                <div className="max-w-[800px] mx-auto px-6 text-center relative z-10">
-                    <h2 className="text-3xl md:text-4xl font-black mb-6">¿Tus citas de Kindle siguen cogiendo polvo?</h2>
-                    <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-xl mx-auto">
-                        Convierte ese caos de "My Clippings.txt" en una galería visual preciosa en segundos. Sin registros. Gratis.
+            {/* Newsletter / CTA Footer */}
+            <section className="bg-slate-50 py-16 px-6 mt-0 border-t border-slate-100">
+                <div className="max-w-xl mx-auto text-center space-y-6">
+                    <h3 className="text-2xl font-bold text-slate-900">¿Te gustó el artículo?</h3>
+                    <p className="text-slate-600">
+                        CitandoAndo es una herramienta gratuita para lectores. Si te sirvió, considera usar nuestra app para guardar tus frases favoritas de Outlander.
                     </p>
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-3 bg-white text-primary px-8 py-4 rounded-full font-black text-lg shadow-xl shadow-white/10 hover:scale-105 transition-transform"
+                        className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/10"
                     >
-                        <BookOpen size={24} />
-                        Probar CitandoAndo ahora
+                        Ir a la App
                     </Link>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main >
     );
 }

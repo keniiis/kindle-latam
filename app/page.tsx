@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <main className="min-h-screen bg-white text-slate-900 font-sans">
+        <main className="min-h-screen bg-white text-slate-900 font-sans" suppressHydrationWarning>
             {/* Aquí cargamos el componente "Cliente".
          Next.js renderizará el HTML inicial estático que pueda, 
          y luego "hidratará" la interactividad en el navegador.

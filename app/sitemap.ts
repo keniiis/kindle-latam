@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { BLOG_POSTS } from '@/data/blogPosts';
+import { blogPosts } from '@/data/blogData';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = 'https://citando-ando.vercel.app';
@@ -21,10 +21,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ];
 
     // Rutas dinámicas del blog
-    const posts = BLOG_POSTS.map((post) => ({
+    const posts: MetadataRoute.Sitemap = blogPosts.map((post) => ({
         url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: new Date(), // Idealmente esto vendría de la fecha del post, pero new Date() es válido
-        changeFrequency: 'weekly' as const,
+        lastModified: new Date(post.date),
+        changeFrequency: 'weekly',
         priority: 0.8,
     }));
 

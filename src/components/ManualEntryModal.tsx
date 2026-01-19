@@ -69,8 +69,8 @@ export default function ManualEntryModal({ onClose, onSave, initialTitle = '', i
             );
             const data = await response.json();
 
-            const results: BookSuggestion[] = (data.items || []).map((item: any) => ({
-                key: item.id,
+            const results: BookSuggestion[] = (data.items || []).map((item: any, index: number) => ({
+                key: `${item.id}-${index}`,
                 title: item.volumeInfo.title,
                 author_name: item.volumeInfo.authors || ['Autor desconocido'],
                 coverUrl: item.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:'),
