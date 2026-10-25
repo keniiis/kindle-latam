@@ -1,0 +1,11 @@
+allowBuilds:
+  core-js: false
+  sharp: true
+  unrs-resolver: true
+
+# Security fixes for transitive dependencies pinned by the PWA and CSS tools.
+overrides:
+  'postcss@<8.5.23': 8.5.23
+  'postcss-selector-parser@<7.1.6': 7.1.7
+  'serialize-javascript@<7.1.3': 7.1.3
+  'sharp@<0.35.5': 0.35.5
