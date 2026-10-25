@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { UploadCloud, Trash2, MoreVertical, Twitter, Plus, Clock, ArrowDownAZ, Tag, ChevronDown, Check, X, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import BookCard from '@/components/BookCard';
+import { bookKey, bookTransitionName } from '@/lib/library';
 
 export type SortOption = 'recent' | 'title';
 
@@ -316,22 +317,22 @@ export default function LibraryView({
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-12">
                     {paginatedLibrary.map((book) => (
                         <BookCard
-                            key={(book.title + book.author).replace(/\s+/g, '-')}
+                            key={bookKey(book)}
                             book={book}
                             onClick={(coverUrl) => {
                                 if (selectedBooks.size > 0 || isSelectionMode) {
-                                    onToggleBook(book.title);
+                                    onToggleBook(bookKey(book));
                                 } else {
                                     onSelectBook(book, coverUrl);
                                 }
                             }}
-                            selected={selectedBooks.has(book.title)}
-                            onToggleSelection={() => onToggleBook(book.title)}
+                            selected={selectedBooks.has(bookKey(book))}
+                            onToggleSelection={() => onToggleBook(bookKey(book))}
                             selectionMode={isSelectionMode || selectedBooks.size > 0}
-                            viewTransitionName={activeTransitionTitle === book.title
-                                ? `book-cover-${book.title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`
+                            viewTransitionName={activeTransitionTitle === bookKey(book)
+                                ? bookTransitionName(book)
                                 : undefined}
-                            overrideCoverUrl={activeTransitionTitle === book.title ? activeTransitionCoverUrl || undefined : undefined}
+                            overrideCoverUrl={activeTransitionTitle === bookKey(book) ? activeTransitionCoverUrl || undefined : undefined}
                         />
                     ))}
 

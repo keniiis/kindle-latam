@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { parseKindleClippings, Clipping } from '@/lib/parser';
+import { createBackup, readBackup, mergeClippings, validateClippings, saveLibrary, bookKey, groupBooks, renameBook, removeBooks } from '@/lib/library';
 import ShareModal from '@/components/ShareModal';
 import LandingPage from '@/components/LandingPage';
 import LibraryView, { SortOption } from '@/components/LibraryView';
@@ -17,9 +18,14 @@ const STORAGE_BOOK_KEY = 'kindle-latam-selected-book'; // Persistencia del libro
 
 import ManualEntryModal from '@/components/ManualEntryModal';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { ToastProvider } from '@/components/Toast';
+import { useToast } from '@/components/Toast';
 
 export default function KindleApp() {
+    const { showToast } = useToast();
+    const [storageError, setStorageError] = useState('');
+    const [loadFailed, setLoadFailed] = useState(false);
+    const [originalData, setOriginalData] = useState<string | null>(null);
+    const backupInputRef = useRef<HTMLInputElement>(null);
     const [rawClippings, setRawClippings] = useState<Clipping[]>([]);
     const [selectedBook, setSelectedBook] = useState<any | null>(null);
     const [clipToShare, setClipToShare] = useState<Clipping | null>(null);
@@ -46,34 +52,24 @@ export default function KindleApp() {
 
     // ...
 
-    const library = useMemo(() => {
-        const groups: Record<string, any> = {};
-        rawClippings.forEach((clip) => {
-            if (!groups[clip.title]) groups[clip.title] = {
-                title: clip.title,
-                author: clip.author,
-                clippings: [],
-                genre: clip.genre
-            };
-            groups[clip.title].clippings.push(clip);
-        });
-        return Object.values(groups).sort((a, b) => b.clippings.length - a.clippings.length);
-    }, [rawClippings]);
+    const library = useMemo(() => groupBooks(rawClippings), [rawClippings]);
 
     // Carga inicial
     useEffect(() => {
-        const savedData = localStorage.getItem(STORAGE_KEY);
-        if (savedData) {
-            try {
-                setRawClippings(JSON.parse(savedData));
-            } catch (e) { console.error(e); }
+        try {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            setOriginalData(savedData);
+            if (savedData !== null) setRawClippings(validateClippings(JSON.parse(savedData)));
+        } catch {
+            setLoadFailed(true);
+            setStorageError('No pudimos leer tu biblioteca. No sobrescribiremos los datos guardados. Descarga una copia para recuperarlos.');
         }
         setIsLoaded(true);
     }, []);
 
     // Share Target Handler
     useEffect(() => {
-        if (typeof window !== 'undefined' && isLoaded) {
+        if (typeof window !== 'undefined' && isLoaded && !loadFailed) {
             const params = new URLSearchParams(window.location.search);
             const title = params.get('title') || '';
             const text = params.get('text') || '';
@@ -104,12 +100,13 @@ export default function KindleApp() {
                     } catch (e) { console.error('Error reading local storage for share', e); }
                 }
 
-                const existingBook = searchPool.find(c => {
+                const matchingBooks = groupBooks(searchPool).filter(c => {
                     const libTitle = c.title.trim().toLowerCase();
                     const searchTitle = clean.toLowerCase();
                     return libTitle === searchTitle || (libTitle.includes(searchTitle) && searchTitle.length > 4);
                 });
 
+                const existingBook = matchingBooks.length === 1 ? matchingBooks[0] : undefined;
                 setManualEntryData({
                     title: existingBook ? existingBook.title : clean,
                     author: existingBook ? existingBook.author : '',
@@ -122,41 +119,103 @@ export default function KindleApp() {
                 window.history.replaceState({}, '', '/');
             }
         }
-    }, [isLoaded]);
+    }, [isLoaded, loadFailed]);
 
     // Recuperar libro seleccionado después de cargar la librería
     useEffect(() => {
         if (!isLoaded || library.length === 0 || selectedBook) return;
 
-        const savedBookTitle = localStorage.getItem(STORAGE_BOOK_KEY);
+        let savedBookTitle: string | null = null;
+        try { savedBookTitle = localStorage.getItem(STORAGE_BOOK_KEY); } catch { return; }
         if (savedBookTitle) {
-            const foundBook = library.find(b => b.title === savedBookTitle);
+            const legacyMatches = library.filter(b => b.title === savedBookTitle);
+            const foundBook = library.find(b => b.id === savedBookTitle) ?? (legacyMatches.length === 1 ? legacyMatches[0] : undefined);
             if (foundBook) setSelectedBook(foundBook);
         }
     }, [isLoaded, library]); // Solo intenta restaurar si cambia la librería o termina de cargar
 
     // Persistencia: Guardar librería
     useEffect(() => {
-        if (isLoaded && rawClippings.length > 0) localStorage.setItem(STORAGE_KEY, JSON.stringify(rawClippings));
-    }, [rawClippings, isLoaded]);
+        if (!isLoaded || loadFailed) return;
+        try {
+            saveLibrary(localStorage, rawClippings);
+            // Reflect the result of synchronizing with external browser storage.
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setStorageError('');
+        } catch {
+            setStorageError('No pudimos guardar los cambios en este navegador. Descarga un respaldo antes de cerrar o recargar.');
+        }
+    }, [rawClippings, isLoaded, loadFailed]);
 
     // Persistencia: Guardar libro seleccionado actual
     useEffect(() => {
-        if (!isLoaded) return;
-        if (selectedBook) {
-            localStorage.setItem(STORAGE_BOOK_KEY, selectedBook.title);
-        } else {
-            localStorage.removeItem(STORAGE_BOOK_KEY);
-        }
-    }, [selectedBook, isLoaded]);
+        if (!isLoaded || loadFailed) return;
+        try {
+            if (selectedBook) localStorage.setItem(STORAGE_BOOK_KEY, bookKey(selectedBook));
+            else localStorage.removeItem(STORAGE_BOOK_KEY);
+        } catch { /* Selection is optional; library saving reports storage failures. */ }
+    }, [selectedBook, isLoaded, loadFailed]);
 
     // Manejadores
     const handleFileUpload = async (file: File) => {
-        const text = await file.text();
-        setRawClippings(parseKindleClippings(text));
-        setSelectedBook(null);
-        localStorage.removeItem(STORAGE_BOOK_KEY);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        try {
+            if (file.size > 20 * 1024 * 1024) throw new Error('El archivo supera el límite de 20 MB.');
+            const text = await file.text();
+            const incoming = parseKindleClippings(text);
+            if (!incoming.length) throw new Error('No encontramos anotaciones Kindle válidas. Tu biblioteca sigue intacta.');
+            setRawClippings(previous => mergeClippings(previous, incoming));
+            setSelectedBook(null);
+            setSelectedBookIds(new Set());
+            setSearchQuery('');
+            setSelectedGenre(null);
+            const sections = text.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split(/^={10}\s*$/m).filter(s => s.trim()).length;
+            showToast(`${incoming.length} anotaciones leídas; se conservan tus citas y se omiten duplicados.${sections > incoming.length ? ` ${sections - incoming.length} entradas no reconocidas.` : ''}`, 'info');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'No pudimos leer el archivo.', 'error');
+        }
+    };
+
+    const downloadText = (text: string, filename: string) => {
+        const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+
+    const handleBackup = () => {
+        try {
+            downloadText(createBackup(rawClippings), `citandoando-respaldo-${new Date().toISOString().slice(0, 10)}.json`);
+        } catch {
+            showToast('No pudimos crear el respaldo. Tu biblioteca no se ha modificado.', 'error');
+        }
+    };
+
+    const handleRestore = async (file: File) => {
+        try {
+            if (file.size > 20 * 1024 * 1024) throw new Error('El respaldo supera el límite de 20 MB.');
+            const incoming = readBackup(await file.text());
+            if (!incoming.length) throw new Error('El respaldo está vacío. Tu biblioteca sigue intacta.');
+            setConfirmation({
+                isOpen: true, title: '¿Añadir este respaldo?',
+                description: `Contiene ${incoming.length} anotaciones. Se añadirán las que falten y se conservarán tus versiones actuales de las citas repetidas.`,
+                isDanger: false, confirmText: 'Añadir respaldo',
+                onConfirm: () => {
+                    setRawClippings(previous => mergeClippings(previous, incoming));
+                    setSelectedBook(null);
+                    setSelectedBookIds(new Set());
+                    setSearchQuery('');
+                    setSelectedGenre(null);
+                    showToast('Respaldo incorporado a la biblioteca.', 'success');
+                },
+            });
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'No pudimos leer el respaldo.', 'error');
+        }
     };
 
     // Mapa de traducción de géneros
@@ -252,7 +311,7 @@ export default function KindleApp() {
             // 1. Identificar libros sin género
             const booksWithoutGenre = new Set<string>();
             rawClippings.forEach(c => {
-                if (!c.genre) booksWithoutGenre.add(c.title);
+                if (!c.genre) booksWithoutGenre.add(bookKey(c));
             });
 
             if (booksWithoutGenre.size === 0) return;
@@ -261,14 +320,14 @@ export default function KindleApp() {
             // Tomamos el primero que encontremos para ir "rellenando" progresivamente
             const titleToUpdate = Array.from(booksWithoutGenre)[0];
             // Encontrar el autor de este libro
-            const validClip = rawClippings.find(c => c.title === titleToUpdate);
+            const validClip = rawClippings.find(c => bookKey(c) === titleToUpdate);
             if (!validClip) return;
 
-            const genre = await fetchBookGenre(titleToUpdate, validClip.author);
+            const genre = await fetchBookGenre(validClip.title, validClip.author);
 
             // 3. Actualizar el estado
             setRawClippings(prev => prev.map(clip =>
-                clip.title === titleToUpdate
+                bookKey(clip) === titleToUpdate
                     ? { ...clip, genre: genre }
                     : clip
             ));
@@ -295,7 +354,7 @@ export default function KindleApp() {
 
         // Actualizar libro seleccionado si coincide (Fix para actualización inmediata)
         setSelectedBook((prev: any) => {
-            if (prev && prev.title === title) {
+            if (prev && bookKey(prev) === bookKey(newClipping)) {
                 return {
                     ...prev,
                     clippings: [newClipping, ...prev.clippings]
@@ -324,23 +383,27 @@ export default function KindleApp() {
             isDanger: true,
             confirmText: 'Sí, borrar todo',
             onConfirm: () => {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(STORAGE_BOOK_KEY);
                 setRawClippings([]);
                 setSelectedBook(null);
             }
         });
     };
 
-    const handleUpdateBook = (oldTitle: string, newTitle: string, newAuthor: string) => {
-        setRawClippings(prev => prev.map(clip =>
-            clip.title === oldTitle
-                ? { ...clip, title: newTitle, author: newAuthor }
-                : clip
-        ));
-
-        // Update selected book immediately so UI doesn't flicker/break
-        setSelectedBook((prev: any) => prev ? { ...prev, title: newTitle, author: newAuthor } : null);
+    const handleUpdateBook = (id: string, newTitle: string, newAuthor: string) => {
+        try {
+            const updated = renameBook(rawClippings, id, newTitle, newAuthor);
+            setRawClippings(updated);
+            const targetId = bookKey({ title: newTitle, author: newAuthor });
+            setSelectedBook(groupBooks(updated).find(book => book.id === targetId) ?? null);
+            if (targetId !== id) setSelectedBookCover(null);
+            setTransitioningTitle(targetId);
+            setTransitioningCoverUrl(null);
+            setSelectedBookIds(new Set());
+            return true;
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'No pudimos editar el libro.', 'error');
+            return false;
+        }
     };
 
     const handleUpdateClip = (clipId: string, newContent: string) => {
@@ -380,10 +443,10 @@ export default function KindleApp() {
 
                     // Si nos quedamos sin citas, quizás deberíamos cerrar el libro o dejarlo vacío?
                     // Por ahora lo dejamos vacío.
-                    return {
+                    return updatedClippings.length ? {
                         ...prev,
                         clippings: updatedClippings
-                    };
+                    } : null;
                 });
             }
         });
@@ -407,14 +470,15 @@ export default function KindleApp() {
             isDanger: true,
             confirmText: 'Eliminar',
             onConfirm: () => {
-                const newClippings = rawClippings.filter(c => !selectedBookIds.has(c.title));
+                const newClippings = removeBooks(rawClippings, selectedBookIds);
                 setRawClippings(newClippings);
                 setSelectedBookIds(new Set());
                 setIsSelectionMode(false);
                 // Clear local storage book selection if deleted
-                const savedBook = localStorage.getItem(STORAGE_BOOK_KEY);
+                let savedBook: string | null = null;
+                try { savedBook = localStorage.getItem(STORAGE_BOOK_KEY); } catch { /* Optional selection. */ }
                 if (savedBook && selectedBookIds.has(savedBook)) {
-                    localStorage.removeItem(STORAGE_BOOK_KEY);
+                    setSelectedBook(null);
                 }
             }
         });
@@ -489,11 +553,11 @@ export default function KindleApp() {
             flushSync(() => {
                 if (book) {
                     setScrollPos(window.scrollY);
-                    setTransitioningTitle(book.title);
+                    setTransitioningTitle(bookKey(book));
                     if (coverUrl) setTransitioningCoverUrl(coverUrl);
                 } else {
                     // CERRANDO: Asegurar que título y cover estén listos para el aterrizaje
-                    if (selectedBook) setTransitioningTitle(selectedBook.title);
+                    if (selectedBook) setTransitioningTitle(bookKey(selectedBook));
                     setTransitioningCoverUrl(selectedBookCover);
                 }
             });
@@ -501,8 +565,7 @@ export default function KindleApp() {
             (document as any).startViewTransition(() => {
                 flushSync(() => {
                     setSelectedBook(book);
-                    if (coverUrl) setSelectedBookCover(coverUrl);
-                    else if (!book) setSelectedBookCover(null);
+                    setSelectedBookCover(coverUrl ?? null);
                 });
 
                 // RESTAURAR SCROLL AL CERRAR
@@ -516,16 +579,16 @@ export default function KindleApp() {
         } else {
             if (book) {
                 setScrollPos(window.scrollY);
-                setTransitioningTitle(book.title);
+                setTransitioningTitle(bookKey(book));
                 if (coverUrl) setTransitioningCoverUrl(coverUrl);
             } else if (selectedBook) {
-                setTransitioningTitle(selectedBook.title);
+                setTransitioningTitle(bookKey(selectedBook));
                 setTransitioningCoverUrl(selectedBookCover);
             }
 
             setSelectedBook(book);
-            if (coverUrl) setSelectedBookCover(coverUrl);
-            else if (!book) {
+            setSelectedBookCover(coverUrl ?? null);
+            if (!book) {
                 setSelectedBookCover(null);
                 setTimeout(() => window.scrollTo(0, scrollPos), 0);
             } else {
@@ -533,6 +596,26 @@ export default function KindleApp() {
             }
         }
     };
+
+    const backupControls = (
+        <div className="mx-auto max-w-[1200px] px-6 py-3">
+            {storageError && <p role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-800">{storageError}</p>}
+            <div className="flex flex-wrap gap-3 text-sm">
+                <button onClick={handleBackup} className="rounded-lg border px-4 py-2 font-semibold">Descargar respaldo</button>
+                <button onClick={() => backupInputRef.current?.click()} className="rounded-lg border px-4 py-2 font-semibold">Restaurar respaldo</button>
+                <span className="self-center text-slate-500">Guarda tus citas, libros y géneros en un archivo.</span>
+            </div>
+            <input ref={backupInputRef} type="file" accept=".json,application/json" className="hidden" onChange={e => {
+                const file = e.target.files?.[0]; e.target.value = ''; if (file) void handleRestore(file);
+            }} />
+        </div>
+    );
+
+    if (loadFailed) return <div className="mx-auto max-w-xl space-y-4 p-8">
+        <p role="alert">{storageError}</p>
+        {originalData !== null && <button className="rounded-lg border p-3" onClick={() => downloadText(originalData, 'citandoando-datos-para-recuperar.json')}>Descargar datos originales</button>}
+        <p>Conserva esta copia y solicita ayuda para recuperar la biblioteca antes de seguir.</p>
+    </div>;
 
     if (rawClippings.length > 0) {
         return (
@@ -563,6 +646,7 @@ export default function KindleApp() {
                     </div>
                 </header>
 
+                {backupControls}
                 <main className="max-w-[1200px] mx-auto px-6 lg:px-20 py-10">
                     {!selectedBook ? (
                         <LibraryView
@@ -609,7 +693,7 @@ export default function KindleApp() {
                     )}
                 </main>
 
-                <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+                <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; e.target.value = ''; if (file) void handleFileUpload(file); }} />
                 {clipToShare && selectedBook && <ShareModal content={clipToShare.content} title={selectedBook.title} author={selectedBook.author} onClose={() => setClipToShare(null)} />}
                 {showManualModal && (
                     <ManualEntryModal
@@ -641,6 +725,8 @@ export default function KindleApp() {
     // --- VISTA: LANDING PAGE (Si no hay datos) ---
     return (
         <>
+            {backupControls}
+            <ConfirmationModal {...confirmation} onClose={() => setConfirmation(prev => ({ ...prev, isOpen: false }))} />
             <LandingPage
                 onStart={triggerFileUpload}
                 onManualEntry={() => {
@@ -648,7 +734,7 @@ export default function KindleApp() {
                     setShowManualModal(true);
                 }}
             />
-            <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
+            <input type="file" ref={fileInputRef} accept=".txt" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; e.target.value = ''; if (file) void handleFileUpload(file); }} />
             {showManualModal && (
                 <ManualEntryModal
                     onClose={() => setShowManualModal(false)}

@@ -1,17 +1,16 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Copy, Share2, Quote, Calendar, Edit2, Check, X, Plus, Book, Loader2, Tag, Trash2 } from 'lucide-react';
 import { Clipping } from '@/lib/parser';
-import { PdfExportTemplate } from './PdfExportTemplate';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import { generateBookPDF } from '@/lib/pdf';
+import { bookKey, bookTransitionName } from '@/lib/library';
 
 interface BookDetailViewProps {
     book: any;
     onBack: () => void;
     onShare: (clip: Clipping) => void;
-    onUpdateBook?: (oldTitle: string, newTitle: string, newAuthor: string) => void;
+    onUpdateBook?: (bookId: string, newTitle: string, newAuthor: string) => boolean;
     onAddHighlight?: () => void;
     onUpdateClip?: (clipId: string, newContent: string) => void;
     onDeleteClip?: (clipId: string) => void;
@@ -42,42 +41,15 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
     }, [fetchedCoverUrl, onUpdateCover]);
 
     const [isExporting, setIsExporting] = useState(false);
-    const pdfTemplateRef = useRef<HTMLDivElement>(null);
+
 
     const handleExportPdf = async () => {
-        if (!pdfTemplateRef.current) return;
         setIsExporting(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            const canvas = await html2canvas(pdfTemplateRef.current, {
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                imageTimeout: 0,
-                windowWidth: 1200,
-                windowHeight: 1600
-            });
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'letter'
-            });
-
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            const fileName = `${book.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_highlights.pdf`;
-            pdf.save(fileName);
-
+            await generateBookPDF(book, coverUrl);
         } catch (error) {
-            console.error("Error exporting PDF:", error);
-            showToast("Hubo un error al generar el PDF. Intenta nuevamente.", "error");
+            console.error('Error exporting PDF:', error);
+            showToast('Hubo un error al generar el PDF. Intenta nuevamente.', 'error');
         } finally {
             setIsExporting(false);
         }
@@ -88,7 +60,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
             .map((c: any) => c.date ? new Date(c.date).getTime() : 0)
             .filter((t: number) => t > 0);
 
-        if (dates.length === 0) return 'Recién importado';
+        if (dates.length === 0) return 'Sin fecha registrada';
 
         const latestTimestamp = Math.max(...dates);
         // const latestDate = new Date(latestTimestamp);
@@ -108,8 +80,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
     const handleSave = () => {
         if (onUpdateBook && editTitle.trim()) {
-            onUpdateBook(book.title, editTitle, editAuthor);
-            setIsEditing(false);
+            if (onUpdateBook(bookKey(book), editTitle, editAuthor)) setIsEditing(false);
         }
     };
 
@@ -133,13 +104,6 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
 
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Template Oculto para PDF (Fuera de la vista pero renderizado) */}
-            <div style={{ position: 'absolute', top: -10000, left: -10000, pointerEvents: 'none' }}>
-                <div ref={pdfTemplateRef}>
-                    <PdfExportTemplate book={book} coverUrl={coverUrl} />
-                </div>
-            </div>
-
             {/* Botón Volver - Fuera del contenedor */}
             <div className="max-w-5xl mx-auto px-6 pt-2">
                 <button
@@ -191,7 +155,7 @@ export default function BookDetailView({ book, onBack, onShare, onUpdateBook, on
                                 backgroundImage: coverUrl ? `url(${coverUrl})` : 'none',
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
-                                viewTransitionName: `book-cover-${book.title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`
+                                viewTransitionName: bookTransitionName(book)
                             } as any}
                         >
                             {coverUrl ? (

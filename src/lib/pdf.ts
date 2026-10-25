@@ -1,189 +1,110 @@
 import { jsPDF } from 'jspdf';
-import { Clipping } from './parser';
+import type { Clipping } from './parser';
 
-const loadImage = (url: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.src = url;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-                ctx.drawImage(img, 0, 0);
-                resolve(canvas.toDataURL('image/jpeg'));
-            } else {
-                reject(new Error('Canvas context failed'));
-            }
-        };
-        img.onerror = (e) => reject(e);
-    });
-};
+type ExportBook = { title: string; author: string; clippings: Clipping[] };
 
-export const generateBookPDF = async (book: { title: string; author: string; clippings: Clipping[] }, coverUrl?: string | null) => {
-    const doc = new jsPDF({
-        format: 'a4',
-        unit: 'mm'
-    });
-
-    const pWidth = doc.internal.pageSize.getWidth();
-    const pHeight = doc.internal.pageSize.getHeight();
-
-    // Layout Config
-    const sidebarWidth = pWidth * 0.33;
-    const contentWidth = pWidth - sidebarWidth;
-    const margin = 15;
-
-    // Colors
-    const COL_SIDEBAR = '#F8F9FA'; // Slate-50 approx
-    const COL_PRIMARY = '#8b5cf6'; // Violeta Brand
-    const COL_TEXT_MAIN = '#1e293b'; // Slate-800
-    const COL_TEXT_SEC = '#64748b'; // Slate-500
-    const COL_QUOTE_MARK = '#e9d5ff'; // Purple-200 (light for quote mark)
-
-    // Helper: Draw Sidebar (background + content)
-    const drawSidebar = async (pageNumber: number, totalPages: number) => {
-        // Bg
-        doc.setFillColor(COL_SIDEBAR);
-        doc.rect(0, 0, sidebarWidth, pHeight, 'F');
-
-        // --- Sidebar Content ---
-        let y = margin + 10;
-
-        // 1. Cover (First Page Only)
-        if (pageNumber === 1 && coverUrl) {
-            try {
-                const imgData = await loadImage(coverUrl);
-                const imgW = sidebarWidth - (margin * 2);
-                const imgH = imgW * 1.5; // Assume 2:3 ratio
-
-                doc.addImage(imgData, 'JPEG', margin, y, imgW, imgH);
-                y += imgH + 15;
-            } catch (err) {
-                console.warn('Could not load cover for PDF', err);
-                doc.setDrawColor(200);
-                doc.rect(margin, y, sidebarWidth - (margin * 2), (sidebarWidth - (margin * 2)) * 1.5);
-                y += (sidebarWidth - (margin * 2)) * 1.5 + 15;
-            }
-        } else if (pageNumber > 1) {
-            y = margin;
-        }
-
-        // 2. Title
-        doc.setFont('times', 'bold');
-        doc.setFontSize(22);
-        doc.setTextColor(COL_TEXT_MAIN);
-        const titleLines = doc.splitTextToSize(book.title, sidebarWidth - (margin * 2));
-        doc.text(titleLines, margin, y);
-        y += (titleLines.length * 8) + 5;
-
-        // 3. Author
+// Text is paginated line by line, including individual quotes longer than a page.
+// This builder has no browser dependency so the actual PDF can be regression-tested.
+export function buildBookPDF(book: ExportBook, coverData?: string): jsPDF {
+    const doc = new jsPDF({ format: 'a4', unit: 'mm' });
+    const left = 22;
+    const right = 188;
+    const bottom = 274;
+    let y = 38;
+    const heading = () => {
+        doc.setFillColor('#8b5cf6');
+        doc.rect(0, 0, 210, 3, 'F');
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10);
-        doc.setTextColor(COL_PRIMARY);
-        doc.text(book.author.toUpperCase(), margin, y);
-        y += 15;
-
-        // 4. Metadata
+        doc.setTextColor('#8b5cf6');
+        doc.text('CitandoAndo', left, 18);
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(COL_TEXT_SEC);
-
-        // Icons simulation
-        // Bookmarks
-        doc.setDrawColor(COL_TEXT_SEC);
-        doc.setFillColor(COL_TEXT_SEC);
-        // tiny square for icon
-        doc.rect(margin, y - 3, 3, 4, 'F');
-        doc.text(`${book.clippings.length} Destacados`, margin + 6, y);
-        y += 8;
-
-        // Date
-        doc.text(`Generado: ${new Date().toLocaleDateString()}`, margin + 6, y);
-
-        // Footer
-        doc.setFontSize(7);
-        doc.setTextColor(COL_TEXT_SEC);
-        doc.text(
-            `Página ${pageNumber}`,
-            margin,
-            pHeight - margin
-        );
-        doc.text(
-            'CitandoAndo',
-            margin,
-            pHeight - margin - 4
-        );
+        doc.setFontSize(8);
+        doc.setTextColor('#64748b');
+        doc.text('CUADERNO DE LECTURA', right, 18, { align: 'right' });
     };
-
-    // --- Content Area Logic ---
-    let y = margin + 10;
-
-    // Initial Sidebar for Page 1
-    await drawSidebar(1, 0);
-
-    // Header Right (Logo)
-    const logoX = pWidth - margin;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(COL_PRIMARY);
-    doc.text('CitandoAndo', logoX, margin + 5, { align: 'right' });
-
-    // Badge outline
-    doc.setDrawColor(COL_PRIMARY);
-    doc.roundedRect(logoX - 28, margin + 1, 30, 6, 2, 2, 'S');
-
-    y += 20;
-
-    for (let i = 0; i < book.clippings.length; i++) {
-        const clip = book.clippings[i];
-
-        // Calculate Height
-        doc.setFont('times', 'italic');
-        doc.setFontSize(12);
-        const quoteW = contentWidth - (margin * 2) - 10;
-        const textLines = doc.splitTextToSize(clip.content, quoteW);
-        const blockHeight = (textLines.length * 6) + 20;
-
-        if (y + blockHeight > pHeight - margin) {
-            doc.addPage();
-            y = margin + 20;
-            await drawSidebar(doc.getNumberOfPages(), 0);
-
-            // Header on new page
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.setTextColor(COL_PRIMARY);
-            doc.text('CitandoAndo', logoX, margin + 5, { align: 'right' });
+    const page = () => { doc.addPage(); heading(); y = 34; };
+    const write = (text: string, size: number, font: 'helvetica' | 'times', style: 'normal' | 'bold' | 'italic', color: string, lineHeight: number) => {
+        doc.setFont(font, style);
+        doc.setFontSize(size);
+        const lines: string[] = doc.splitTextToSize(text, right - left);
+        for (const line of lines) {
+            if (y > bottom) page();
+            doc.setFont(font, style);
+            doc.setFontSize(size);
+            doc.setTextColor(color);
+            doc.text(line, left, y);
+            y += lineHeight;
         }
-
-        const contentX = sidebarWidth + margin;
-
-        // Quote Mark
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(40);
-        doc.setTextColor(COL_QUOTE_MARK);
-        doc.text('"', contentX - 5, y + 10);
-
-        // Text
-        doc.setFont('times', 'italic');
-        doc.setFontSize(12);
-        doc.setTextColor(COL_TEXT_MAIN);
-        doc.text(textLines, contentX + 10, y + 5);
-
-        y += (textLines.length * 6) + 10;
-
-        // Separator
-        if (i < book.clippings.length - 1) {
-            doc.setDrawColor(240);
-            doc.setLineWidth(0.5);
-            doc.line(contentX + 10, y, contentX + 30, y);
-            y += 10;
-        }
+    };
+    heading();
+    write(book.title, 24, 'times', 'bold', '#1e293b', 10);
+    y += 3;
+    write(book.author, 12, 'helvetica', 'normal', '#64748b', 6);
+    y += 7;
+    if (coverData) {
+        if (y + 54 > bottom) page();
+        const properties = doc.getImageProperties(coverData);
+        const ratio = Math.min(36 / properties.width, 54 / properties.height);
+        doc.addImage(coverData, 'JPEG', left, y, properties.width * ratio, properties.height * ratio);
+        y += properties.height * ratio + 12;
     }
+    write(`${book.clippings.length} anotaciones`, 10, 'helvetica', 'bold', '#8b5cf6', 6);
+    y += 10;
+    const labels = { Highlight: 'Subrayado', Note: 'Nota', Bookmark: 'Marcador' };
+    book.clippings.forEach((clip, index) => {
+        // Keep each label with at least the first line of its text.
+        if (y + 18 > bottom) page();
+        write(`${index + 1}. ${labels[clip.type]}`, 9, 'helvetica', 'bold', '#8b5cf6', 6);
+        write(clip.content || '(Marcador sin texto)', 12, 'times', 'normal', '#1e293b', 6);
+        y += 4;
+        if (y < bottom) {
+            doc.setDrawColor('#ddd6fe');
+            doc.line(left, y, left + 24, y);
+        }
+        y += 10;
+    });
+    const total = doc.getNumberOfPages();
+    for (let index = 1; index <= total; index++) {
+        doc.setPage(index);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor('#64748b');
+        doc.text(`Página ${index} de ${total}`, right, 287, { align: 'right' });
+    }
+    return doc;
+}
 
-    const fileName = `${book.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_highlights.pdf`;
-    doc.save(fileName);
-};
+function loadCover(url: string): Promise<string | undefined> {
+    return new Promise(resolve => {
+        const img = new Image();
+        const finish = (value?: string) => {
+            clearTimeout(timer);
+            img.onload = null;
+            img.onerror = null;
+            resolve(value);
+        };
+        const timer = setTimeout(() => finish(), 5000);
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const context = canvas.getContext('2d');
+                if (!context) return finish();
+                context.drawImage(img, 0, 0);
+                finish(canvas.toDataURL('image/jpeg'));
+            } catch { finish(); }
+        };
+        img.onerror = () => finish();
+        img.src = url;
+    });
+}
+
+export async function generateBookPDF(book: ExportBook, coverUrl?: string | null) {
+    const cover = coverUrl ? await loadCover(coverUrl) : undefined;
+    const doc = buildBookPDF(book, cover);
+    const filename = `${book.title}_${book.author}`.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    doc.save(`${filename}_highlights.pdf`);
+}
