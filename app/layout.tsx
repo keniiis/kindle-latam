@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans, Playfair_Display, Lora, Inter } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
+import PwaUpdater from '@/components/PwaUpdater';
+import { ToastProvider } from '@/components/Toast';
 import "./globals.css";
 
 // Cargamos la fuente
@@ -78,9 +81,6 @@ export const metadata: Metadata = {
   },
 };
 
-import PwaUpdater from '@/components/PwaUpdater';
-import { ToastProvider } from '@/components/Toast';
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -112,6 +112,7 @@ export default function RootLayout({
           {children}
           <PwaUpdater />
         </ToastProvider>
+        <Analytics />
       </body>
     </html>
   );
