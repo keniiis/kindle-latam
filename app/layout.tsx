@@ -76,6 +76,7 @@ export const metadata: Metadata = {
   },
 
   manifest: '/manifest.json',
+  icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }, { url: '/icon.png', type: 'image/png' }], apple: '/icon.png' },
   verification: {
     google: "QXZblOlOyRPQN1NNk49XkmgYepZASrS4jLIgwT8QDXA",
   },

@@ -1,4 +1,5 @@
 'use client';
+import Logo from '@/components/Logo';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -98,9 +99,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
             <header className="sticky top-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-primary/10 px-6 lg:px-40 py-3">
                 <div className="max-w-[1200px] mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-3 cursor-pointer" onClick={toggleLanguage}>
-                        <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                            <BookOpen size={20} />
-                        </div>
+                        <Logo size={32} />
                         <h2 className="text-xl font-extrabold tracking-tight hidden sm:block">CitandoAndo</h2>
                     </div>
                     <nav className="hidden md:flex items-center gap-8">

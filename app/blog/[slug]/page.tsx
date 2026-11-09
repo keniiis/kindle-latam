@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Tag, BookOpen } from 'lucide-react';
+import Logo from '@/components/Logo';
+import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { blogPosts } from '@/data/blogData';
 import { Metadata } from 'next';
@@ -109,9 +110,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     {/* Center: Logo */}
                     <div className="justify-self-center">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white group-hover:rotate-3 transition-transform">
-                                <BookOpen size={20} />
-                            </div>
+                            <Logo size={32} className="group-hover:rotate-3 transition-transform" />
                             <span className="text-lg font-extrabold tracking-tight text-slate-900">
                                 CitandoAndo
                             </span>

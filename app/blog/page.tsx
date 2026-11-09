@@ -1,3 +1,4 @@
+import Logo from '@/components/Logo';
 
 import Link from 'next/link';
 import { blogPosts } from '@/data/blogData';
@@ -16,9 +17,7 @@ export default function BlogIndex() {
             <header className="sticky top-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-primary/10 px-6 lg:px-40 py-4">
                 <div className="max-w-[1200px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                            <BookOpen size={20} />
-                        </div>
+                        <Logo size={32} className="group-hover:scale-105 transition-transform" />
                         <h2 className="text-xl font-extrabold tracking-tight">CitandoAndo</h2>
                     </Link>
 

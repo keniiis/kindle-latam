@@ -1,4 +1,5 @@
 'use client';
+import Logo from '@/components/Logo';
 
 import Link from 'next/link';
 import { useState, useMemo, useEffect, useRef } from 'react';
@@ -10,7 +11,7 @@ import LandingPage from '@/components/LandingPage';
 import LibraryView, { SortOption } from '@/components/LibraryView';
 import BookDetailView from '@/components/BookDetailView';
 import {
-    BookOpen, Trash2, Coffee, Quote, Calendar, Plus, Zap, Loader2, Share2, Download
+    Trash2, Coffee, Quote, Calendar, Plus, Zap, Loader2, Share2, Download
 } from 'lucide-react';
 
 const STORAGE_KEY = 'kindle-latam-library';
@@ -624,9 +625,7 @@ export default function KindleApp() {
                 <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 lg:px-20 py-4">
                     <div className="max-w-[1200px] mx-auto flex items-center justify-between">
                         <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleSetSelectedBook(null)}>
-                            <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
-                                <BookOpen size={22} strokeWidth={2.5} />
-                            </div>
+                            <Logo size={40} />
                             <h2 className="text-xl font-extrabold tracking-tight text-slate-900">CitandoAndo</h2>
                         </div>
                         <div className="flex items-center gap-3 sm:gap-4">

@@ -1,4 +1,5 @@
 'use client';
+import Logo from '@/components/Logo';
 
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
@@ -141,9 +142,7 @@ export default function ShareModal({ content, title, author, onClose }: ShareMod
                     <ArrowLeft size={20} className="text-slate-700" />
                 </button>
                 <div className="flex items-center gap-2">
-                    <div className="bg-[#8c25f4] p-1.5 rounded-lg text-white shadow-md shadow-purple-500/20">
-                        <BookOpen size={16} strokeWidth={3} />
-                    </div>
+                    <Logo size={28} />
                     <span className="font-bold text-slate-900 tracking-tight">CitandoAndo</span>
                 </div>
                 <div className="flex items-center gap-2 md:gap-4">
