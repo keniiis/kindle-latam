@@ -18,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'daily',
             priority: 0.9,
         },
+        { url: `${baseUrl}/soporte`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.4 },
+        { url: `${baseUrl}/privacidad`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.4 },
     ];
 
     // Rutas dinámicas del blog

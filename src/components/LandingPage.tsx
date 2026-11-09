@@ -544,7 +544,7 @@ export default function LandingPage({ onStart, onManualEntry }: LandingPageProps
                         </div>
                     </div>
                     <div className="mt-12 text-center text-sm opacity-50 font-medium">
-                        <p>© 2026 CitandoAndo. {t.landing.footer.made_with} <span className="mx-2">•</span> <Link href="/blog" className="hover:underline">{t.landing.nav.blog}</Link></p>
+                        <p>© 2026 CitandoAndo. {t.landing.footer.made_with} <span className="mx-2">•</span> <Link href="/blog" className="hover:underline">{t.landing.nav.blog}</Link> <span className="mx-2">•</span> <Link href="/soporte" className="hover:underline">Soporte</Link> <span className="mx-2">•</span> <Link href="/privacidad" className="hover:underline">Privacidad</Link></p>
                     </div>
                 </footer>
             </main>
