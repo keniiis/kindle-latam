@@ -6,6 +6,8 @@ import PhoneEditor from "./PhoneEditor";
 import { SmartDownloadButton, StoreButtons } from "./Download";
 import { scrollToDownload } from "@/lib/landing/download";
 
+const MARQUEE = ["Beta abierta en TestFlight", "My Clippings.txt → imagen en segundos", "Sin registro · Sin nube", "Gratis y sin registro"];
+
 export default function Hero({
   onPrimary,
 }: {
@@ -97,12 +99,12 @@ export default function Hero({
         </div>
 
         {/* tira */}
-        <div className="relative -mx-4 sm:-mx-6 border-y border-ink/12 bg-ink text-paper py-3.5 overflow-hidden">
+        <div className="relative left-1/2 w-screen -translate-x-1/2 border-y border-ink/12 bg-ink text-paper py-3.5 overflow-hidden">
           <div className="flex whitespace-nowrap animate-marquee gap-0 w-max">
             {[0, 1].map((k) => (
               <div key={k} className="flex items-center gap-8 pr-8 font-jbmono text-[12px] uppercase tracking-[0.22em]">
-                {["Beta abierta en TestFlight", "My Clippings.txt → imagen en segundos", "Sin registro · Sin nube", "Gratis y sin registro"].map((t) => (
-                  <span key={t + k} className="flex items-center gap-8">
+                {[...MARQUEE, ...MARQUEE].map((t, n) => (
+                  <span key={t + n} className="flex items-center gap-8">
                     <span>{t}</span>
                     <span className="text-clay">✳</span>
                   </span>
