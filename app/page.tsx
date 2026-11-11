@@ -1,98 +1,50 @@
-// src/app/page.tsx (SERVER COMPONENT)
-import { Metadata } from 'next';
-import KindleApp from '@/components/KindleApp';
+// app/page.tsx (SERVER COMPONENT): landing de descarga de la app
+import type { Metadata } from 'next';
+import LandingSite from '@/components/landing/LandingSite';
 
-// ESTO ES LO QUE GOOGLE VE (SEO SERVER-SIDE)
 export const metadata: Metadata = {
-    title: 'Citando Ando | Organiza y Comparte tus Notas de Kindle',
-    description: 'Herramienta gratuita para exportar tus subrayados de Kindle (My Clippings.txt), organizarlos y crear imágenes estéticas para Instagram y redes sociales. Sin registro.',
-    keywords: ['Kindle', 'Clippings', 'Notas', 'Parser', 'Instagram', 'PWA', 'Gratis'],
+    title: { absolute: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram' },
+    description: 'CitandoAndo convierte los subrayados de tu Kindle en imágenes bonitas listas para Instagram. Beta abierta en TestFlight para iPhone. Gratis, sin registro y 100% privada.',
+    alternates: { canonical: '/' },
     openGraph: {
-        title: 'Citando Ando - Tu Segundo Cerebro para Kindle',
-        description: 'Convierte tus lecturas en contenido visual en segundos.',
+        title: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram',
+        description: 'Importa tu My Clippings.txt o escribe tus citas y compártelas en segundos. Gratis, sin registro y sin subir nada a ningún servidor.',
         type: 'website',
         url: 'https://citando-ando.vercel.app',
-        // images: ['/og-image.jpg'], // Si creas una imagen de portada luego
     },
 };
 
+const FAQ = [
+    ['¿Dónde descargo la app?', 'Por ahora es una beta abierta en TestFlight para iPhone; App Store, muy pronto. La app es solo para iPhone.'],
+    ['¿Es gratis? ¿Necesito una cuenta?', 'Es gratis, sin registro y sin suscripciones.'],
+    ['¿Cómo paso mi My Clippings.txt a la app?', 'Conecta tu Kindle al ordenador, copia el archivo My Clippings.txt de la carpeta documents, envíatelo al móvil (email, Drive, AirDrop) e impórtalo desde la app.'],
+    ['¿Es seguro? ¿Guardan mis notas?', 'Todo se procesa y se guarda en tu propio móvil. Tus notas no se suben a ningún servidor y no hay cuentas.'],
+    ['¿Funciona con Kobo, Apple Books o libros físicos?', 'Sí: puedes escribir la cita a mano desde cualquier fuente y aplicarle los mismos estilos.'],
+];
+
+const jsonLd = [
+    {
+        '@context': 'https://schema.org',
+        '@type': 'MobileApplication',
+        name: 'CitandoAndo',
+        applicationCategory: 'LifestyleApplication',
+        operatingSystem: 'iOS',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        description: 'Convierte tus subrayados de Kindle en imágenes listas para compartir en redes sociales. Sin registro y privada.',
+        author: { '@type': 'Person', name: 'Danidev', url: 'https://x.com/Danipena3488' },
+    },
+    {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+];
+
 export default function Page() {
     return (
-        <main className="min-h-screen bg-white text-slate-900 font-sans" suppressHydrationWarning>
-            {/* Aquí cargamos el componente "Cliente".
-         Next.js renderizará el HTML inicial estático que pueda, 
-         y luego "hidratará" la interactividad en el navegador.
-      */}
-            {/* Structured Data for SEO */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    [
-                        ${JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "SoftwareApplication",
-                        "name": "CitandoAndo",
-                        "applicationCategory": "ProductivityApplication",
-                        "operatingSystem": "Web, Android, iOS, Windows, MacOS",
-                        "offers": {
-                            "@type": "Offer",
-                            "price": "0",
-                            "priceCurrency": "USD"
-                        },
-                        "description": "Transforma tus highlights de Kindle en arte listo para tus redes sociales en segundos. Sin descargas ni registros.",
-                        "featureList": "Kindle Clippings Parser, Instagram Image Generator, Twitter Card Creator, Privacy Focused",
-                        "screenshot": "https://citando-ando.vercel.app/opengraph-image",
-                        "softwareVersion": "1.0.0",
-                        "author": {
-                            "@type": "Person",
-                            "name": "Danidev",
-                            "url": "https://x.com/Danipena3488"
-                        }
-                    })},
-                        ${JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "FAQPage",
-                        "mainEntity": [
-                            {
-                                "@type": "Question",
-                                "name": "¿Cómo encuentro el archivo My Clippings.txt?",
-                                "acceptedAnswer": {
-                                    "@type": "Answer",
-                                    "text": "Conecta tu Kindle a tu PC con el cable USB. Aparecerá como una memoria externa. Entra a la carpeta 'documents' y ahí encontrarás el archivo 'My Clippings.txt'."
-                                }
-                            },
-                            {
-                                "@type": "Question",
-                                "name": "¿Es seguro? ¿Guardan mis notas?",
-                                "acceptedAnswer": {
-                                    "@type": "Answer",
-                                    "text": "Totalmente seguro. CitandoAndo funciona 100% en tu navegador. Tus notas NO se suben a ningún servidor, todo el procesamiento es local en tu dispositivo."
-                                }
-                            },
-                            {
-                                "@type": "Question",
-                                "name": "¿Funciona con Kobo o Apple Books?",
-                                "acceptedAnswer": {
-                                    "@type": "Answer",
-                                    "text": "¡Sí! Con nuestro nuevo Modo Manual puedes crear diseños hermosos transcribiendo desde libros físicos, PDFs, Apple Books o cualquier otra fuente."
-                                }
-                            },
-                            {
-                                "@type": "Question",
-                                "name": "¿Es realmente gratis?",
-                                "acceptedAnswer": {
-                                    "@type": "Answer",
-                                    "text": "Sí, es un proyecto Open Source creado por amor a la lectura. Si te gusta, puedes invitarme un café, pero todas las funciones son y serán gratuitas."
-                                }
-                            }
-                        ]
-                    })}
-                    ]
-                    `
-                }}
-            />
-            <KindleApp />
-        </main>
+        <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+            <LandingSite />
+        </>
     );
 }

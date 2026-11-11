@@ -39,7 +39,7 @@ export default function Privacidad() {
             <h2>Sitio web</h2>
             <p>
                 El sitio web usa <strong>Google Tag Manager</strong> y <strong>Vercel Analytics</strong> para medir visitas de forma agregada (páginas vistas, país, tipo de dispositivo).
-                Estas herramientas pueden usar cookies o identificadores técnicos. La herramienta web guarda tu biblioteca en el almacenamiento local de tu navegador y no la envía a nuestros servidores.
+                Estas herramientas pueden usar cookies o identificadores técnicos.
             </p>
 
             <h2>Menores</h2>

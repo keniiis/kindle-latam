@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans, Playfair_Display, Lora, Inter } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
-import PwaUpdater from '@/components/PwaUpdater';
+import SwCleanup from '@/components/SwCleanup';
 import { ToastProvider } from '@/components/Toast';
 import "./globals.css";
 
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     default: "CitandoAndo | Tu Segundo Cerebro para Kindle",
     template: "%s | CitandoAndo"
   },
-  description: "Transforma tus highlights de Kindle en contenido visual y compártelo en redes sociales. Herramienta gratuita, sin registro y privada.",
+  description: "Transforma tus highlights de Kindle en contenido visual y compártelo en redes sociales. App gratuita para iPhone, sin registro y privada.",
   keywords: ["Kindle", "Highlights", "Notas", "Instagram", "Stories", "Generador de imágenes", "Lectura", "Libros", "Citas"],
   authors: [{ name: "Danidev", url: "https://x.com/Danipena3488" }],
   creator: "Danidev",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'CitandoAndo | Comparte tus lecturas con estilo',
-    description: 'Convierte tus subrayados de Kindle en imágenes hermosas para tus stories. Sin instalar nada.',
+    description: 'Convierte tus subrayados de Kindle en imágenes hermosas para tus stories. Gratis y sin registro.',
     url: 'https://citando-ando.vercel.app',
     siteName: 'CitandoAndo',
     locale: 'es_LA',
@@ -75,8 +75,7 @@ export const metadata: Metadata = {
     },
   },
 
-  manifest: '/manifest.json',
-  icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }, { url: '/icon.png', type: 'image/png' }], apple: '/icon.png' },
+  icons: { icon: [{ url: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { url: '/icon.png', sizes: '512x512', type: 'image/png' }], apple: '/apple-icon.png' },
   verification: {
     google: "QXZblOlOyRPQN1NNk49XkmgYepZASrS4jLIgwT8QDXA",
   },
@@ -111,7 +110,7 @@ export default function RootLayout({
         </noscript>
         <ToastProvider>
           {children}
-          <PwaUpdater />
+          <SwCleanup />
         </ToastProvider>
         <Analytics />
       </body>
