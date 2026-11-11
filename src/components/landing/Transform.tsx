@@ -162,21 +162,7 @@ export function TransformSection() {
           </div>
         </Reveal>
 
-        <div ref={ref} className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { v: "0", l: "cuentas que crear" },
-              { v: "0", l: "citas subidas a la nube" },
-              { v: "100%", l: "en tu iPhone" },
-            ].map((s, i) => (
-              <Reveal key={s.l} delay={i * 90}>
-                <div className="rounded-2xl border border-ink/10 bg-white/70 px-4 py-4 text-center">
-                  <p className="font-fraunces text-2xl sm:text-4xl font-black tabular-nums">{s.v}</p>
-                  <p className="mt-1 font-jbmono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] text-ink/55">{s.l}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+        <div ref={ref} className="mt-6 flex justify-center">
           <Reveal delay={200}>
             <div className="flex flex-col items-center gap-2 rounded-2xl bg-ink px-7 py-5 text-center">
               <SmartDownloadButton />
