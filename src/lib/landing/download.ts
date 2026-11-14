@@ -30,14 +30,16 @@ export function iosUrl(): string {
   return APP_CONFIG.APPLE_LIVE && APP_CONFIG.APPLE_URL !== "#" ? APP_CONFIG.APPLE_URL : APP_CONFIG.TESTFLIGHT_URL;
 }
 
+/** Baja hasta la tarjeta del QR (si no existe, hasta la sección de descarga). */
 export function scrollToDownload() {
-  document.getElementById("descargar")?.scrollIntoView({ behavior: "smooth" });
+  const target = document.getElementById("qr-descarga") ?? document.getElementById("descargar");
+  target?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 /**
  * Acción principal de descarga:
  *  · iPhone → abre App Store (o TestFlight mientras sea beta).
- *  · Cualquier otro dispositivo → baja a la sección de descarga (QR).
+ *  · Cualquier otro dispositivo → baja hasta el QR para escanearlo con el móvil.
  */
 export function smartDownload(): "opened" | "section" {
   if (detectPlatform() === "ios") {

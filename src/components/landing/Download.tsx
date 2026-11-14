@@ -15,23 +15,23 @@ function Apple({ className = "" }: { className?: string }) {
   );
 }
 
-/* ── Botón de descarga para iPhone (TestFlight o App Store) ── */
+/* ── Insignia informativa (no es un botón): la descarga está en el botón naranja ── */
 export function StoreButtons({ compact = false }: { compact?: boolean; onSoon?: () => void }) {
   return (
     <div className={`flex ${compact ? "flex-row" : "flex-col sm:flex-row"} gap-2.5`}>
-      <a href={iosUrl()} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-2xl bg-ink px-5 py-3 text-paper transition hover:-translate-y-0.5 hover:shadow-xl">
+      <div className="flex cursor-default select-none items-center gap-3 rounded-2xl bg-ink px-5 py-3 text-paper">
         <Apple className="h-7 w-7 shrink-0" />
         <span>
           <span className="block text-[10.5px] uppercase tracking-widest opacity-60">{APP_CONFIG.APPLE_LIVE ? "Descárgala en" : "Beta abierta en"}</span>
           <span className={`font-bold ${compact ? "text-[15px]" : "text-[17px]"}`}>{APP_CONFIG.APPLE_LIVE ? "App Store" : "TestFlight"}</span>
         </span>
-      </a>
+      </div>
     </div>
   );
 }
 
 /* ── Botón inteligente (abre la tienda de tu móvil) ─── */
-export function SmartDownloadButton({ big = false, light = false }: { big?: boolean; light?: boolean }) {
+export function SmartDownloadButton({ big = false, light = false, openStore = false }: { big?: boolean; light?: boolean; openStore?: boolean }) {
   const [platform, setPlatform] = useState<"ios" | "other">("other");
   // Se detecta tras la hidratación para que el HTML del servidor y el del cliente coincidan.
   // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -39,7 +39,7 @@ export function SmartDownloadButton({ big = false, light = false }: { big?: bool
   const store = APP_CONFIG.APPLE_LIVE ? "App Store" : "TestFlight";
   return (
     <button
-      onClick={smartDownload}
+      onClick={openStore ? () => { window.open(iosUrl(), "_blank", "noopener"); } : smartDownload}
       className={`group flex items-center justify-center gap-3 rounded-full font-bold transition-all hover:-translate-y-0.5 ${
         big ? "px-8 py-4 text-[16px] sm:text-lg" : "px-7 py-3.5 text-[15px]"
       } ${light ? "bg-paper text-ink hover:bg-white shadow-xl" : "bg-clay text-white shadow-[0_18px_40px_-12px_rgba(228,87,46,0.6)] hover:bg-clay-deep"}`}
@@ -81,7 +81,7 @@ export function DownloadSection() {
                   ))}
                 </div>
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
-                  <SmartDownloadButton big />
+                  <SmartDownloadButton big openStore />
                 </div>
                 <div className="mt-4">
                   <StoreButtons compact onSoon={scrollToDownload} />
@@ -89,7 +89,7 @@ export function DownloadSection() {
               </div>
 
               <div className="flex flex-col items-center justify-center gap-4">
-                <div className="w-full max-w-[320px] rounded-[26px] bg-paper text-ink p-6 text-center shadow-2xl rotate-[1.5deg]">
+                <div id="qr-descarga" className="w-full max-w-[320px] rounded-[26px] bg-paper text-ink p-6 text-center shadow-2xl rotate-[1.5deg]">
                   <BrandIcon size={64} />
                   <p className="font-fraunces mt-3 text-2xl font-black">Citando<em className="font-light text-clay">Ando</em></p>
                   <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-ink/50">kindle → imagen → IG</p>

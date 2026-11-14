@@ -19,6 +19,7 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
     { label: "Antes / Después", href: "#demo" },
     { label: "¿Para quién?", href: "#para-quien" },
     { label: "La app", href: "#descargar" },
+    { label: "Tu lectura", href: "#tu-lectura" },
     { label: "Plantillas", href: "#plantillas" },
     { label: "FAQ", href: "#faq" },
     { label: "Blog", href: "/blog" },

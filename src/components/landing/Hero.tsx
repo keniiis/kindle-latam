@@ -66,7 +66,7 @@ export default function Hero({
 
             <div className="mt-7 flex flex-col gap-3">
               <div className="flex flex-col sm:flex-row gap-3">
-                <SmartDownloadButton big />
+                <SmartDownloadButton big openStore />
               </div>
               <div className="flex justify-start">
                 <StoreButtons compact onSoon={onPrimary} />

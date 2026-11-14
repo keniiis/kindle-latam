@@ -6,6 +6,7 @@ import Hero from "./Hero";
 import { TransformSection } from "./Transform";
 import Audience from "./Audience";
 import { DownloadSection, StickyDownloadBar } from "./Download";
+import ReadingSection from "./Reading";
 import { HowItWorks, TemplatesGallery, Privacy, Faq, FinalCta, Footer } from "./Landing";
 import { scrollToDownload, smartDownload } from "@/lib/landing/download";
 import { fraunces, instrumentSerif, jetbrainsMono, spaceGrotesk } from "./fonts";
@@ -19,9 +20,8 @@ export default function LandingSite() {
   }, []);
 
   const handleDownload = useCallback(() => {
-    const r = smartDownload();
-    if (r === "section") toast("Aquí abajo está la descarga: beta en TestFlight, solo para iPhone. 👇");
-  }, [toast]);
+    smartDownload();
+  }, []);
 
   const handleUseTemplate = useCallback(() => {
     scrollToDownload();
@@ -36,6 +36,7 @@ export default function LandingSite() {
         <TransformSection />
         <Audience onStart={handleDownload} />
         <HowItWorks />
+        <ReadingSection />
         <DownloadSection />
         <TemplatesGallery onUse={handleUseTemplate} />
         <Privacy />

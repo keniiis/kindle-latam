@@ -9,7 +9,7 @@ import {
 import { TEMPLATES, backgroundOf } from "@/lib/landing/core";
 import { Reveal } from "./Hero";
 import BrandIcon from "./BrandIcon";
-import { SmartDownloadButton, StoreButtons } from "./Download";
+import { StoreButtons } from "./Download";
 
 export function HowItWorks() {
   const steps = [
@@ -93,7 +93,7 @@ Andábamos sin buscarnos…`}
                 <Sparkles className="h-4 w-4 text-clay" /> Y así queda después de CitandoAndo
               </div>
               <div className="mt-4 space-y-2.5">
-                {["Biblioteca agrupada por libro y autor", "Buscador instantáneo de libros, autores y frases", "Imágenes listas para tus historias de Instagram", "Escribe citas a mano de libros físicos y PDFs"].map((t) => (
+                {["Biblioteca agrupada por libro y autor", "Buscador instantáneo de libros, autores y frases", "Imágenes listas para tus historias de Instagram", "Escribe citas a mano de libros físicos y PDFs", "Tu lectura: calendario de días, racha semanal y metas"].map((t) => (
                   <div key={t} className="flex items-center gap-3 rounded-2xl bg-white/80 border border-ink/10 px-4 py-3 text-[14px] font-medium">
                     <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-forest text-white"><Check className="h-3.5 w-3.5" /></span>{t}
                   </div>
@@ -305,7 +305,6 @@ export function FinalCta() {
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/80">Descarga la app y publica tu primera cita esta misma noche.</p>
               <div className="mt-8 flex flex-col items-center gap-3">
-                <SmartDownloadButton big light />
                 <StoreButtons compact />
               </div>
             </div>
@@ -332,7 +331,7 @@ export function Footer() {
           <div>
             <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">Producto</p>
             <ul className="mt-3 space-y-2 text-[14px]">
-              {[["Descargar la app", "#descargar"], ["Cómo funciona", "#como-funciona"], ["Plantillas", "#plantillas"], ["Privacidad", "#privacidad"]].map(([l, h]) => (
+              {[["Descargar la app", "#descargar"], ["Cómo funciona", "#como-funciona"], ["Tu lectura", "#tu-lectura"], ["Plantillas", "#plantillas"], ["Privacidad", "#privacidad"]].map(([l, h]) => (
                 <li key={h}><a href={h} className="text-paper/65 hover:text-paper transition">{l}</a></li>
               ))}
             </ul>
