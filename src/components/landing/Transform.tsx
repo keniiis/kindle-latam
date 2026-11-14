@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronsLeftRight, FileText, ImageDown, MoveHorizontal } from "lucide-react";
 import { Reveal } from "./Hero";
 import { SmartDownloadButton } from "./Download";
-import { TEMPLATES } from "@/lib/landing/core";
+import { TEMPLATES, backgroundOf } from "@/lib/landing/core";
 
 function useInView<T extends HTMLElement>(threshold = 0.3) {
   const ref = useRef<T>(null);
@@ -183,7 +183,7 @@ export function TransformSection() {
                     key={m.a}
                     className="rounded-2xl p-5 text-center shadow-lg transition-all duration-500 hover:-translate-y-1.5 hover:rotate-0 hover:shadow-xl"
                     style={{
-                      background: t.gradient ? `linear-gradient(140deg, ${t.bg}, ${t.bg2})` : t.bg,
+                      background: backgroundOf(t),
                       color: t.text,
                       transform: `rotate(${i % 2 === 0 ? "-1.5deg" : "1.5deg"})`,
                     }}

@@ -11,8 +11,13 @@ type Tool = "fondo" | "detalles" | "redonda" | "diseno" | "mas";
 const FONDOS = [
   { id: "verde", name: "Verde", bg: "#3F5B3A", ink: "#FFFFFF", sub: "rgba(255,255,255,0.66)", line: "#A9C79A", mark: "rgba(255,255,255,0.18)" },
   { id: "negro", name: "Negro", bg: "#222222", ink: "#FFFFFF", sub: "rgba(255,255,255,0.6)", line: "#A9C79A", mark: "rgba(255,255,255,0.18)" },
-  { id: "blanco", name: "Blanco", bg: "#FFFFFF", ink: "#1E1E1E", sub: "rgba(30,30,30,0.55)", line: "#3F5B3A", mark: "rgba(30,30,30,0.12)" },
+  { id: "atardecer", name: "Atardecer", bg: "linear-gradient(140deg,#FFB347,#FF5E7E,#8E4DCB)", ink: "#FFFFFF", sub: "rgba(255,255,255,0.78)", line: "#FFF3D6", mark: "rgba(255,255,255,0.28)" },
+  { id: "lila", name: "Lila", bg: "linear-gradient(140deg,#EEE4FC,#C6B0F0)", ink: "#2E1F4D", sub: "rgba(46,31,77,0.6)", line: "#6B4FBB", mark: "rgba(46,31,77,0.14)" },
   { id: "papel", name: "Papel", bg: "#F3EBDD", ink: "#2B1D16", sub: "rgba(43,29,22,0.58)", line: "#C9A14A", mark: "rgba(43,29,22,0.14)" },
+  { id: "blanco", name: "Blanco", bg: "#FFFFFF", ink: "#1E1E1E", sub: "rgba(30,30,30,0.55)", line: "#3F5B3A", mark: "rgba(30,30,30,0.12)" },
+  { id: "melocoton", name: "Melocotón", bg: "linear-gradient(140deg,#FFE6D6,#F7B49B)", ink: "#4A2417", sub: "rgba(74,36,23,0.6)", line: "#C2573A", mark: "rgba(74,36,23,0.14)" },
+  { id: "menta", name: "Menta", bg: "linear-gradient(140deg,#E1F6EA,#A5DFC1)", ink: "#17402E", sub: "rgba(23,64,46,0.6)", line: "#2F7D58", mark: "rgba(23,64,46,0.14)" },
+  { id: "oceano", name: "Océano", bg: "linear-gradient(140deg,#2B5BFF,#18B7D9)", ink: "#FFFFFF", sub: "rgba(255,255,255,0.78)", line: "#D6F4FF", mark: "rgba(255,255,255,0.28)" },
   { id: "arrugado", name: "Papel arrugado", bg: "linear-gradient(140deg,#E5E5E5,#D3D3D1)", ink: "#1E1E1E", sub: "rgba(30,30,30,0.55)", line: "#1E1E1E", mark: "rgba(30,30,30,0.14)" },
 ];
 
@@ -36,8 +41,8 @@ interface Step {
 const SCRIPT: Step[] = [
   { tool: "fondo", fondo: "verde", hold: 1500, cursor: [13, 46] },
   { tool: "fondo", fondo: "negro", hold: 1150, cursor: [27, 46] },
-  { tool: "fondo", fondo: "blanco", hold: 1150, cursor: [41, 46] },
-  { tool: "fondo", fondo: "papel", hold: 1150, cursor: [55, 46] },
+  { tool: "fondo", fondo: "atardecer", hold: 1150, cursor: [41, 46] },
+  { tool: "fondo", fondo: "lila", hold: 1150, cursor: [55, 46] },
   { tool: "fondo", fondo: "verde", hold: 1350, cursor: [13, 46] },
   { tool: "detalles", ornament: "linea", hold: 1150, cursor: [50, 46] },
   { tool: "detalles", ornament: "comillas", hold: 1150, cursor: [20, 46] },

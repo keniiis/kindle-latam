@@ -22,7 +22,6 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
     { label: "Plantillas", href: "#plantillas" },
     { label: "FAQ", href: "#faq" },
     { label: "Blog", href: "/blog" },
-    { label: "Versión web", href: "/app" },
   ];
 
   return (

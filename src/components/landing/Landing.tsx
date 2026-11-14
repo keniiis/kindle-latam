@@ -6,7 +6,7 @@ import {
   Smartphone, FolderOpen, Wand2, ShieldCheck, Zap, Heart, ArrowUpRight, ArrowRight,
   Quote, Check, Plus, Minus, Code2, FileText, Lock, Sparkles,
 } from "lucide-react";
-import { TEMPLATES } from "@/lib/landing/core";
+import { TEMPLATES, backgroundOf } from "@/lib/landing/core";
 import { Reveal } from "./Hero";
 import BrandIcon from "./BrandIcon";
 import { SmartDownloadButton, StoreButtons } from "./Download";
@@ -132,7 +132,7 @@ export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
                 onClick={() => onUse(t.id)}
                 className="group w-full text-left rounded-[22px] overflow-hidden border border-paper/12 bg-paper/[0.04] hover:border-gold/60 hover:-translate-y-1.5 transition-all duration-500"
               >
-                <span className="relative block aspect-square overflow-hidden" style={{ background: t.gradient ? `linear-gradient(140deg, ${t.bg}, ${t.bg2})` : t.bg }}>
+                <span className="relative block aspect-square overflow-hidden" style={{ background: backgroundOf(t) }}>
                   <span className="absolute left-3 top-2.5 font-jbmono text-[8.5px] tracking-[0.18em]" style={{ color: t.muted }}>CITANDOANDO</span>
                   {t.ornament === "quote" && <span className="absolute left-2.5 top-4 font-fraunces italic leading-none" style={{ fontSize: 56, color: t.accent, opacity: 0.3 }}>“</span>}
                   {t.ornament === "frame" && <span className="absolute inset-2.5 rounded-lg border" style={{ borderColor: t.accent, opacity: 0.5 }} />}
@@ -153,7 +153,7 @@ export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
                     <span className="block font-fraunces text-[17px] font-bold leading-tight">{t.name}</span>
                     <span className="block text-[12px] text-paper/50 truncate">{t.desc}</span>
                   </span>
-                  <span className="font-jbmono text-[10px] text-paper/40">0{i + 1}</span>
+                  <span className="font-jbmono text-[10px] text-paper/40">{String(i + 1).padStart(2, "0")}</span>
                 </span>
               </button>
             </Reveal>
@@ -245,8 +245,8 @@ const FAQS = [
     a: "¡Sí! Escribes la cita a mano desde libros físicos, PDFs, Apple Books, Kobo o cualquier fuente y le aplicas los mismos estilos.",
   },
   {
-    q: "¿En qué calidad salen las imágenes? ¿Y la web?",
-    a: "En una imagen lista para Instagram, TikTok y X. Esta página es el escaparate con una muestra interactiva: la experiencia completa vive en la app. Si prefieres usar el navegador, también tenemos una versión web gratuita en /app.",
+    q: "¿En qué formato salen las imágenes?",
+    a: "En una imagen lista para Instagram, TikTok y X. Esta página es el escaparate con una muestra interactiva: la experiencia completa vive en la app.",
   },
 ];
 
@@ -343,7 +343,6 @@ export function Footer() {
               <li><a href="#demo" className="text-paper/65 hover:text-paper transition">Antes / Después</a></li>
               <li><a href="#faq" className="text-paper/65 hover:text-paper transition">Dónde está mi txt</a></li>
                             <li><a href="#descargar" className="text-paper/65 hover:text-paper transition">Escanear QR de descarga</a></li>
-              <li><a href="/app" className="text-paper/65 hover:text-paper transition">Versión web</a></li>
               <li><Link href="/blog" className="text-paper/65 hover:text-paper transition">Blog</Link></li>
               <li><a href="/soporte" className="text-paper/65 hover:text-paper transition">Soporte</a></li>
               <li><a href="/privacidad" className="text-paper/65 hover:text-paper transition">Política de privacidad</a></li>

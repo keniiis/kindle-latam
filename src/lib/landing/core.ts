@@ -19,6 +19,8 @@ export interface TemplateDef {
   bg: string;
   bg2?: string;
   gradient?: boolean;
+  /** Tercer color opcional del degradado. */
+  bg3?: string;
   text: string;
   muted: string;
   accent: string;
@@ -51,7 +53,18 @@ export const TEMPLATES: TemplateDef[] = [
   { id: "blanco", name: "Blanco", desc: "Limpio y minimal", bg: "#FFFFFF", text: "#1E1E1E", muted: "rgba(30,30,30,0.55)", accent: "#3F5B3A", font: "sans", ornament: "quote" },
   { id: "papel", name: "Papel", desc: "Crema cálido, tipografía de libro", bg: "#F3EBDD", text: "#2B1D16", muted: "rgba(43,29,22,0.58)", accent: "#C9A14A", font: "serif", ornament: "quote" },
   { id: "arrugado", name: "Papel arrugado", desc: "Textura de papel, como una hoja guardada", bg: "#E5E5E5", bg2: "#D3D3D1", gradient: true, text: "#1E1E1E", muted: "rgba(30,30,30,0.55)", accent: "#1E1E1E", font: "serif", ornament: "quote" },
+  { id: "melocoton", name: "Melocotón", desc: "Degradado cálido y suave", bg: "#FFE6D6", bg2: "#F7B49B", gradient: true, text: "#4A2417", muted: "rgba(74,36,23,0.58)", accent: "#C2573A", font: "serif", ornament: "quote" },
+  { id: "lila", name: "Lila", desc: "Pastel lavanda, tipografía redonda", bg: "#EEE4FC", bg2: "#C6B0F0", gradient: true, text: "#2E1F4D", muted: "rgba(46,31,77,0.58)", accent: "#6B4FBB", font: "sans", ornament: "quote" },
+  { id: "menta", name: "Menta", desc: "Verde fresco y claro", bg: "#E1F6EA", bg2: "#A5DFC1", gradient: true, text: "#17402E", muted: "rgba(23,64,46,0.58)", accent: "#2F7D58", font: "sans", ornament: "quote" },
+  { id: "atardecer", name: "Atardecer", desc: "Naranja, rosa y violeta", bg: "#FFB347", bg2: "#FF5E7E", bg3: "#8E4DCB", gradient: true, text: "#FFFFFF", muted: "rgba(255,255,255,0.75)", accent: "#FFF3D6", font: "sans", ornament: "quote", dark: true },
+  { id: "oceano", name: "Océano", desc: "Azul intenso a turquesa", bg: "#2B5BFF", bg2: "#18B7D9", gradient: true, text: "#FFFFFF", muted: "rgba(255,255,255,0.75)", accent: "#D6F4FF", font: "sans", ornament: "quote", dark: true },
 ];
+
+/** Fondo CSS de un estilo: color liso o degradado. */
+export function backgroundOf(t: TemplateDef): string {
+  if (!t.gradient) return t.bg;
+  return `linear-gradient(140deg, ${[t.bg, t.bg2, t.bg3].filter(Boolean).join(", ")})`;
+}
 
 export function uid(): string {
   return Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
