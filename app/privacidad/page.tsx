@@ -24,8 +24,8 @@ export default function Privacidad() {
             <ul>
                 <li><strong>Open Library, Google Books y Apple iTunes Search</strong>: para sugerir libros, buscar portadas y obtener el género.</li>
             </ul>
-            <p>Si prefieres evitarlo, puedes escribir los datos a mano y dejar el libro sin portada.</p>
             <p>Como en cualquier conexión a internet, estos servicios pueden ver tu dirección IP.</p>
+            <p>Si prefieres evitarlo, puedes escribir los datos a mano y dejar el libro sin portada.</p>
 
             <h2>Permisos del dispositivo</h2>
             <ul>
@@ -53,7 +53,7 @@ export default function Privacidad() {
             <p>Si esta política cambia, actualizaremos la fecha de arriba. Los cambios importantes se avisarán dentro de la app.</p>
 
             <h2>Responsable</h2>
-            <p>Responsable: Daniel Peña, Chile. Contacto: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
+            <p>Daniel Peña, Chile. Contacto: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
 
             <h2>Contacto</h2>
             <p>Escríbenos a <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
