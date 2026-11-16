@@ -21,7 +21,7 @@ export default function Soporte() {
             <h3 className="font-extrabold text-[#140d1c]">¿Cómo importo mis subrayados de Kindle?</h3>
             <p>
                 Conecta tu Kindle al computador y copia el archivo <strong>My Clippings.txt</strong> (está en la carpeta &quot;documents&quot;).
-                Luego, en la app, ve a Ajustes → Importar y elígelo. Las citas repetidas se detectan y no se duplican.
+                Luego, en la app, ve a Ajustes → Importar desde un lector electrónico y elígelo. Las citas repetidas se detectan y no se duplican.
             </p>
 
             <h3 className="font-extrabold text-[#140d1c]">¿Cómo agrego una cita desde otra app?</h3>
@@ -33,11 +33,11 @@ export default function Soporte() {
             <h3 className="font-extrabold text-[#140d1c]">¿Dónde se guardan mis citas?</h3>
             <p>
                 Solo en tu dispositivo. No hay cuentas ni servidores con tu biblioteca. Por eso es importante que guardes una copia desde
-                Ajustes → Guardar copia de seguridad, sobre todo antes de cambiar de teléfono o borrar la app.
+                Ajustes → Guardar una copia, sobre todo antes de cambiar de teléfono o borrar la app.
             </p>
 
             <h3 className="font-extrabold text-[#140d1c]">Cambié de iPhone o reinstalé la app y mi biblioteca no está</h3>
-            <p>Si guardaste una copia, ve a Ajustes → Restaurar copia y selecciona el archivo. Sin copia no es posible recuperar los datos, porque no se guardan fuera de tu dispositivo.</p>
+            <p>Si guardaste una copia, ve a Ajustes → Restaurar una copia y selecciona el archivo. Sin copia no es posible recuperar los datos, porque no se guardan fuera de tu dispositivo.</p>
 
             <h3 className="font-extrabold text-[#140d1c]">La portada de un libro no es la correcta</h3>
             <p>Abre el libro, toca la portada y elige otra de la lista, o prueba buscando con el título en otro idioma. También puedes dejar el libro sin portada.</p>
@@ -46,7 +46,7 @@ export default function Soporte() {
             <p>Comprueba que CitandoAndo tenga permiso para guardar fotos: Ajustes del iPhone → CitandoAndo → Fotos. Mientras tanto, usa el botón Compartir para enviar la imagen a otra app.</p>
 
             <h3 className="font-extrabold text-[#140d1c]">¿Cómo borro todos mis datos?</h3>
-            <p>En Ajustes → Borrar todo. También se eliminan al desinstalar la app.</p>
+            <p>En Ajustes → Borrar toda la biblioteca. También se eliminan al desinstalar la app.</p>
 
             <p className="text-sm text-slate-500 pt-4">
                 CitandoAndo es independiente y no está afiliada ni respaldada por Amazon. Kindle es una marca de Amazon.com, Inc.

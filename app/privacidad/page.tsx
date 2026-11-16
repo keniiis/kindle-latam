@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Privacidad() {
     return (
-        <LegalLayout title="Política de privacidad" updated="9 de noviembre de 2026">
+        <LegalLayout title="Política de privacidad" updated="16 de noviembre de 2026">
             <p>
                 Esta política explica qué datos trata <strong>CitandoAndo</strong>, tanto la app para iPhone como el sitio web
                 citando-ando.vercel.app. Resumen: no pedimos cuenta, no recopilamos tus citas y no vendemos datos.
@@ -25,6 +25,7 @@ export default function Privacidad() {
                 <li><strong>Open Library, Google Books y Apple iTunes Search</strong>: para sugerir libros, buscar portadas y obtener el género.</li>
             </ul>
             <p>Si prefieres evitarlo, puedes escribir los datos a mano y dejar el libro sin portada.</p>
+            <p>Como en cualquier conexión a internet, estos servicios pueden ver tu dirección IP.</p>
 
             <h2>Permisos del dispositivo</h2>
             <ul>
@@ -46,10 +47,13 @@ export default function Privacidad() {
             <p>CitandoAndo no está dirigida a menores de 13 años ni recopila datos de ellos de forma consciente.</p>
 
             <h2>Tus derechos y eliminación de datos</h2>
-            <p>Como tus datos están en tu dispositivo, tú los controlas: puedes borrarlos desde Ajustes → Borrar todo o desinstalando la app. Si tienes dudas sobre datos del sitio web, escríbenos.</p>
+            <p>Como tus datos están en tu dispositivo, tú los controlas: puedes borrarlos desde Ajustes → Borrar toda la biblioteca o desinstalando la app. Si tienes dudas sobre datos del sitio web, escríbenos.</p>
 
             <h2>Cambios</h2>
             <p>Si esta política cambia, actualizaremos la fecha de arriba. Los cambios importantes se avisarán dentro de la app.</p>
+
+            <h2>Responsable</h2>
+            <p>Responsable: Daniel Peña, Chile. Contacto: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
 
             <h2>Contacto</h2>
             <p>Escríbenos a <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.</p>
