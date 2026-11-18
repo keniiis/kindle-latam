@@ -6,7 +6,7 @@ import PhoneEditor from "./PhoneEditor";
 import { SmartDownloadButton, StoreButtons } from "./Download";
 import { scrollToDownload } from "@/lib/landing/download";
 
-const MARQUEE = ["Beta abierta en TestFlight", "My Clippings.txt → imagen en segundos", "Sin registro · Sin nube", "Gratis y sin registro"];
+const MARQUEE = ["Ya disponible en App Store", "My Clippings.txt → imagen en segundos", "Sin registro · Sin nube", "Gratis y sin registro"];
 
 export default function Hero({
   onPrimary,
@@ -69,7 +69,7 @@ export default function Hero({
                 <SmartDownloadButton big openStore />
               </div>
               <div className="flex justify-start">
-                <StoreButtons compact onSoon={onPrimary} />
+                <StoreButtons compact large onSoon={onPrimary} />
               </div>
               <button onClick={() => document.getElementById("descargar")?.scrollIntoView({ behavior: "smooth" })} className="w-fit font-jbmono text-[11px] uppercase tracking-[0.18em] text-ink/45 hover:text-clay transition">
                 o escanea el QR más abajo ↓

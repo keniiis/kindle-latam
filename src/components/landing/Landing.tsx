@@ -17,8 +17,8 @@ export function HowItWorks() {
       n: "01",
       icon: <Smartphone className="h-6 w-6" />,
       title: "Descarga la app gratis",
-      desc: "Beta abierta en TestFlight para iPhone (App Store, muy pronto). Sin cuentas, sin registro: la abres y ya estás dentro.",
-      tag: "TestFlight",
+      desc: "Disponible en App Store para iPhone. Sin cuentas, sin registro: la abres y ya estás dentro.",
+      tag: "App Store",
       color: "bg-ink text-paper",
     },
     {
@@ -26,7 +26,7 @@ export function HowItWorks() {
       icon: <FolderOpen className="h-6 w-6" />,
       title: "Importa tus subrayados",
       desc: "Pasa tu My Clippings.txt al móvil o escribe tus citas a mano desde libros físicos, PDFs y otros lectores.",
-      tag: "100% en tu móvil",
+      tag: "En tu iPhone",
       color: "bg-clay text-white",
     },
     {
@@ -226,7 +226,7 @@ export function Privacy() {
 const FAQS = [
   {
     q: "¿Dónde descargo la app? ¿Vale para mi móvil?",
-    a: "Por ahora es una beta abierta en TestFlight para iPhone: pulsa «Descargar gratis» o escanea el QR de la sección «Descargar» con tu móvil (App Store, muy pronto). La app es solo para iPhone.",
+    a: "Está en la App Store, solo para iPhone: pulsa «Descargar gratis» o escanea el QR de la sección «Descargar» con tu móvil.",
   },
   {
     q: "¿Es realmente gratis? ¿Necesito crearme una cuenta?",
@@ -350,7 +350,7 @@ export function Footer() {
           <div>
             <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">La app</p>
             <p className="mt-3 flex items-center gap-1.5 text-[13px] text-paper/50"><Heart className="h-3.5 w-3.5 text-clay" fill="currentColor" /> Gratis y sin registro</p>
-            <p className="mt-1 flex items-center gap-1.5 text-[13px] text-paper/50"><ShieldCheck className="h-3.5 w-3.5 text-sage" /> 100% local-first</p>
+            <p className="mt-1 flex items-center gap-1.5 text-[13px] text-paper/50"><ShieldCheck className="h-3.5 w-3.5 text-sage" /> Tus citas, en tu iPhone</p>
           </div>
         </div>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-paper/10 pt-6 font-jbmono text-[11px] uppercase tracking-widest text-paper/35">

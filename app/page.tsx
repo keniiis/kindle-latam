@@ -4,7 +4,7 @@ import LandingSite from '@/components/landing/LandingSite';
 
 export const metadata: Metadata = {
     title: { absolute: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram' },
-    description: 'CitandoAndo convierte los subrayados de tu Kindle en imágenes bonitas listas para Instagram. Beta abierta en TestFlight para iPhone. Gratis, sin registro y 100% privada.',
+    description: 'CitandoAndo convierte los subrayados de tu Kindle en imágenes bonitas listas para Instagram. Disponible en App Store para iPhone. Gratis, sin registro y tus citas se quedan en tu iPhone.',
     alternates: { canonical: '/' },
     openGraph: {
         title: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram',
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 const FAQ = [
-    ['¿Dónde descargo la app?', 'Por ahora es una beta abierta en TestFlight para iPhone; App Store, muy pronto. La app es solo para iPhone.'],
+    ['¿Dónde descargo la app?', 'Está en la App Store, solo para iPhone.'],
     ['¿Es gratis? ¿Necesito una cuenta?', 'Es gratis, sin registro y sin suscripciones.'],
     ['¿Cómo paso mi My Clippings.txt a la app?', 'Conecta tu Kindle al ordenador, copia el archivo My Clippings.txt de la carpeta documents, envíatelo al móvil (email, Drive, AirDrop) e impórtalo desde la app.'],
     ['¿Es seguro? ¿Guardan mis notas?', 'Todo se procesa y se guarda en tu propio móvil. Tus notas no se suben a ningún servidor y no hay cuentas.'],

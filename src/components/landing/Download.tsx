@@ -15,15 +15,36 @@ function Apple({ className = "" }: { className?: string }) {
   );
 }
 
-/* ── Insignia informativa (no es un botón): la descarga está en el botón naranja ── */
-export function StoreButtons({ compact = false }: { compact?: boolean; onSoon?: () => void }) {
+/* ── Insignia oficial de Apple ("Descargar en la App Store") ──
+   Se usa tal cual la entrega Apple (sin modificarla) y enlaza a la ficha cuando la app está publicada.
+   Mientras no lo esté, se muestra la etiqueta informativa de la beta. */
+export function StoreButtons({ compact = false, large = false }: { compact?: boolean; large?: boolean; onSoon?: () => void }) {
+  if (APP_CONFIG.APPLE_LIVE && APP_CONFIG.APPLE_URL !== "#") {
+    return (
+      <div className="flex">
+        <a
+          href={APP_CONFIG.APPLE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Descargar CitandoAndo en la App Store"
+          className="inline-block transition-transform hover:-translate-y-0.5"
+        >
+          <img
+            src="/download-on-the-app-store-es-mx/black.svg"
+            alt="Descargar en la App Store"
+            className={large ? "h-14 sm:h-[60px] w-auto" : compact ? "h-11 w-auto" : "h-12 w-auto"}
+          />
+        </a>
+      </div>
+    );
+  }
   return (
     <div className={`flex ${compact ? "flex-row" : "flex-col sm:flex-row"} gap-2.5`}>
       <div className="flex cursor-default select-none items-center gap-3 rounded-2xl bg-ink px-5 py-3 text-paper">
         <Apple className="h-7 w-7 shrink-0" />
         <span>
-          <span className="block text-[10.5px] uppercase tracking-widest opacity-60">{APP_CONFIG.APPLE_LIVE ? "Descárgala en" : "Beta abierta en"}</span>
-          <span className={`font-bold ${compact ? "text-[15px]" : "text-[17px]"}`}>{APP_CONFIG.APPLE_LIVE ? "App Store" : "TestFlight"}</span>
+          <span className="block text-[10.5px] uppercase tracking-widest opacity-60">Beta abierta en</span>
+          <span className={`font-bold ${compact ? "text-[15px]" : "text-[17px]"}`}>TestFlight</span>
         </span>
       </div>
     </div>
@@ -64,7 +85,7 @@ export function DownloadSection() {
             <div className="absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-[#425F3B]/60 blur-[90px]" />
             <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-10 p-7 sm:p-12">
               <div>
-                <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-gold">● Beta abierta en TestFlight · gratis</p>
+                <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-gold">● Ya disponible en App Store · gratis</p>
                 <h2 className="font-fraunces mt-3 text-4xl sm:text-6xl font-black leading-[0.95] tracking-tight">
                   Llévala en el bolsillo.<br /><span className="italic font-light text-clay-soft">Subraya y comparte.</span>
                 </h2>
@@ -75,7 +96,7 @@ export function DownloadSection() {
                   {[
                     { icon: <Apple className="h-3.5 w-3.5" />, t: "Solo en iOS por ahora" },
                     { icon: <Zap className="h-3.5 w-3.5" />, t: "Sin registro" },
-                    { icon: <ShieldCheck className="h-3.5 w-3.5" />, t: "100% privada" },
+                    { icon: <ShieldCheck className="h-3.5 w-3.5" />, t: "Tus citas, en tu iPhone" },
                   ].map((b) => (
                     <span key={b.t} className="flex items-center gap-1.5 rounded-full border border-paper/15 bg-paper/[0.06] px-3.5 py-1.5">{b.icon}{b.t}</span>
                   ))}
@@ -84,7 +105,7 @@ export function DownloadSection() {
                   <SmartDownloadButton big openStore />
                 </div>
                 <div className="mt-4">
-                  <StoreButtons compact onSoon={scrollToDownload} />
+                  <StoreButtons compact large onSoon={scrollToDownload} />
                 </div>
               </div>
 
@@ -109,9 +130,9 @@ export function DownloadSection() {
                     </div>
                   )}
                   <p className="mt-3 text-[13px] font-semibold">Escanea con tu móvil 📱</p>
-                  <p className="text-[12px] text-ink/55">Te lleva a la beta en TestFlight</p>
+                  <p className="text-[12px] text-ink/55">Te lleva a la App Store</p>
                 </div>
-                <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-paper/40">Beta en TestFlight · App Store próximamente</p>
+                <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-paper/40">Disponible en App Store · solo iPhone</p>
               </div>
             </div>
           </div>

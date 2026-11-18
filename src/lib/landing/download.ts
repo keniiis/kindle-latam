@@ -1,17 +1,17 @@
 /**
  * Configuración de descarga de la app.
  * ────────────────────────────────────
- * ESTADO ACTUAL: beta pública en TestFlight. La app es solo para iPhone.
- *   • Cuando la app salga en App Store: pon APPLE_LIVE = true y pega el enlace real en APPLE_URL.
- *   • Si cambia el enlace de TestFlight, actualízalo aquí y regenera public/qr-app.svg.
+ * ESTADO ACTUAL: publicada en App Store (1.0). La app es solo para iPhone.
+ *   • Si cambia el enlace de App Store, actualiza APPLE_URL aquí y regenera public/qr-app.svg.
+ *   • TESTFLIGHT_URL queda solo como respaldo.
  */
 export const APP_CONFIG = {
   name: "CitandoAndo",
-  APPLE_LIVE: false,
+  APPLE_LIVE: true,
   /** Enlace público de TestFlight (beta). */
   TESTFLIGHT_URL: "https://testflight.apple.com/join/CXMeSHE6",
-  /** ⚠️ Pega aquí el enlace real de App Store (https://apps.apple.com/...) cuando se publique. */
-  APPLE_URL: "#",
+  /** Enlace público de la app en App Store. */
+  APPLE_URL: "https://apps.apple.com/app/id6832567501",
   WEB_URL: "https://citando-ando.vercel.app",
   CONTACT_EMAIL: "citando.ando.app@gmail.com",
 };

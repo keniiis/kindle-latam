@@ -31,7 +31,7 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
       <div className="bg-ink text-paper relative overflow-hidden">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-2 text-[11px] sm:text-xs font-jbmono tracking-[0.14em] uppercase">
           <Sparkles className="h-3.5 w-3.5 text-gold" />
-          <span className="truncate">Beta abierta en TestFlight · App Store muy pronto · tus subrayados → Instagram</span>
+          <span className="truncate">Ya disponible en App Store · tus subrayados → Instagram</span>
           <Sparkles className="h-3.5 w-3.5 text-gold" />
         </div>
       </div>
