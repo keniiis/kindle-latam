@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Share2, Quote } from 'lucide-react';
-import { useToast } from '@/components/Toast';
+import { Quote } from 'lucide-react';
 
 export interface LiteraryQuote {
     text: string;
@@ -47,7 +45,6 @@ const QUOTES: LiteraryQuote[] = [
 export default function BlogShareFooter({ customQuotes }: { customQuotes?: LiteraryQuote[] }) {
     const [mounted, setMounted] = useState(false);
     const [currentQuote, setCurrentQuote] = useState<LiteraryQuote>(QUOTES[0]);
-    const { showToast } = useToast();
 
     useEffect(() => {
         // Seleccionar aleatoria solo en el cliente para evitar mismatch
@@ -57,8 +54,6 @@ export default function BlogShareFooter({ customQuotes }: { customQuotes?: Liter
     }, [customQuotes]);
 
     if (!mounted) return null; // Evitar flash de contenido incorrecto o layout shift masivo
-
-    const shareUrl = `/?title=${encodeURIComponent(currentQuote.source)}&author=${encodeURIComponent(currentQuote.author)}&text=${encodeURIComponent(currentQuote.text)}`;
 
     return (
         <div className="mt-10 flex flex-col gap-8 animate-in fade-in duration-500">
@@ -76,37 +71,6 @@ export default function BlogShareFooter({ customQuotes }: { customQuotes?: Liter
                         <span className="text-paper/60 italic">{currentQuote.source}</span>
                     </div>
                 </div>
-
-                <div className="mt-8 flex justify-end">
-                    <Link
-                        href={shareUrl}
-                        className="flex items-center gap-2 bg-clay hover:bg-clay-deep text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 w-full sm:w-auto justify-center"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
-                        Crear Story con esta frase
-                    </Link>
-                </div>
-            </div>
-
-            <div className="hidden">
-                <span>¿Te ha gustado el artículo?</span>
-                <button
-                    onClick={() => {
-                        if (navigator.share) {
-                            navigator.share({
-                                title: document.title,
-                                url: window.location.href
-                            }).catch(console.error);
-                        } else {
-                            navigator.clipboard.writeText(window.location.href);
-                            showToast('Enlace copiado al portapapeles', 'success');
-                        }
-                    }}
-                    className="flex items-center gap-2 hover:text-purple-600 transition-colors"
-                >
-                    <Share2 size={16} />
-                    Compartir artículo
-                </button>
             </div>
         </div>
     );
