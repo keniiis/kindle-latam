@@ -1,10 +1,17 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
-import Logo from '@/components/Logo';
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
+import { ArrowLeft, BookOpen, CalendarDays, Clock3 } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { blogPosts } from '@/data/blogData';
 import { Metadata } from 'next';
 import BlogShareFooter from '@/components/BlogShareFooter';
+import BlogShell from '@/components/blog/BlogShell';
+import ReadingProgress from '@/components/blog/ReadingProgress';
+import ShareBox from '@/components/blog/ShareBox';
+import PostCard from '@/components/blog/PostCard';
+import { SmartDownloadButton } from '@/components/landing/Download';
+import BrandIcon from '@/components/landing/BrandIcon';
+import { CAT_STYLE, categoryOf, formatDate, readMinutes, relatedSummaries } from '@/lib/blog';
 
 // Esta función permite generar metadatos dinámicos para SEO
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -95,97 +102,80 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     }
 
     const customQuotes = post.slug === 'cronologia-outlander' ? OUTLANDER_QUOTES : undefined;
+    const category = categoryOf(post);
+    const related = relatedSummaries(post.slug, 3);
 
     return (
-        <main className="min-h-screen bg-white font-sans selection:bg-purple-100">
-            {/* Header / Nav */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
-                <div className="max-w-[800px] mx-auto grid grid-cols-3 items-center">
-                    {/* Left: Volver */}
-                    <Link href="/blog" className="justify-self-start flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-bold text-sm">
-                        <ArrowLeft size={18} />
-                        Volver al Blog
-                    </Link>
-
-                    {/* Center: Logo */}
-                    <div className="justify-self-center">
-                        <Link href="/" className="flex items-center gap-2 group">
-                            <Logo size={32} className="group-hover:rotate-3 transition-transform" />
-                            <span className="text-lg font-extrabold tracking-tight text-slate-900">
-                                CitandoAndo
-                            </span>
-                        </Link>
-                    </div>
-
-                    {/* Right: CTA */}
-                    <div className="justify-self-end">
-                        <Link href="/" className="bg-[#140d1c] text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-primary transition-colors shadow-lg hover:translate-y-px">
-                            Ir a la App
-                        </Link>
+        <BlogShell>
+            <ReadingProgress />
+            <article className="bg-paper">
+                {/* Hero */}
+                <div className="relative overflow-hidden bg-forest">
+                    {post.coverImage && (
+                        <img src={post.coverImage} alt={post.title} className="h-[300px] w-full object-cover sm:h-[420px]" />
+                    )}
+                    {!post.coverImage && <div className="h-[300px] sm:h-[420px]" />}
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0">
+                        <div className="mx-auto max-w-3xl px-4 pb-7 sm:px-6 sm:pb-9">
+                            <Link href="/blog" className="mb-4 inline-flex items-center gap-2 rounded-full border border-paper/20 bg-paper/15 px-4 py-2 text-[13px] font-bold text-paper backdrop-blur transition hover:bg-paper/25">
+                                <ArrowLeft className="h-4 w-4" /> Volver al blog
+                            </Link>
+                            <div>
+                                <span className={`inline-block rounded-full px-3.5 py-1.5 font-jbmono text-[10.5px] font-bold uppercase tracking-[0.16em] ${CAT_STYLE[category]}`}>
+                                    {category}
+                                </span>
+                            </div>
+                            <h1 className="font-fraunces mt-3 text-4xl font-black leading-[0.98] tracking-tight text-paper sm:text-[52px]">{post.title}</h1>
+                            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13.5px] text-paper/70">
+                                <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{formatDate(post.date)}</span>
+                                <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{readMinutes(post.readTime)} min de lectura</span>
+                                <span className="flex items-center gap-1.5"><BookOpen className="h-4 w-4" />Por el equipo CitandoAndo</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </nav>
 
-            <article className="max-w-[800px] mx-auto px-6 py-12 md:py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {/* Cabecera del Artículo */}
-                <header className="mb-12 text-center">
-                    <div className="flex items-center justify-center gap-2 mb-6">
-                        {post.tags.map(tag => (
-                            <span key={tag} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-bold uppercase tracking-wider">
-                                {tag}
-                            </span>
+                <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+                    <p className="font-instrument border-l-4 border-clay pl-5 text-[20px] italic leading-[1.6] text-ink/80">{post.description}</p>
+
+                    {/* Contenido (HTML propio del blog) */}
+                    <div className="blog-prose mt-8" dangerouslySetInnerHTML={{ __html: post.content }} />
+
+                    {/* CTA */}
+                    <div className="grain-light relative mt-10 overflow-hidden rounded-[22px] bg-ink p-7 text-center text-paper sm:p-8">
+                        <div className="relative flex flex-col items-center">
+                            <BrandIcon size={44} />
+                            <p className="font-fraunces mt-3 max-w-md text-2xl font-black leading-tight">Convierte estas ideas en imágenes con CitandoAndo</p>
+                            <p className="mt-2 text-[14px] text-paper/60">Gratis · Solo en App Store · Sin registro</p>
+                            <div className="mt-5"><SmartDownloadButton /></div>
+                        </div>
+                    </div>
+
+                    <BlogShareFooter customQuotes={customQuotes} />
+                    <ShareBox title={post.title} />
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        {post.tags.map((t) => (
+                            <span key={t} className="rounded-full bg-ink/[0.06] px-3.5 py-1.5 font-jbmono text-[11px] uppercase tracking-widest text-ink/55">#{t}</span>
                         ))}
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight text-balance">
-                        {post.title}
-                    </h1>
+                </div>
 
-                    <div className="flex items-center justify-center gap-6 text-slate-500 text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                            <Calendar size={16} />
-                            {new Date(post.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                {/* Relacionados */}
+                {related.length > 0 && (
+                    <div className="border-t border-ink/10 bg-paper-2/50 py-12">
+                        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+                            <h2 className="font-fraunces text-3xl font-black tracking-tight sm:text-4xl">Sigue <span className="italic font-light text-clay">leyendo.</span></h2>
+                            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                {related.map((p, i) => (
+                                    <PostCard key={p.slug} post={p} delay={i * 90} />
+                                ))}
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Clock size={16} />
-                            {post.readTime}
-                        </div>
-                    </div>
-                </header>
-
-                {/* Imagen de Portada */}
-                {post.coverImage && (
-                    <div className="mb-12 rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 aspect-video relative">
-                        <img
-                            src={post.coverImage}
-                            alt={post.title}
-                            className="object-cover w-full h-full hover:scale-105 transition-transform duration-700"
-                        />
                     </div>
                 )}
-
-                {/* Contenido (Renderizado de HTML seguro) */}
-                <div
-                    className="prose prose-lg prose-slate prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-600 prose-li:text-slate-600 max-w-none"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-                <BlogShareFooter customQuotes={customQuotes} />
             </article>
-
-            {/* Newsletter / CTA Footer */}
-            <section className="bg-slate-50 py-16 px-6 mt-0 border-t border-slate-100">
-                <div className="max-w-xl mx-auto text-center space-y-6">
-                    <h3 className="text-2xl font-bold text-slate-900">¿Te gustó el artículo?</h3>
-                    <p className="text-slate-600">
-                        CitandoAndo es una herramienta gratuita para lectores. Si te sirvió, considera usar nuestra app para guardar tus frases favoritas de Outlander.
-                    </p>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/10"
-                    >
-                        Ir a la App
-                    </Link>
-                </div>
-            </section>
-        </main >
+        </BlogShell>
     );
 }
