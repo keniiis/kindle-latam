@@ -308,3 +308,7 @@ html:has(.landing) { scroll-behavior: smooth; }
 .blog-prose hr { border: 0; border-top: 1px solid rgba(22,17,11,0.12); margin: 2.5rem 0; }
 .blog-prose blockquote { border-left: 4px solid #e4572e; padding-left: 1.25rem; font-family: var(--font-instrument), Georgia, serif; font-style: italic; font-size: 1.25rem; color: rgba(22,17,11,0.8); }
 .blog-prose img { border-radius: 1.25rem; max-width: 100%; height: auto; }
+
+/* Frases destacadas dentro de los artículos (p.border-l-4 del contenido) */
+.blog-prose p.border-l-4 { position: relative; margin-top: 1rem; padding: 1.25rem 1.5rem 1.25rem 1.75rem; border-left: 6px solid #e4572e; border-radius: 1rem; background: #1c2b21; color: #faf5eb; font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-weight: 600; font-size: 1.2rem; line-height: 1.5; }
+.blog-prose p.border-l-4 + p { margin-top: 1.25rem; }
