@@ -61,3 +61,20 @@ export function allSummaries(): PostSummary[] {
 export function relatedSummaries(slug: string, n = 3): PostSummary[] {
   return allSummaries().filter((p) => p.slug !== slug).slice(0, n);
 }
+
+/**
+ * Convierte cada par "<h2>N. Autor – Libro</h2><p class="...border-l-4...">frase</p>"
+ * en una tarjeta de cita con la marca (misma estética que las imágenes de la app).
+ */
+export function enhanceContent(html: string): string {
+  const re = /<h2>\s*([^<]*?)\s+[–—-]\s+([^<]*?)\s*<\/h2>\s*<p class="[^"]*border-l-4[^"]*">([\s\S]*?)<\/p>/g;
+  const icon =
+    '<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M7.2 6C4.9 6 3 7.9 3 10.2c0 2.2 1.6 4 3.7 4.2-.2 1.4-1 2.5-2.4 3.2l.7 1.4c3-1.2 4.7-3.5 4.7-6.9V10c0-2.3-1.2-4-2.5-4zm9.5 0c-2.3 0-4.2 1.9-4.2 4.2 0 2.2 1.6 4 3.7 4.2-.2 1.4-1 2.5-2.4 3.2l.7 1.4c3-1.2 4.7-3.5 4.7-6.9V10c0-2.3-1.2-4-2.5-4z"/></svg>';
+  return html.replace(re, (_m, author: string, book: string, quote: string) =>
+    `<div class="quote-card">` +
+    `<div class="quote-card__brand"><span class="quote-card__icon">${icon}</span><span class="quote-card__name">Citando<em>Ando</em></span></div>` +
+    `<h2 class="quote-card__title">${author} <span>– ${book}</span></h2>` +
+    `<p class="quote-card__text">${quote.trim()}</p>` +
+    `</div>`
+  );
+}

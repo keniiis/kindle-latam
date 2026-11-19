@@ -11,7 +11,7 @@ import ShareBox from '@/components/blog/ShareBox';
 import PostCard from '@/components/blog/PostCard';
 import { SmartDownloadButton } from '@/components/landing/Download';
 import BrandIcon from '@/components/landing/BrandIcon';
-import { CAT_STYLE, categoryOf, formatDate, readMinutes, relatedSummaries } from '@/lib/blog';
+import { CAT_STYLE, categoryOf, enhanceContent, formatDate, readMinutes, relatedSummaries } from '@/lib/blog';
 
 // Esta función permite generar metadatos dinámicos para SEO
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -140,7 +140,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     <p className="font-instrument border-l-4 border-clay pl-5 text-[20px] italic leading-[1.6] text-ink/80">{post.description}</p>
 
                     {/* Contenido (HTML propio del blog) */}
-                    <div className="blog-prose mt-8" dangerouslySetInnerHTML={{ __html: post.content }} />
+                    <div className="blog-prose mt-8" dangerouslySetInnerHTML={{ __html: enhanceContent(post.content) }} />
 
                     {/* CTA */}
                     <div className="grain-light relative mt-10 overflow-hidden rounded-[22px] bg-ink p-7 text-center text-paper sm:p-8">
