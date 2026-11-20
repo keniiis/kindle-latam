@@ -113,7 +113,7 @@ export function DownloadSection() {
                 <div id="qr-descarga" className="w-full max-w-[320px] rounded-[26px] bg-paper text-ink p-6 text-center shadow-2xl rotate-[1.5deg]">
                   <BrandIcon size={64} />
                   <p className="font-fraunces mt-3 text-2xl font-black">Citando<em className="font-light text-clay">Ando</em></p>
-                  <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-ink/50">kindle → imagen → IG</p>
+                  <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-ink/70">kindle → imagen → IG</p>
                   {qrOk ? (
                     <div className="mx-auto mt-4 w-fit rounded-2xl border border-ink/10 bg-white p-3">
                       <img
@@ -130,7 +130,7 @@ export function DownloadSection() {
                     </div>
                   )}
                   <p className="mt-3 text-[13px] font-semibold">Escanea con tu móvil 📱</p>
-                  <p className="text-[12px] text-ink/55">Te lleva a la App Store</p>
+                  <p className="text-[12px] text-ink/70">Te lleva a la App Store</p>
                 </div>
                 <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-paper/40">Disponible en App Store · solo iPhone</p>
               </div>
@@ -158,17 +158,17 @@ export function StickyDownloadBar() {
   }, []);
 
   return (
-    <div className={`fixed inset-x-0 bottom-0 z-50 px-3 pb-3 transition-all duration-500 ${show ? "translate-y-0 opacity-100" : "translate-y-24 opacity-0 pointer-events-none"}`}>
+    <aside aria-label="Descargar la app" className={`fixed inset-x-0 bottom-0 z-50 px-3 pb-3 transition-all duration-500 ${show ? "translate-y-0 opacity-100" : "translate-y-24 opacity-0 pointer-events-none"}`}>
       <div className="mx-auto flex max-w-xl items-center gap-3 rounded-2xl border border-paper/10 bg-ink/95 backdrop-blur-xl px-4 py-3 shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
         <BrandIcon size={38} />
         <div className="min-w-0 flex-1 leading-tight">
           <p className="truncate text-[14px] font-bold text-paper">CitandoAndo · gratis</p>
-          <p className="truncate font-jbmono text-[10px] uppercase tracking-widest text-paper/50">tus subrayados → Instagram</p>
+          <p className="truncate font-jbmono text-[10px] uppercase tracking-widest text-paper/70">tus subrayados → Instagram</p>
         </div>
-        <button onClick={smartDownload} className="flex shrink-0 items-center gap-1.5 rounded-full bg-clay px-5 py-2.5 text-[13.5px] font-bold text-white transition hover:bg-clay-deep">
+        <button onClick={smartDownload} className="flex shrink-0 items-center gap-1.5 rounded-full bg-clay-deep px-5 py-2.5 text-[13.5px] font-bold text-white transition hover:bg-clay-text">
           <Download className="h-4 w-4" /> Descargar
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

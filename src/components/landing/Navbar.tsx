@@ -47,9 +47,9 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
             </span>
             <span className="leading-none">
               <span className="font-fraunces block text-[19px] font-black tracking-tight">
-                Citando<span className="italic font-light text-clay">Ando</span>
+                Citando<span className="italic font-light text-[#9a3216]">Ando</span>
               </span>
-              <span className="font-jbmono text-[10px] uppercase tracking-[0.22em] text-ink/50">kindle → imagen → IG</span>
+              <span className="font-jbmono text-[10px] uppercase tracking-[0.22em] text-ink/70">kindle → imagen → IG</span>
             </span>
           </a>
 
@@ -64,13 +64,13 @@ export default function Navbar({ onDownload }: { onDownload: () => void }) {
           <div className="hidden lg:flex items-center gap-3">
             <button
               onClick={onDownload}
-              className="group relative overflow-hidden rounded-full bg-clay px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-clay-deep"
+              className="group relative overflow-hidden rounded-full bg-clay-deep px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-clay-text"
             >
               <span className="relative z-10">Descargar gratis</span>
             </button>
           </div>
 
-          <button onClick={() => setOpen(!open)} className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-ink/15 bg-paper/70 backdrop-blur">
+          <button onClick={() => setOpen(!open)} aria-label={open ? "Cerrar menú" : "Abrir menú"} aria-expanded={open} className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-ink/15 bg-paper/70 backdrop-blur">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </nav>

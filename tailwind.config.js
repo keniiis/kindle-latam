@@ -15,7 +15,7 @@ module.exports = {
         // Landing nueva (crema / terracota / verde bosque)
         paper: { DEFAULT: "#faf5eb", 2: "#f3ecdc", 3: "#e9ddc5" },
         ink: { DEFAULT: "#16110b", 2: "#2a2117", 3: "#4a3f30" },
-        clay: { DEFAULT: "#e4572e", deep: "#c7431f", soft: "#f9d9cc" },
+        clay: { DEFAULT: "#e4572e", deep: "#c7431f", soft: "#f9d9cc", text: "#a8381a" },
         gold: { DEFAULT: "#c9a86a", soft: "#f0e3c8" },
         forest: { DEFAULT: "#1c2b21", 2: "#243829" },
         sage: "#b8c9b5",
