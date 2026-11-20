@@ -178,7 +178,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                     <div className="mt-4 flex flex-wrap gap-2">
                         {post.tags.map((t) => (
-                            <span key={t} className="rounded-full bg-ink/[0.06] px-3.5 py-1.5 font-jbmono text-[11px] uppercase tracking-widest text-ink/55">#{t}</span>
+                            <span key={t} className="rounded-full bg-ink/[0.06] px-3.5 py-1.5 font-jbmono text-[11px] uppercase tracking-widest text-ink/70">#{t}</span>
                         ))}
                     </div>
                 </div>

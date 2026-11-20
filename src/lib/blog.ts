@@ -4,7 +4,7 @@ export const CATEGORIES = ['Todos', 'Libros', 'Guías', 'Tutoriales', 'Tendencia
 export type Category = Exclude<(typeof CATEGORIES)[number], 'Todos'>;
 
 export const CAT_STYLE: Record<Category, string> = {
-  Libros: 'bg-clay text-white',
+  Libros: 'bg-clay-deep text-white',
   Guías: 'bg-forest text-sage',
   Tutoriales: 'bg-ink text-paper',
   Tendencias: 'bg-gold text-ink',
