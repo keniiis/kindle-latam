@@ -265,6 +265,7 @@ Lo esencial es invisible a los ojos.
             <p>Abrir el archivo en un editor de texto sirve para buscar algo puntual, pero no es cómodo para releer ni para compartir. Con <strong>CitandoAndo</strong> puedes importar tu My Clippings.txt en el iPhone: la app lo ordena por libro y te permite convertir cualquier frase en una imagen lista para Instagram. Todo se procesa en tu teléfono, sin cuentas ni servidores.</p>
             <p>Si quieres conocer otras formas de revisar tus subrayados, lee <a href="/blog/ver-subrayados-kindle">cómo ver todos tus subrayados de Kindle</a>. Y si ya tienes tu frase favorita, aquí te contamos <a href="/blog/compartir-frases-libros-instagram-stories">cómo compartirla en Instagram Stories</a>.</p>
         `,
+        coverImage: '/blog/kindle-computadora.webp',
         date: '2026-11-20',
         readTime: '5 min lectura',
         tags: ['Tutoriales', 'Kindle', 'My Clippings']
@@ -312,6 +313,7 @@ Lo esencial es invisible a los ojos.
             <h2>De la lista a algo que dé ganas de compartir</h2>
             <p>Ver tus subrayados en una lista está bien, pero la mayoría se quedan ahí para siempre. Con <strong>CitandoAndo</strong> importas tu My Clippings.txt en el iPhone (o escribes la frase a mano) y la conviertes en una imagen con estilo en segundos, lista para tus Stories. Es gratis, sin registro y tus citas no salen de tu teléfono.</p>
         `,
+        coverImage: '/blog/kindle-mesa-cafe.webp',
         date: '2026-11-20',
         readTime: '5 min lectura',
         tags: ['Guías', 'Kindle', 'Subrayados']
@@ -362,6 +364,7 @@ Lo esencial es invisible a los ojos.
             </ol>
             <p>Es gratis, no necesitas cuenta y tus citas se quedan en tu iPhone.</p>
         `,
+        coverImage: '/blog/instagram-telefono.webp',
         date: '2026-11-20',
         readTime: '5 min lectura',
         tags: ['Guías', 'Instagram', 'Bookstagram']
@@ -425,6 +428,7 @@ Lo esencial es invisible a los ojos.
             <p>Ten en cuenta que las frases de libros traducidos pueden variar un poco según la edición; si tienes el libro, copia el texto tal como aparece en tu ejemplar. Y si quieres que tu frase se vea como las tarjetas de este artículo, con <strong>CitandoAndo</strong> la conviertes en una imagen lista para Instagram en segundos. Te contamos todo el proceso en <a href="/blog/compartir-frases-libros-instagram-stories">cómo compartir frases de libros en Instagram Stories</a>.</p>
             <p>¿Las frases que más te gustan están en tu Kindle? Descubre <a href="/blog/que-es-my-clippings-txt-kindle">dónde se guardan tus subrayados</a> y llévalas a la app.</p>
         `,
+        coverImage: '/blog/libro-abierto.webp',
         date: '2026-11-20',
         readTime: '6 min lectura',
         tags: ['Libros', 'Citas', 'Frases']
