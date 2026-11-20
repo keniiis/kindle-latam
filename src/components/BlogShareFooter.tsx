@@ -48,6 +48,7 @@ export default function BlogShareFooter({ customQuotes }: { customQuotes?: Liter
 
     useEffect(() => {
         // Seleccionar aleatoria solo en el cliente para evitar mismatch
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
         const pool = customQuotes && customQuotes.length > 0 ? customQuotes : QUOTES;
         setCurrentQuote(pool[Math.floor(Math.random() * pool.length)]);
@@ -63,7 +64,7 @@ export default function BlogShareFooter({ customQuotes }: { customQuotes?: Liter
 
                 <div className="relative z-10">
                     <p className="italic text-xl md:text-2xl leading-relaxed mb-4 font-fraunces">
-                        "{currentQuote.text}"
+                        “{currentQuote.text}”
                     </p>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-sm">
                         <span className="font-bold text-gold uppercase tracking-wide">— {currentQuote.author}</span>

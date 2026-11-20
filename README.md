@@ -12,9 +12,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - Si falla el guardado, descarga un respaldo antes de cerrar. Si la biblioteca guardada es ilegible, la aplicación bloquea modificaciones y permite descargar los datos originales para recuperarlos.
 - Las fechas no reconocidas se representan internamente con el instante Unix cero; no se reemplazan por la fecha de importación.
 
-### Pruebas de datos
+### Pruebas del blog
 
-Con Node.js 22.6 o posterior, ejecuta `node --experimental-strip-types --test tests/*.test.mjs` (también disponible como `pnpm test`). Comprueba importación en español/inglés, combinación sin duplicados, conservación de ediciones, validación de respaldos y persistencia de una biblioteca vacía.
+Con Node.js 22.6 o posterior, ejecuta `pnpm test` (equivale a `node --experimental-strip-types --test tests/*.test.mjs`). Comprueba que cada artículo de `src/data/blogData.ts` tenga slug único, título, descripción, fecha y categoría válidos, que sus portadas locales existan en `public/`, que los enlaces a otros artículos no estén rotos y que el HTML del contenido esté balanceado.
 
 ## Ejecutar el proyecto
 
