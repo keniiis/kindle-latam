@@ -132,7 +132,7 @@ export function DownloadSection() {
                   <p className="mt-3 text-[13px] font-semibold">Escanea con tu móvil 📱</p>
                   <p className="text-[12px] text-ink/70">Te lleva a la App Store</p>
                 </div>
-                <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-paper/40">Disponible en App Store · solo iPhone</p>
+                <p className="font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-paper/70">Disponible en App Store · solo iPhone</p>
               </div>
             </div>
           </div>

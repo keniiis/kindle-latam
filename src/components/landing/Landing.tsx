@@ -59,7 +59,7 @@ export function HowItWorks() {
               <div className="group relative h-full overflow-hidden rounded-[24px] border border-ink/12 bg-white/70 p-7 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-20px_rgba(22,17,11,0.3)] transition-all duration-500">
                 <div className="flex items-start justify-between">
                   <span className={`grid h-14 w-14 place-items-center rounded-2xl ${s.color} shadow-lg transition group-hover:rotate-[-8deg]`}>{s.icon}</span>
-                  <span aria-hidden="true" className="font-fraunces text-6xl font-black text-ink/8 group-hover:text-clay/20 transition">{s.n}</span>
+                  <span aria-hidden="true" data-n={s.n} className="font-fraunces text-6xl font-black text-ink/8 group-hover:text-clay/20 transition before:content-[attr(data-n)]" />
                 </div>
                 <h3 className="font-fraunces mt-6 text-[26px] font-black leading-tight">{s.title}</h3>
                 <p className="mt-2 text-[14.5px] leading-relaxed text-ink/60">{s.desc}</p>
@@ -73,7 +73,7 @@ export function HowItWorks() {
         <Reveal delay={150}>
           <div className="mt-6 grid lg:grid-cols-[1fr_1fr] gap-4">
             <div className="rounded-[24px] bg-ink text-paper p-7 sm:p-8 grain-light relative overflow-hidden">
-              <div className="relative flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/50">
+              <div className="relative flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/70">
                 <FileText className="h-4 w-4 text-gold" /> Así se ve tu archivo por dentro
               </div>
               <pre tabIndex={0} className="relative mt-4 overflow-x-auto rounded-2xl bg-black/40 border border-paper/10 p-5 font-jbmono text-[12px] leading-relaxed text-paper/75">
@@ -151,9 +151,9 @@ export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
                 <span className="flex items-center justify-between px-4 py-3.5">
                   <span>
                     <span className="block font-fraunces text-[17px] font-bold leading-tight">{t.name}</span>
-                    <span className="block text-[12px] text-paper/50 truncate">{t.desc}</span>
+                    <span className="block text-[12px] text-paper/70 truncate">{t.desc}</span>
                   </span>
-                  <span className="font-jbmono text-[10px] text-paper/40">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-jbmono text-[10px] text-paper/70">{String(i + 1).padStart(2, "0")}</span>
                 </span>
               </button>
             </Reveal>
@@ -200,12 +200,12 @@ export function Privacy() {
                     <span className="h-2.5 w-2.5 rounded-full bg-clay" />
                     <span className="h-2.5 w-2.5 rounded-full bg-gold" />
                     <span className="h-2.5 w-2.5 rounded-full bg-sage" />
-                    <span className="ml-2 text-paper/40">network · citandoando</span>
+                    <span className="ml-2 text-paper/70">network · citandoando</span>
                   </div>
                   <p className="text-sage">✓ Tus citas no se envían a ningún servidor</p>
                   <p className="text-sage">✓ Sin cuentas ni registro</p>
                   <p className="text-sage">✓ Sin base de datos de usuarios</p>
-                  <p className="mt-3 text-paper/45">── lo único que sale de tu iPhone ──</p>
+                  <p className="mt-3 text-paper/70">── lo único que sale de tu iPhone ──</p>
                   <p className="text-paper/70">GET portada del libro … <span className="text-gold">solo título y autor</span></p>
                   <p className="mt-3 rounded-xl bg-sage/10 border border-sage/20 p-3 text-sage text-[12px]">Tus subrayados: procesados en memoria local. Se guardan en tu propio iPhone.</p>
                 </div>
@@ -325,11 +325,11 @@ export function Footer() {
               <span className="block overflow-hidden rounded-xl"><BrandIcon size={40} /></span>
               <span className="font-fraunces text-xl font-black">Citando<span className="italic font-light text-clay">Ando</span></span>
             </div>
-            <p className="mt-3 max-w-xs text-[13.5px] leading-relaxed text-paper/55">La app que convierte tus subrayados de Kindle en imágenes listas para Instagram. Gratis y privada.</p>
+            <p className="mt-3 max-w-xs text-[13.5px] leading-relaxed text-paper/70">La app que convierte tus subrayados de Kindle en imágenes listas para Instagram. Gratis y privada.</p>
             <div className="mt-4"><StoreButtons compact /></div>
           </div>
           <div>
-            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">Producto</p>
+            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/70">Producto</p>
             <ul className="mt-3 space-y-2 text-[14px]">
               {[["Descargar la app", "#descargar"], ["Cómo funciona", "#como-funciona"], ["Tu lectura", "#tu-lectura"], ["Plantillas", "#plantillas"], ["Privacidad", "#privacidad"]].map(([l, h]) => (
                 <li key={h}><a href={h} className="text-paper/65 hover:text-paper transition">{l}</a></li>
@@ -337,7 +337,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">Recursos</p>
+            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/70">Recursos</p>
             <ul className="mt-3 space-y-2 text-[14px]">
               <li><a href="#demo" className="text-paper/65 hover:text-paper transition">Antes / Después</a></li>
               <li><a href="#faq" className="text-paper/65 hover:text-paper transition">Dónde está mi txt</a></li>
@@ -348,12 +348,12 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">La app</p>
-            <p className="mt-3 flex items-center gap-1.5 text-[13px] text-paper/50"><Heart className="h-3.5 w-3.5 text-clay" fill="currentColor" /> Gratis y sin registro</p>
-            <p className="mt-1 flex items-center gap-1.5 text-[13px] text-paper/50"><ShieldCheck className="h-3.5 w-3.5 text-sage" /> Tus citas, en tu iPhone</p>
+            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/70">La app</p>
+            <p className="mt-3 flex items-center gap-1.5 text-[13px] text-paper/70"><Heart className="h-3.5 w-3.5 text-clay" fill="currentColor" /> Gratis y sin registro</p>
+            <p className="mt-1 flex items-center gap-1.5 text-[13px] text-paper/70"><ShieldCheck className="h-3.5 w-3.5 text-sage" /> Tus citas, en tu iPhone</p>
           </div>
         </div>
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-paper/10 pt-6 font-jbmono text-[11px] uppercase tracking-widest text-paper/35">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-paper/10 pt-6 font-jbmono text-[11px] uppercase tracking-widest text-paper/70">
           <span>© 2026 CitandoAndo</span>
           <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-sage animate-pulse" /> kindle → papel → feed</span>
         </div>

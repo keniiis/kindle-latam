@@ -74,7 +74,7 @@ function BeforeAfter() {
     >
       {/* CAPA ANTES: el txt crudo */}
       <div className="absolute inset-0 bg-[#171310] p-6 sm:p-10">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/45">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/70">
           <span className="flex items-center gap-2">
             <FileText className="h-4 w-4 text-gold" /> My Clippings.txt · 214 KB
           </span>
@@ -166,7 +166,7 @@ export function TransformSection() {
           <Reveal delay={200}>
             <div className="flex flex-col items-center gap-2 rounded-2xl bg-ink px-7 py-5 text-center">
               <SmartDownloadButton />
-              <p className="font-jbmono text-[10.5px] uppercase tracking-[0.18em] text-paper/50">Gratis · Sin registro</p>
+              <p className="font-jbmono text-[10.5px] uppercase tracking-[0.18em] text-paper/70">Gratis · Sin registro</p>
             </div>
           </Reveal>
         </div>

@@ -37,7 +37,7 @@ function BlogFooter() {
               <span className="block overflow-hidden rounded-xl"><BrandIcon size={40} /></span>
               <span className="font-fraunces text-xl font-black">Citando<span className="italic font-light text-clay">Ando</span></span>
             </div>
-            <p className="mt-3 max-w-xs text-[13.5px] leading-relaxed text-paper/55">La app que convierte tus subrayados de Kindle en imágenes listas para Instagram. Gratis y privada.</p>
+            <p className="mt-3 max-w-xs text-[13.5px] leading-relaxed text-paper/70">La app que convierte tus subrayados de Kindle en imágenes listas para Instagram. Gratis y privada.</p>
             <div className="mt-4"><StoreButtons compact /></div>
           </div>
           <div>
