@@ -22,13 +22,13 @@ export default function PostCard({ post, delay = 0 }: { post: PostSummary; delay
           </span>
         </span>
         <span className="flex flex-1 flex-col p-5 sm:p-6">
-          <span className="flex items-center gap-3 font-jbmono text-[11px] uppercase tracking-widest text-ink/45">
+          <span className="flex items-center gap-3 font-jbmono text-[11px] uppercase tracking-widest text-ink/70">
             <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" />{post.date}</span>
             <span className="flex items-center gap-1"><Clock3 className="h-3.5 w-3.5" />{post.read} min</span>
           </span>
           <span className="font-fraunces mt-2.5 text-[21px] font-black leading-tight transition-colors group-hover:text-clay">{post.title}</span>
           <span className="mt-2 line-clamp-2 text-[14px] leading-relaxed text-ink/60">{post.excerpt}</span>
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[13.5px] font-bold text-clay">
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[13.5px] font-bold text-clay-text">
             Leer artículo <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
           </span>
         </span>

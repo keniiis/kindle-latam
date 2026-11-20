@@ -23,7 +23,7 @@ export default function BlogIndexClient({ posts }: { posts: PostSummary[] }) {
         <Reveal>
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay">● El Blog del Lector</p>
+              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● El Blog del Lector</p>
               <h1 className="font-fraunces mt-2 text-4xl font-black leading-[0.95] tracking-tight sm:text-6xl">
                 Lee mejor.<br /><span className="italic font-light text-clay">Comparte mejor.</span>
               </h1>
@@ -66,7 +66,7 @@ export default function BlogIndexClient({ posts }: { posts: PostSummary[] }) {
                 </span>
               </span>
               <span className="flex flex-col justify-center p-7 sm:p-10">
-                <span className="flex items-center gap-3 font-jbmono text-[11px] uppercase tracking-widest text-paper/50">
+                <span className="flex items-center gap-3 font-jbmono text-[11px] uppercase tracking-widest text-paper/70">
                   <span>{featured.date}</span>·<span>{featured.read} min de lectura</span>
                 </span>
                 <span className="font-fraunces mt-3 text-3xl font-black leading-[1.02] sm:text-4xl">{featured.title}</span>
@@ -86,7 +86,7 @@ export default function BlogIndexClient({ posts }: { posts: PostSummary[] }) {
         </div>
 
         {filtered.length === 0 && (
-          <p className="mt-6 rounded-2xl border border-dashed border-ink/20 p-8 text-center text-ink/55">Nada por aquí todavía en esta categoría.</p>
+          <p className="mt-6 rounded-2xl border border-dashed border-ink/20 p-8 text-center text-ink/70">Nada por aquí todavía en esta categoría.</p>
         )}
       </div>
     </section>
