@@ -12,7 +12,7 @@ const PERSONAS = [
     desc: "Tienes 100, 400, 1.000 subrayados muertos en el My Clippings.txt. Sabes que hay oro ahí dentro, pero abrir ese txt da pereza.",
     check: "Rescate de subrayados olvidados",
     color: "bg-ink text-paper",
-    chip: "bg-clay text-white",
+    chip: "bg-clay-deep text-white",
   },
   {
     tag: "Bookstagram · BookTok · Newsletter",
@@ -48,7 +48,7 @@ export default function Audience({ onStart }: { onStart: () => void }) {
     <section id="para-quien" className="bg-paper-2/60 border-y border-ink/10 py-14 sm:py-20 scroll-mt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay">● Primera pregunta: ¿para quién es?</p>
+          <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● Primera pregunta: ¿para quién es?</p>
           <h2 className="font-fraunces mt-2 max-w-3xl text-4xl sm:text-5xl font-black tracking-tight leading-[0.95]">
             Si subrayas en Kindle, <span className="italic font-light text-clay">esto se hizo para ti.</span>
           </h2>
@@ -62,7 +62,7 @@ export default function Audience({ onStart }: { onStart: () => void }) {
                 <span className="mt-4 block w-fit">{p.icon}</span>
                 <h3 className="font-fraunces mt-3 text-[24px] font-black leading-tight">{p.title}</h3>
                 <p className={`mt-2 text-[14px] leading-relaxed ${p.color.startsWith("bg-ink") ? "text-paper/65" : "text-ink/60"}`}>{p.desc}</p>
-                <p className={`mt-4 flex items-center gap-2 text-[13px] font-bold ${p.color.startsWith("bg-ink") ? "text-gold" : "text-clay"}`}>
+                <p className={`mt-4 flex items-center gap-2 text-[13px] font-bold ${p.color.startsWith("bg-ink") ? "text-gold" : "text-clay-text"}`}>
                   <CircleCheck className="h-4 w-4" /> {p.check}
                 </p>
               </article>
@@ -101,7 +101,7 @@ export default function Audience({ onStart }: { onStart: () => void }) {
                     {score <= 1 && <span className="text-paper/65">Solo {score}/3… quizá aún no subrayas mucho. Guarda la página: cuando tu Kindle se llene, vuelve.</span>}
                   </p>
                   {score >= 2 && (
-                    <button onClick={onStart} className="mt-3 flex items-center gap-2 rounded-full bg-clay px-6 py-3 text-sm font-bold text-white transition hover:bg-clay-deep">
+                    <button onClick={onStart} className="mt-3 flex items-center gap-2 rounded-full bg-clay-deep px-6 py-3 text-sm font-bold text-white transition hover:bg-clay-text">
                       Descargar la app <ArrowRight className="h-4 w-4" />
                     </button>
                   )}
@@ -113,7 +113,7 @@ export default function Audience({ onStart }: { onStart: () => void }) {
           <Reveal delay={120}>
             <div className="flex h-full flex-col justify-between rounded-[24px] border border-dashed border-ink/25 bg-paper p-6 sm:p-8">
               <div>
-                <p className="flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.22em] text-ink/50"><Ban className="h-4 w-4" /> Honestidad: no es para todo el mundo</p>
+                <p className="flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.22em] text-ink/70"><Ban className="h-4 w-4" /> Honestidad: no es para todo el mundo</p>
                 <h3 className="font-fraunces mt-2 text-2xl sm:text-3xl font-black">¿Cuándo NO usar CitandoAndo?</h3>
                 <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-ink/65">
                   <li className="flex gap-2.5"><span className="font-bold text-ink">✕</span> <span>Si buscas <strong>leer o editar ebooks</strong>: esto no es un lector, solo convierte citas en imágenes.</span></li>

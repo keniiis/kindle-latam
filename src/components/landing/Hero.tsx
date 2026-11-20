@@ -71,7 +71,7 @@ export default function Hero({
               <div className="flex justify-start">
                 <StoreButtons compact large onSoon={onPrimary} />
               </div>
-              <button onClick={() => document.getElementById("descargar")?.scrollIntoView({ behavior: "smooth" })} className="w-fit font-jbmono text-[11px] uppercase tracking-[0.18em] text-ink/45 hover:text-clay transition">
+              <button onClick={() => document.getElementById("descargar")?.scrollIntoView({ behavior: "smooth" })} className="w-fit font-jbmono text-[11px] uppercase tracking-[0.18em] text-ink/70 hover:text-clay transition">
                 o escanea el QR más abajo ↓
               </button>
             </div>
@@ -114,7 +114,7 @@ export default function Hero({
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-2 py-6 text-ink/45 font-jbmono text-[11px] uppercase tracking-[0.2em]">
+        <div className="flex items-center justify-center gap-2 py-6 text-ink/70 font-jbmono text-[11px] uppercase tracking-[0.2em]">
           Mira la transformación <ArrowDown className="h-3.5 w-3.5 animate-bounce" />
         </div>
       </div>

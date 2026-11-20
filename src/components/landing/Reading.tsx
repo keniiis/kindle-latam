@@ -38,7 +38,7 @@ export default function ReadingSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
         <Reveal>
           <div className="max-w-xl">
-            <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay">● Tu lectura</p>
+            <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● Tu lectura</p>
             <h2 className="font-fraunces mt-2 text-4xl sm:text-6xl font-black tracking-tight leading-[0.95]">
               Un puntito<br /><span className="italic font-light">por cada día.</span>
             </h2>
@@ -57,7 +57,7 @@ export default function ReadingSection() {
                 </div>
               ))}
             </div>
-            <p className="mt-6 font-fraunces italic text-[17px] text-ink/55">Esto no es una competencia: lee, disfruta y las frases llegarán solas.</p>
+            <p className="mt-6 font-fraunces italic text-[17px] text-ink/70">Esto no es una competencia: lee, disfruta y las frases llegarán solas.</p>
           </div>
         </Reveal>
 
@@ -76,11 +76,11 @@ export default function ReadingSection() {
 
             <div className="mt-3 rounded-[24px] bg-white p-4 shadow-sm">
               <p className="text-[15px] font-bold">Tus días</p>
-              <p className="text-[11.5px] text-ink/50">Toca un día para ver sus frases</p>
+              <p className="text-[11.5px] text-ink/70">Toca un día para ver sus frases</p>
               <div className="mt-3 overflow-hidden">
                 <div className="flex gap-[3px] h-4">
                   {monthLabels.map((m, i) => (
-                    <span key={i} className="w-[14px] shrink-0 overflow-visible whitespace-nowrap font-semibold text-[9.5px] text-ink/45">{m}</span>
+                    <span key={i} className="w-[14px] shrink-0 overflow-visible whitespace-nowrap font-semibold text-[9.5px] text-ink/70">{m}</span>
                   ))}
                 </div>
                 <div className="flex gap-[3px]">
@@ -93,7 +93,7 @@ export default function ReadingSection() {
                   ))}
                 </div>
               </div>
-              <div className="mt-2.5 flex items-center justify-end gap-1 text-[10px] text-ink/45">
+              <div className="mt-2.5 flex items-center justify-end gap-1 text-[10px] text-ink/70">
                 Menos {LEVELS.map((c) => <span key={c} className="h-2.5 w-2.5 rounded-[3px]" style={{ background: c }} />)} Más
               </div>
             </div>
@@ -115,7 +115,7 @@ export default function ReadingSection() {
                       </span>
                     );
                   return (
-                    <span key={g} className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12.5px] font-bold ${done ? "bg-[#3F5B3A] text-white" : "bg-[#ECECE8] text-ink/55"}`}>
+                    <span key={g} className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12.5px] font-bold ${done ? "bg-[#3F5B3A] text-white" : "bg-[#ECECE8] text-ink/70"}`}>
                       {done && <Check className="h-3 w-3" />}{g}
                     </span>
                   );
@@ -125,7 +125,7 @@ export default function ReadingSection() {
 
             <div className="mt-3 flex items-center justify-center gap-2 px-3 pb-2 text-center">
               <Feather className="h-4 w-4 shrink-0 text-[#A9C79A]" />
-              <p className="font-fraunces italic text-[13.5px] leading-snug text-ink/55">Estos puntos no miden cuánto lees. Solo guardan lo que te gustó.</p>
+              <p className="font-fraunces italic text-[13.5px] leading-snug text-ink/70">Estos puntos no miden cuánto lees. Solo guardan lo que te gustó.</p>
             </div>
           </div>
         </Reveal>

@@ -44,11 +44,11 @@ export function HowItWorks() {
         <Reveal>
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
             <div>
-              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay">● Cómo funciona</p>
+              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● Cómo funciona</p>
               <h2 className="font-fraunces mt-2 text-4xl sm:text-6xl font-black tracking-tight leading-[0.95]">Tan simple como<br /><span className="italic font-light">subrayar.</span></h2>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-jbmono text-[11px] uppercase tracking-widest text-ink/50">Del caos del txt al post en</span>
+              <span className="font-jbmono text-[11px] uppercase tracking-widest text-ink/70">Del caos del txt al post en</span>
               <span className="rounded-full bg-ink px-4 py-2 font-fraunces italic text-paper">~30 seg</span>
             </div>
           </div>
@@ -59,7 +59,7 @@ export function HowItWorks() {
               <div className="group relative h-full overflow-hidden rounded-[24px] border border-ink/12 bg-white/70 p-7 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-20px_rgba(22,17,11,0.3)] transition-all duration-500">
                 <div className="flex items-start justify-between">
                   <span className={`grid h-14 w-14 place-items-center rounded-2xl ${s.color} shadow-lg transition group-hover:rotate-[-8deg]`}>{s.icon}</span>
-                  <span className="font-fraunces text-6xl font-black text-ink/8 group-hover:text-clay/20 transition">{s.n}</span>
+                  <span aria-hidden="true" className="font-fraunces text-6xl font-black text-ink/8 group-hover:text-clay/20 transition">{s.n}</span>
                 </div>
                 <h3 className="font-fraunces mt-6 text-[26px] font-black leading-tight">{s.title}</h3>
                 <p className="mt-2 text-[14.5px] leading-relaxed text-ink/60">{s.desc}</p>
@@ -76,7 +76,7 @@ export function HowItWorks() {
               <div className="relative flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/50">
                 <FileText className="h-4 w-4 text-gold" /> Así se ve tu archivo por dentro
               </div>
-              <pre className="relative mt-4 overflow-x-auto rounded-2xl bg-black/40 border border-paper/10 p-5 font-jbmono text-[12px] leading-relaxed text-paper/75">
+              <pre tabIndex={0} className="relative mt-4 overflow-x-auto rounded-2xl bg-black/40 border border-paper/10 p-5 font-jbmono text-[12px] leading-relaxed text-paper/75">
 {`Cien años de soledad (García Márquez)
 - Your Highlight on page 34 | Added on…
 Muchos años después, frente al
@@ -89,7 +89,7 @@ Andábamos sin buscarnos…`}
               <p className="relative mt-4 text-[13.5px] text-paper/60">Nuestro parser entiende páginas, posiciones, fechas y notas — y limpia el ruido automáticamente.</p>
             </div>
             <div className="rounded-[24px] border border-ink/12 bg-gold-soft/60 p-7 sm:p-8 relative overflow-hidden">
-              <div className="flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-ink/55">
+              <div className="flex items-center gap-2 font-jbmono text-[11px] uppercase tracking-[0.2em] text-ink/70">
                 <Sparkles className="h-4 w-4 text-clay" /> Y así queda después de CitandoAndo
               </div>
               <div className="mt-4 space-y-2.5">
@@ -99,7 +99,7 @@ Andábamos sin buscarnos…`}
                   </div>
                 ))}
               </div>
-              <a href="#descargar" className="mt-5 inline-flex items-center gap-2 font-bold text-[14.5px] text-clay hover:gap-3 transition-all">Descargar la app gratis <ArrowRight className="h-4 w-4" /></a>
+              <a href="#descargar" className="mt-5 inline-flex items-center gap-2 font-bold text-[14.5px] text-clay-text hover:gap-3 transition-all">Descargar la app gratis <ArrowRight className="h-4 w-4" /></a>
             </div>
           </div>
         </Reveal>
@@ -133,7 +133,7 @@ export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
                 className="group w-full text-left rounded-[22px] overflow-hidden border border-paper/12 bg-paper/[0.04] hover:border-gold/60 hover:-translate-y-1.5 transition-all duration-500"
               >
                 <span className="relative block aspect-square overflow-hidden" style={{ background: backgroundOf(t) }}>
-                  <span className="absolute left-3 top-2.5 font-jbmono text-[8.5px] tracking-[0.18em]" style={{ color: t.muted }}>CITANDOANDO</span>
+                  <span aria-hidden="true" className="absolute left-3 top-2.5 font-jbmono text-[8.5px] tracking-[0.18em]" style={{ color: t.muted }}>CITANDOANDO</span>
                   {t.ornament === "quote" && <span className="absolute left-2.5 top-4 font-fraunces italic leading-none" style={{ fontSize: 56, color: t.accent, opacity: 0.3 }}>“</span>}
                   {t.ornament === "frame" && <span className="absolute inset-2.5 rounded-lg border" style={{ borderColor: t.accent, opacity: 0.5 }} />}
                   <span className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
@@ -144,7 +144,7 @@ export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
                     <span className="mt-2.5 h-[2px] w-6 rounded-full" style={{ background: t.accent }} />
                     <span className="mt-1.5 text-[8.5px] font-bold uppercase tracking-[0.16em]" style={{ color: t.text }}>Cortázar</span>
                   </span>
-                  <span className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center gap-1.5 py-2.5 text-[12px] font-bold bg-ink/85 text-paper backdrop-blur transition group-hover:translate-y-0">
+                  <span aria-hidden="true" className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center gap-1.5 py-2.5 text-[12px] font-bold bg-ink/85 text-paper backdrop-blur transition group-hover:translate-y-0">
                     Conseguir en la app <ArrowUpRight className="h-3.5 w-3.5" />
                   </span>
                 </span>
@@ -256,7 +256,7 @@ export function Faq() {
     <section id="faq" className="bg-paper-2/50 py-16 sm:py-24 scroll-mt-24 border-t border-ink/10">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <Reveal>
-          <p className="text-center font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay">● Preguntas de lectores</p>
+          <p className="text-center font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● Preguntas de lectores</p>
           <h2 className="font-fraunces mt-2 text-center text-4xl sm:text-5xl font-black tracking-tight">Dudas <span className="italic font-light text-clay">resueltas.</span></h2>
         </Reveal>
         <div className="mt-8 space-y-3">

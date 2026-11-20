@@ -237,7 +237,7 @@ export default function PhoneEditor() {
               <div className="space-y-2">
                 <div className="flex rounded-[14px] bg-[#F4F4F2] p-[3px]">
                   {([["story", "Historia 9:16"], ["post", "Publicación 1:1"]] as const).map(([id, label]) => (
-                    <span key={id} className={`flex-1 rounded-[11px] py-2 text-center text-[12px] font-bold transition-all duration-300 ${state.format === id ? "bg-white text-[#3F5B3A] shadow-sm" : "text-ink/55"}`}>{label}</span>
+                    <span key={id} className={`flex-1 rounded-[11px] py-2 text-center text-[12px] font-bold transition-all duration-300 ${state.format === id ? "bg-white text-[#3F5B3A] shadow-sm" : "text-ink/70"}`}>{label}</span>
                   ))}
                 </div>
                 <div className="grid grid-cols-3 gap-2">

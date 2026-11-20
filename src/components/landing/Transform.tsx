@@ -107,8 +107,8 @@ Ficciones (Jorge Luis Borges)
           </p>
           <span className="mt-5 h-[3px] w-12 rounded-full bg-[#B9D2AF]" />
           <p className="mt-3 text-[12px] font-bold uppercase" style={{ letterSpacing: "0.22em" }}>Miguel de Cervantes</p>
-          <p className="mt-1 text-[13px] text-white/65">Don Quijote de la Mancha</p>
-          <p className="mt-5 font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-white/55">● CitandoAndo</p>
+          <p className="mt-1 text-[13px] text-white/90">Don Quijote de la Mancha</p>
+          <p className="mt-5 font-jbmono text-[10.5px] uppercase tracking-[0.2em] text-white/85">● CitandoAndo</p>
         </div>
         <span className="absolute right-5 sm:right-8 top-6 flex items-center gap-1.5 rounded-full bg-white/15 border border-white/20 backdrop-blur px-3.5 py-1.5 font-jbmono text-[10.5px] uppercase tracking-[0.18em]">
           <ImageDown className="h-3.5 w-3.5" /> Después · PNG 1080px
@@ -147,7 +147,7 @@ export function TransformSection() {
         <Reveal>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay">● La prueba · antes / después</p>
+              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● La prueba · antes / después</p>
               <h2 className="font-fraunces mt-2 text-4xl sm:text-5xl font-black tracking-tight leading-[0.95]">
                 Del txt olvidado<br />al post <span className="italic font-light text-clay">que presumes.</span>
               </h2>
@@ -174,7 +174,7 @@ export function TransformSection() {
         {/* mini muro de estilos */}
         <Reveal delay={100}>
           <div className="mt-8">
-            <p className="text-center font-jbmono text-[11px] uppercase tracking-[0.22em] text-ink/45">Algunos estilos de ejemplo</p>
+            <p className="text-center font-jbmono text-[11px] uppercase tracking-[0.22em] text-ink/70">Algunos estilos de ejemplo</p>
             <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
               {minis.map((m, i) => {
                 const t = TEMPLATES.find((x) => x.id === m.tpl)!;
