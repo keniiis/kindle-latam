@@ -1,6 +1,8 @@
 // app/page.tsx (SERVER COMPONENT): landing de descarga de la app
 import type { Metadata } from 'next';
 import LandingSite from '@/components/landing/LandingSite';
+import { APP_CONFIG } from '@/lib/landing/download';
+import { organizationLd, websiteLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
     title: { absolute: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram' },
@@ -32,7 +34,15 @@ const jsonLd = [
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         description: 'Convierte tus subrayados de Kindle en imágenes listas para compartir en redes sociales. Sin registro y privada.',
         author: { '@type': 'Person', name: 'Danidev', url: 'https://x.com/Danipena3488' },
+        url: APP_CONFIG.WEB_URL,
+        downloadUrl: APP_CONFIG.APPLE_URL,
+        installUrl: APP_CONFIG.APPLE_URL,
+        image: `${APP_CONFIG.WEB_URL}/icon.png`,
+        inLanguage: 'es',
+        isAccessibleForFree: true,
     },
+    organizationLd,
+    websiteLd,
     {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',

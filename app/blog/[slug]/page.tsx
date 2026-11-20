@@ -12,6 +12,7 @@ import PostCard from '@/components/blog/PostCard';
 import { SmartDownloadButton } from '@/components/landing/Download';
 import BrandIcon from '@/components/landing/BrandIcon';
 import { CAT_STYLE, categoryOf, enhanceContent, formatDate, readMinutes, relatedSummaries } from '@/lib/blog';
+import { blogPostingLd, breadcrumbLd, jsonLdString } from '@/lib/seo';
 
 // Esta función permite generar metadatos dinámicos para SEO
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -22,14 +23,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {
         title: `${post.title} | Blog CitandoAndo`,
         description: post.description,
+        keywords: post.tags,
+        alternates: { canonical: `/blog/${post.slug}` },
         openGraph: {
+            url: `/blog/${post.slug}`,
+            tags: post.tags,
             title: post.title,
             description: post.description,
             type: 'article',
             publishedTime: post.date,
             authors: ['Danidev'],
             images: post.coverImage ? [post.coverImage] : undefined,
-        }
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: post.title,
+            description: post.description,
+            images: post.coverImage ? [post.coverImage] : undefined,
+        },
     };
 }
 
@@ -105,8 +116,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     const category = categoryOf(post);
     const related = relatedSummaries(post.slug, 3);
 
+    const structuredData = [
+        blogPostingLd(post),
+        breadcrumbLd([
+            { name: 'Inicio', path: '/' },
+            { name: 'Blog', path: '/blog' },
+            { name: post.title, path: `/blog/${post.slug}` },
+        ]),
+    ];
+
     return (
         <BlogShell>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(structuredData) }} />
             <ReadingProgress />
             <article className="bg-paper">
                 {/* Hero */}
