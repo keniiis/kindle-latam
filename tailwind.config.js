@@ -34,6 +34,8 @@ module.exports = {
     },
   },
   plugins: [
+    // Tailwind carga este archivo como CommonJS.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
   ],
 }
