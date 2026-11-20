@@ -12,13 +12,13 @@ function BlogNav() {
             <BrandIcon size={38} />
           </span>
           <span className="font-fraunces text-[19px] font-black tracking-tight">
-            Citando<span className="italic font-light text-clay">Ando</span>
+            Citando<span className="italic font-light text-[#b23c1b]">Ando</span>
           </span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-5">
           <Link href="/" className="link-draw hidden sm:inline text-[13.5px] font-medium tracking-wide text-ink/70 hover:text-ink">Inicio</Link>
           <Link href="/blog" className="link-draw hidden sm:inline text-[13.5px] font-medium tracking-wide text-ink/70 hover:text-ink">Blog</Link>
-          <Link href="/#descargar" className="rounded-full bg-clay px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-clay-deep">
+          <Link href="/#descargar" className="rounded-full bg-clay-deep px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#a8381a]">
             Descargar gratis
           </Link>
         </div>
@@ -41,7 +41,7 @@ function BlogFooter() {
             <div className="mt-4"><StoreButtons compact /></div>
           </div>
           <div>
-            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">Explora</p>
+            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/60">Explora</p>
             <ul className="mt-3 space-y-2 text-[14px]">
               <li><Link href="/" className="text-paper/65 transition hover:text-paper">Inicio</Link></li>
               <li><Link href="/blog" className="text-paper/65 transition hover:text-paper">Blog</Link></li>
@@ -49,14 +49,14 @@ function BlogFooter() {
             </ul>
           </div>
           <div>
-            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/40">Ayuda</p>
+            <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/60">Ayuda</p>
             <ul className="mt-3 space-y-2 text-[14px]">
               <li><Link href="/soporte" className="text-paper/65 transition hover:text-paper">Soporte</Link></li>
               <li><Link href="/privacidad" className="text-paper/65 transition hover:text-paper">Política de privacidad</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-paper/10 pt-6 font-jbmono text-[11px] uppercase tracking-widest text-paper/35 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-paper/10 pt-6 font-jbmono text-[11px] uppercase tracking-widest text-paper/60 sm:flex-row">
           <span>© {new Date().getFullYear()} CitandoAndo</span>
           <span>kindle → papel → feed</span>
         </div>

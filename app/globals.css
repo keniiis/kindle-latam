@@ -296,8 +296,8 @@ html:has(.landing) { scroll-behavior: smooth; }
 .blog-prose p { margin: 0; }
 .blog-prose p + p { margin-top: 1.25rem; }
 .blog-prose strong { color: #16110b; font-weight: 700; }
-.blog-prose a { color: #e4572e; text-decoration: underline; text-underline-offset: 3px; }
-.blog-prose a:hover { color: #c7431f; }
+.blog-prose a { color: #c7431f; text-decoration: underline; text-underline-offset: 3px; }
+.blog-prose a:hover { color: #a8381a; }
 .blog-prose ul, .blog-prose ol { padding-left: 0; list-style: none; counter-reset: li; }
 .blog-prose li { position: relative; padding: 0.8rem 1rem 0.8rem 3rem; margin-top: 0.6rem; border: 1px solid rgba(22,17,11,0.1); background: rgba(255,255,255,0.7); border-radius: 1rem; font-size: 15px; line-height: 1.65; }
 .blog-prose ul > li::before { content: ""; position: absolute; left: 1rem; top: 1rem; width: 1.35rem; height: 1.35rem; border-radius: 9999px; background: #1c2b21 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/70% no-repeat; }

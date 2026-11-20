@@ -63,11 +63,11 @@ export function SmartDownloadButton({ big = false, light = false, openStore = fa
       onClick={openStore ? () => { window.open(iosUrl(), "_blank", "noopener"); } : smartDownload}
       className={`group flex items-center justify-center gap-3 rounded-full font-bold transition-all hover:-translate-y-0.5 ${
         big ? "px-8 py-4 text-[16px] sm:text-lg" : "px-7 py-3.5 text-[15px]"
-      } ${light ? "bg-paper text-ink hover:bg-white shadow-xl" : "bg-clay text-white shadow-[0_18px_40px_-12px_rgba(228,87,46,0.6)] hover:bg-clay-deep"}`}
+      } ${light ? "bg-paper text-ink hover:bg-white shadow-xl" : "bg-clay-deep text-white shadow-[0_18px_40px_-12px_rgba(199,67,31,0.6)] hover:bg-[#a8381a]"}`}
     >
       {platform === "ios" ? <Apple className="h-5 w-5" /> : <Download className="h-5 w-5" />}
       Descargar gratis
-      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-jbmono uppercase tracking-widest ${light ? "bg-ink/10" : "bg-white/20"}`}>{store}</span>
+      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-jbmono uppercase tracking-widest ${light ? "bg-ink/10" : "bg-black/15"}`}>{store}</span>
     </button>
   );
 }
