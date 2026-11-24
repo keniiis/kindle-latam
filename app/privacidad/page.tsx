@@ -16,7 +16,7 @@ export default function Privacidad() {
         <LegalLayout title="Política de privacidad" updated={UPDATED}>
             <p>
                 Esta política explica qué datos trata <strong>CitandoAndo</strong>, tanto la app para iPhone como el sitio web
-                citando-ando.vercel.app. Resumen: no pedimos cuenta, no recopilamos tus citas y no vendemos datos.
+                citandoando.app. Resumen: no pedimos cuenta, no recopilamos tus citas y no vendemos datos.
             </p>
 
             <h2>App para iPhone</h2>

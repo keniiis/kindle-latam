@@ -1,7 +1,7 @@
 "use client";
 
 import { COPY } from "@/lib/landing/copy";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowDown, ShieldCheck } from "lucide-react";
 import PhoneEditor from "./PhoneEditor";
 import { SmartDownloadButton, StoreButtons } from "./Download";
@@ -33,7 +33,7 @@ export default function Hero({
           <div className="rise pt-4 sm:pt-8">
             <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-ink/15 bg-white/60 backdrop-blur px-3.5 py-1.5 shadow-sm">
               <span className="relative flex h-2 w-2 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#425F3B] opacity-60" />
+                <span className="animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-[#425F3B] opacity-60" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#425F3B]" />
               </span>
               <span className="truncate font-jbmono text-[11px] uppercase tracking-[0.16em]">La app para lectores de Kindle que subrayan</span>
@@ -116,7 +116,7 @@ export default function Hero({
         </div>
 
         <div className="flex items-center justify-center gap-2 py-6 text-ink/70 font-jbmono text-[11px] uppercase tracking-[0.2em]">
-          Mira la transformación <ArrowDown className="h-3.5 w-3.5 animate-bounce" />
+          Mira la transformación <ArrowDown className="h-3.5 w-3.5 animate-bounce motion-reduce:animate-none" />
         </div>
       </div>
     </section>
@@ -124,17 +124,30 @@ export default function Hero({
 }
 
 export function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal:not(.is-visible)");
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      el.classList.add("is-visible");
+      return;
+    }
     const io = new IntersectionObserver(
-      (es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("is-visible")),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("is-visible");
+          io.disconnect();
+        }
+      },
       { threshold: 0.12 }
     );
-    els.forEach((el) => io.observe(el));
+    io.observe(el);
     return () => io.disconnect();
   }, []);
+
   return (
-    <div className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+    <div ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>
       {children}
     </div>
   );

@@ -1,34 +1,16 @@
 import { COPY } from "@/lib/landing/copy";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Plus_Jakarta_Sans, Playfair_Display, Lora, Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
 import SwCleanup from '@/components/SwCleanup';
 import { ToastProvider } from '@/components/Toast';
 import "./globals.css";
 
-// Cargamos la fuente
+// Cargamos la fuente base (usada en páginas legales; la landing y el blog cargan sus propias fuentes)
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: '--font-jakarta', // Esta variable la usa Tailwind
-  display: 'swap',
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: '--font-playfair',
-  display: 'swap',
-});
-
-const lora = Lora({
-  subsets: ["latin"],
-  variable: '--font-lora',
-  display: 'swap',
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: '--font-inter',
+  variable: '--font-jakarta',
   display: 'swap',
 });
 
@@ -37,7 +19,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://citando-ando.vercel.app'),
+  metadataBase: new URL('https://citandoando.app'),
   title: {
     default: "CitandoAndo | Tu Segundo Cerebro para Kindle",
     template: "%s | CitandoAndo"
@@ -47,15 +29,13 @@ export const metadata: Metadata = {
   authors: [{ name: "Danidev", url: "https://x.com/Danipena3488" }],
   creator: "Danidev",
   publisher: "Danidev",
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     title: 'CitandoAndo | Comparte tus lecturas con estilo',
     description: `Convierte tus subrayados de Kindle en imágenes hermosas para tus stories. ${COPY.sentence}.`,
-    url: 'https://citando-ando.vercel.app',
+    url: 'https://citandoando.app',
     siteName: 'CitandoAndo',
-    locale: 'es_LA',
+    locale: 'es_ES',
+    alternateLocale: ['es_MX', 'es_AR', 'es_CO'],
     type: 'website',
   },
   twitter: {
@@ -88,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${jakarta.variable} ${playfair.variable} ${lora.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="es" className={jakarta.variable} suppressHydrationWarning>
       <head>
         {/* Eliminados links de Google Fonts para evitar error CORS con html-to-image */}
         <Script id="gtm" strategy="afterInteractive">

@@ -2,10 +2,9 @@
 
 import { COPY } from "@/lib/landing/copy";
 import Link from "next/link";
-import { useState } from "react";
 import {
   Smartphone, FolderOpen, Wand2, ShieldCheck, Zap, Heart, ArrowUpRight, ArrowRight,
-  Quote, Check, Plus, Minus, Code2, FileText, Lock, Sparkles,
+  Quote, Check, Plus, Code2, FileText, Lock, Sparkles,
 } from "lucide-react";
 import { TEMPLATES, backgroundOf } from "@/lib/landing/core";
 import { Reveal } from "./Hero";
@@ -40,7 +39,7 @@ export function HowItWorks() {
     },
   ];
   return (
-    <section id="como-funciona" className="relative bg-paper py-16 sm:py-24 scroll-mt-24 overflow-hidden">
+    <section id="como-funciona" className="defer-section relative bg-paper py-16 sm:py-24 scroll-mt-24 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
@@ -111,7 +110,7 @@ Andábamos sin buscarnos…`}
 
 export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
   return (
-    <section id="plantillas" className="relative bg-ink text-paper py-16 sm:py-24 scroll-mt-24 overflow-hidden grain-light">
+    <section id="plantillas" className="defer-section relative bg-ink text-paper py-16 sm:py-24 scroll-mt-24 overflow-hidden grain-light">
       <div className="pointer-events-none absolute inset-0 dot-grid-light opacity-40" />
       <div className="absolute -top-10 inset-x-0 text-center select-none pointer-events-none">
         <span className="font-fraunces text-[15vw] font-black leading-none text-stroke-paper opacity-50">ESTILOS</span>
@@ -167,7 +166,7 @@ export function TemplatesGallery({ onUse }: { onUse: (id: string) => void }) {
 
 export function Privacy() {
   return (
-    <section id="privacidad" className="bg-paper py-16 sm:py-24 scroll-mt-24">
+    <section id="privacidad" className="defer-section bg-paper py-16 sm:py-24 scroll-mt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="relative overflow-hidden rounded-[28px] bg-forest text-paper grain-light">
@@ -212,7 +211,7 @@ export function Privacy() {
                 </div>
                 <div className="mt-4 flex items-center gap-3 rounded-2xl bg-paper text-ink p-4">
                   <Quote className="h-8 w-8 text-clay shrink-0" fill="currentColor" />
-                  <p className="text-[13.5px] leading-snug"><span className="font-bold">Sin letra chica:</span> lee nuestra <a href="/privacidad" className="font-bold text-clay underline underline-offset-2">política de privacidad</a>, corta y en cristiano.</p>
+                  <p className="text-[13.5px] leading-snug"><span className="font-bold">Sin letra chica:</span> lee nuestra <Link href="/privacidad" className="font-bold text-clay underline underline-offset-2">política de privacidad</Link>, corta y en cristiano.</p>
                 </div>
               </div>
             </div>
@@ -252,35 +251,30 @@ const FAQS = [
 ];
 
 export function Faq() {
-  const [open, setOpen] = useState(0);
   return (
-    <section id="faq" className="bg-paper-2/50 py-16 sm:py-24 scroll-mt-24 border-t border-ink/10">
+    <section id="faq" aria-labelledby="faq-heading" className="defer-section bg-paper-2/50 py-16 sm:py-24 scroll-mt-24 border-t border-ink/10">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <Reveal>
           <p className="text-center font-jbmono text-[11px] uppercase tracking-[0.24em] text-clay-text">● Preguntas de lectores</p>
-          <h2 className="font-fraunces mt-2 text-center text-4xl sm:text-5xl font-black tracking-tight">Dudas <span className="italic font-light text-clay">resueltas.</span></h2>
+          <h2 id="faq-heading" className="font-fraunces mt-2 text-center text-4xl sm:text-5xl font-black tracking-tight">Dudas <span className="italic font-light text-clay">resueltas.</span></h2>
         </Reveal>
         <div className="mt-8 space-y-3">
-          {FAQS.map((f, i) => {
-            const isOpen = open === i;
-            return (
-              <Reveal key={f.q} delay={i * 60}>
-                <div className={`overflow-hidden rounded-2xl border transition-all ${isOpen ? "border-ink bg-white shadow-lg" : "border-ink/12 bg-white/60 hover:border-ink/30"}`}>
-                  <button onClick={() => setOpen(isOpen ? -1 : i)} className="flex w-full items-center justify-between gap-4 px-5 sm:px-6 py-5 text-left">
-                    <span className="font-fraunces text-[17px] sm:text-lg font-bold">{f.q}</span>
-                    <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full transition ${isOpen ? "bg-clay text-white rotate-180" : "bg-ink/8"}`}>
-                      {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                    </span>
-                  </button>
-                  <div className={`grid transition-all duration-500 ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-                    <div className="overflow-hidden">
-                      <p className="px-5 sm:px-6 pb-6 text-[14.5px] leading-relaxed text-ink/65">{f.a}</p>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
+          {FAQS.map((f, i) => (
+            <Reveal key={f.q} delay={i * 60}>
+              <details
+                open={i === 0 ? true : undefined}
+                className="faq-details group overflow-hidden rounded-2xl border border-ink/12 bg-white/60 transition-colors hover:border-ink/30 open:border-ink open:bg-white open:shadow-lg"
+              >
+                <summary className="flex w-full items-center justify-between gap-4 px-5 sm:px-6 py-5 text-left">
+                  <span className="font-fraunces text-[17px] sm:text-lg font-bold">{f.q}</span>
+                  <span aria-hidden="true" className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink/8 motion-safe:transition-transform motion-safe:duration-300 group-open:bg-clay group-open:text-white group-open:rotate-45">
+                    <Plus className="h-4 w-4" />
+                  </span>
+                </summary>
+                <p className="px-5 sm:px-6 pb-6 text-[14.5px] leading-relaxed text-ink/65">{f.a}</p>
+              </details>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
@@ -318,7 +312,7 @@ export function FinalCta() {
 
 export function Footer() {
   return (
-    <footer className="bg-night text-paper grain-light relative overflow-hidden">
+    <footer className="defer-section bg-night text-paper grain-light relative overflow-hidden">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-12">
         <div className="grid md:grid-cols-[1.2fr_1fr_1fr_1fr] gap-8">
           <div>
@@ -344,8 +338,8 @@ export function Footer() {
               <li><a href="#faq" className="text-paper/65 hover:text-paper transition">Dónde está mi txt</a></li>
                             <li><a href="#descargar" className="text-paper/65 hover:text-paper transition">Escanear QR de descarga</a></li>
               <li><Link href="/blog" className="text-paper/65 hover:text-paper transition">Blog</Link></li>
-              <li><a href="/soporte" className="text-paper/65 hover:text-paper transition">Soporte</a></li>
-              <li><a href="/privacidad" className="text-paper/65 hover:text-paper transition">Política de privacidad</a></li>
+              <li><Link href="/soporte" className="text-paper/65 hover:text-paper transition">Soporte</Link></li>
+              <li><Link href="/privacidad" className="text-paper/65 hover:text-paper transition">Política de privacidad</Link></li>
             </ul>
           </div>
           <div>

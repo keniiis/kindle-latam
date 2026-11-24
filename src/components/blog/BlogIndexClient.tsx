@@ -57,7 +57,7 @@ export default function BlogIndexClient({ posts }: { posts: PostSummary[] }) {
             >
               <span className="relative block min-h-[240px] overflow-hidden bg-forest">
                 {featured.cover ? (
-                  <img src={featured.cover} alt={featured.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <img src={featured.cover} alt={featured.title} width={800} height={450} fetchPriority="high" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                 ) : (
                   <span className="absolute inset-0 grid place-items-center"><BookOpen className="h-12 w-12 text-paper/30" /></span>
                 )}

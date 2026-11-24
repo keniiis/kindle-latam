@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   X, RotateCcw, Square, Droplet, Type, AlignCenter, AlignLeft, SlidersHorizontal,
   Upload, Check,
@@ -94,7 +94,30 @@ function Switch({ on }: { on: boolean }) {
 }
 
 export default function PhoneEditor() {
+  const rootRef = useRef<HTMLDivElement>(null);
   const [stepIdx, setStepIdx] = useState(0);
+  const [active, setActive] = useState(true);
+
+  // Pausa el bucle automático cuando el mockup sale de pantalla o la pestaña pasa a segundo plano.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    let inView = true;
+    const sync = () => setActive(inView && !document.hidden);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        sync();
+      },
+      { rootMargin: "100px" }
+    );
+    io.observe(el);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
@@ -102,9 +125,10 @@ export default function PhoneEditor() {
       setStepIdx(5); // estado final bonito, sin animar
       return;
     }
+    if (!active) return;
     const t = window.setTimeout(() => setStepIdx((i) => (i + 1) % SCRIPT.length), SCRIPT[stepIdx].hold);
     return () => window.clearTimeout(t);
-  }, [stepIdx]);
+  }, [stepIdx, active]);
 
   // El estado visible es el acumulado del guion hasta el paso actual
   const state = useMemo(() => {
@@ -160,7 +184,7 @@ export default function PhoneEditor() {
   const panelOpen = cur.tool === "fondo" || cur.tool === "detalles" || cur.tool === "mas";
 
   return (
-    <div className="relative mx-auto w-full max-w-[400px] select-none">
+    <div ref={rootRef} className="relative mx-auto w-full max-w-[400px] select-none">
       <div className="overflow-hidden rounded-[32px] bg-[#EFEFEF] shadow-[0_50px_100px_-30px_rgba(22,17,11,0.5)] ring-1 ring-ink/10">
         {/* barra de progreso del bucle */}
         <div className="flex gap-1 px-5 pt-3.5" aria-hidden>

@@ -7,22 +7,6 @@ import { Reveal } from "./Hero";
 import { SmartDownloadButton } from "./Download";
 import { TEMPLATES, backgroundOf } from "@/lib/landing/core";
 
-function useInView<T extends HTMLElement>(threshold = 0.3) {
-  const ref = useRef<T>(null);
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => e.isIntersecting && setSeen(true),
-      { threshold }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [threshold]);
-  return { ref, seen };
-}
-
 /* ─– Comparador Antes / Después ───────────────────── */
 function BeforeAfter() {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,10 +21,11 @@ function BeforeAfter() {
     setPos(Math.min(94, Math.max(6, ((clientX - r.left) / r.width) * 100)));
   };
 
-  // al entrar en pantalla, el divisor se pasea solo una vez
+  // al entrar en pantalla, el divisor se pasea solo una vez (solo si el usuario no pidió movimiento reducido)
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const timers: number[] = [];
     const io = new IntersectionObserver(
       ([e]) => {
@@ -63,6 +48,18 @@ function BeforeAfter() {
   return (
     <div
       ref={ref}
+      role="slider"
+      tabIndex={0}
+      aria-label="Comparador antes y después"
+      aria-valuemin={6}
+      aria-valuemax={94}
+      aria-valuenow={Math.round(pos)}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") { e.preventDefault(); setPos((p) => Math.max(6, p - 5)); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); setPos((p) => Math.min(94, p + 5)); }
+        else if (e.key === "Home") { e.preventDefault(); setPos(6); }
+        else if (e.key === "End") { e.preventDefault(); setPos(94); }
+      }}
       onPointerDown={(e) => {
         dragging.current = true;
         (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
@@ -71,7 +68,7 @@ function BeforeAfter() {
       onPointerMove={(e) => dragging.current && setFromClient(e.clientX)}
       onPointerUp={() => (dragging.current = false)}
       onPointerCancel={() => (dragging.current = false)}
-      className="relative h-[440px] sm:h-[460px] cursor-ew-resize touch-none overflow-hidden rounded-[26px] border border-ink/12 bg-night text-paper shadow-[0_40px_90px_-30px_rgba(20,16,12,0.6)] select-none"
+      className="relative h-[440px] sm:h-[460px] cursor-ew-resize touch-none overflow-hidden rounded-[26px] border border-ink/12 bg-night text-paper shadow-[0_40px_90px_-30px_rgba(20,16,12,0.6)] select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay"
     >
       {/* CAPA ANTES: el txt crudo */}
       <div className="absolute inset-0 bg-[#171310] p-6 sm:p-10">
@@ -133,8 +130,6 @@ Ficciones (Jorge Luis Borges)
 
 /* ─– Sección completa ─────────────────────────────── */
 export function TransformSection() {
-  const { ref } = useInView<HTMLDivElement>(0.25);
-
   const minis = [
     { tpl: "negro", q: "Todo lo que empieza como comedia acaba como tragedia.", a: "Bolaño" },
     { tpl: "papel", q: "Los libros son espejos.", a: "Ruiz Zafón" },
@@ -163,7 +158,7 @@ export function TransformSection() {
           </div>
         </Reveal>
 
-        <div ref={ref} className="mt-6 flex justify-center">
+        <div className="mt-6 flex justify-center">
           <Reveal delay={200}>
             <div className="flex flex-col items-center gap-2 rounded-2xl bg-ink px-7 py-5 text-center">
               <SmartDownloadButton />

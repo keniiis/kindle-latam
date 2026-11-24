@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!post) return { title: 'Post no encontrado' };
 
     return {
-        title: `${post.title} | Blog CitandoAndo`,
+        title: post.title,
         description: post.description,
         keywords: post.tags,
         alternates: { canonical: `/blog/${post.slug}` },
@@ -134,7 +134,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 {/* Hero */}
                 <div className="relative overflow-hidden bg-forest">
                     {post.coverImage && (
-                        <img src={post.coverImage} alt={post.title} className="h-[300px] w-full object-cover sm:h-[420px]" />
+                        <img src={post.coverImage} alt={post.title} width={1200} height={675} fetchPriority="high" decoding="async" className="h-[300px] w-full object-cover sm:h-[420px]" />
                     )}
                     {!post.coverImage && <div className="h-[300px] sm:h-[420px]" />}
                     <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-transparent" />

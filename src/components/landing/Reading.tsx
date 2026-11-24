@@ -34,7 +34,7 @@ export default function ReadingSection() {
   const pct = Math.round(((TOTAL - REACHED) / (NEXT - REACHED)) * 100);
 
   return (
-    <section id="tu-lectura" className="relative bg-paper-2/50 py-16 sm:py-24 scroll-mt-24 overflow-hidden border-y border-ink/8">
+    <section id="tu-lectura" className="defer-section relative bg-paper-2/50 py-16 sm:py-24 scroll-mt-24 overflow-hidden border-y border-ink/8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
         <Reveal>
           <div className="max-w-xl">

@@ -6,7 +6,7 @@ import { blogPosts } from '@/data/blogData';
 import { blogIndexLd, breadcrumbLd, jsonLdString } from '@/lib/seo';
 
 export const metadata: Metadata = {
-    title: 'Blog | CitandoAndo',
+    title: 'Blog',
     description: 'Artículos sobre lectura, organización de citas, Kindle y trucos para lectores ávidos.',
     alternates: { canonical: '/blog' },
     openGraph: {

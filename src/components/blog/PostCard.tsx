@@ -13,7 +13,7 @@ export default function PostCard({ post, delay = 0 }: { post: PostSummary; delay
       >
         <span className="relative block aspect-[16/9] overflow-hidden bg-paper-2">
           {post.cover ? (
-            <img src={post.cover} alt={post.title} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <img src={post.cover} alt={post.title} width={640} height={360} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
           ) : (
             <span className="grid h-full w-full place-items-center"><BookOpen className="h-10 w-10 text-ink/25" /></span>
           )}

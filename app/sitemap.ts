@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { blogPosts } from '@/data/blogData';
+import { SITE_URL } from '@/lib/seo';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://citando-ando.vercel.app';
+    const baseUrl = SITE_URL;
 
     // Rutas estáticas
     const routes: MetadataRoute.Sitemap = [

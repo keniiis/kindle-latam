@@ -12,7 +12,7 @@ export const APP_CONFIG = {
   TESTFLIGHT_URL: "https://testflight.apple.com/join/CXMeSHE6",
   /** Enlace público de la app en App Store. */
   APPLE_URL: "https://apps.apple.com/app/id6832567501",
-  WEB_URL: "https://citando-ando.vercel.app",
+  WEB_URL: "https://citandoando.app",
   CONTACT_EMAIL: "citando.ando.app@gmail.com",
 };
 

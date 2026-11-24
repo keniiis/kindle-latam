@@ -33,6 +33,9 @@ export function StoreButtons({ compact = false, large = false }: { compact?: boo
           <img
             src="/download-on-the-app-store-es-mx/black.svg"
             alt="Descargar en la App Store"
+            width={180}
+            height={60}
+            decoding="async"
             className={large ? "h-14 sm:h-[60px] w-auto" : compact ? "h-11 w-auto" : "h-12 w-auto"}
           />
         </a>
@@ -77,7 +80,7 @@ export function SmartDownloadButton({ big = false, light = false, openStore = fa
 export function DownloadSection() {
   const [qrOk, setQrOk] = useState(true);
   return (
-    <section id="descargar" className="bg-paper py-16 sm:py-24 scroll-mt-24">
+    <section id="descargar" className="defer-section bg-paper py-16 sm:py-24 scroll-mt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="relative overflow-hidden rounded-[32px] bg-ink text-paper grain-light">
@@ -121,8 +124,11 @@ export function DownloadSection() {
                       <img
                         src="/qr-app.svg"
                         alt="QR para descargar CitandoAndo"
+                        width={160}
+                        height={160}
                         className="h-40 w-40"
                         loading="lazy"
+                        decoding="async"
                         onError={() => setQrOk(false)}
                       />
                     </div>
