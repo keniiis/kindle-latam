@@ -1,4 +1,5 @@
 // app/page.tsx (SERVER COMPONENT): landing de descarga de la app
+import { COPY } from "@/lib/landing/copy";
 import type { Metadata } from 'next';
 import LandingSite from '@/components/landing/LandingSite';
 import { APP_CONFIG } from '@/lib/landing/download';
@@ -6,11 +7,11 @@ import { organizationLd, websiteLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
     title: { absolute: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram' },
-    description: 'CitandoAndo convierte los subrayados de tu Kindle en imágenes bonitas listas para Instagram. Disponible en App Store para iPhone. Gratis, sin registro y tus citas se quedan en tu iPhone.',
+    description: `CitandoAndo convierte los subrayados de tu Kindle en imágenes bonitas listas para Instagram. Disponible en App Store para iPhone. ${COPY.freeLead}, sin registro y tus citas se quedan en tu iPhone.`,
     alternates: { canonical: '/' },
     openGraph: {
         title: 'CitandoAndo | Tus subrayados de Kindle en imágenes para Instagram',
-        description: 'Importa tu My Clippings.txt o escribe tus citas y compártelas en segundos. Gratis, sin registro y sin subir nada a ningún servidor.',
+        description: `Importa tu My Clippings.txt o escribe tus citas y compártelas en segundos. ${COPY.noUpload}`,
         type: 'website',
         url: 'https://citando-ando.vercel.app',
     },
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 
 const FAQ = [
     ['¿Dónde descargo la app?', 'Está en la App Store, solo para iPhone.'],
-    ['¿Es gratis? ¿Necesito una cuenta?', 'Es gratis, sin registro y sin suscripciones.'],
+    ['¿Es gratis? ¿Necesito una cuenta?', COPY.faqAnswer],
     ['¿Cómo paso mi My Clippings.txt a la app?', 'Conecta tu Kindle al ordenador, copia el archivo My Clippings.txt de la carpeta documents, envíatelo al móvil (email, Drive, AirDrop) e impórtalo desde la app.'],
     ['¿Es seguro? ¿Guardan mis notas?', 'Todo se procesa y se guarda en tu propio móvil. Tus notas no se suben a ningún servidor y no hay cuentas.'],
     ['¿Funciona con Kobo, Apple Books o libros físicos?', 'Sí: puedes escribir la cita a mano desde cualquier fuente y aplicarle los mismos estilos.'],

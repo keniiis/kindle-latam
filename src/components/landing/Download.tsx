@@ -1,5 +1,6 @@
 "use client";
 
+import { COPY } from "@/lib/landing/copy";
 import { useEffect, useState } from "react";
 import { Download, QrCode, ShieldCheck, Zap } from "lucide-react";
 import BrandIcon from "./BrandIcon";
@@ -85,13 +86,14 @@ export function DownloadSection() {
             <div className="absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-[#425F3B]/60 blur-[90px]" />
             <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-10 p-7 sm:p-12">
               <div>
-                <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-gold">● Ya disponible en App Store · gratis</p>
+                <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-gold">● {COPY.storeFree}</p>
                 <h2 className="font-fraunces mt-3 text-4xl sm:text-6xl font-black leading-[0.95] tracking-tight">
                   Llévala en el bolsillo.<br /><span className="italic font-light text-clay-soft">Subraya y comparte.</span>
                 </h2>
                 <p className="mt-4 max-w-md text-[15.5px] leading-relaxed text-paper/65">
                   Todo lo que has visto —biblioteca, estilos e imágenes listas para compartir— vive dentro de la app y no te pide ni el email.
                 </p>
+                {COPY.proNote && <p className="mt-3 max-w-md text-[13.5px] leading-relaxed text-paper/65">{COPY.proNote}</p>}
                 <div className="mt-5 flex flex-wrap gap-2 text-[12.5px] font-semibold">
                   {[
                     { icon: <Apple className="h-3.5 w-3.5" />, t: "Solo en iOS por ahora" },

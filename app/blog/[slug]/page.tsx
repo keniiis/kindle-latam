@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { COPY } from "@/lib/landing/copy";
 import Link from 'next/link';
 import { ArrowLeft, BookOpen, CalendarDays, Clock3 } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -168,7 +169,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         <div className="relative flex flex-col items-center">
                             <BrandIcon size={44} />
                             <p className="font-fraunces mt-3 max-w-md text-2xl font-black leading-tight">Convierte estas ideas en imágenes con CitandoAndo</p>
-                            <p className="mt-2 text-[14px] text-paper/60">Gratis · Solo en App Store · Sin registro</p>
+                            <p className="mt-2 text-[14px] text-paper/60">{COPY.freeLead} · Solo en App Store · Sin registro</p>
                             <div className="mt-5"><SmartDownloadButton /></div>
                         </div>
                     </div>

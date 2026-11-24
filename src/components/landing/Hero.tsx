@@ -1,12 +1,13 @@
 "use client";
 
+import { COPY } from "@/lib/landing/copy";
 import { useEffect } from "react";
 import { ArrowDown, ShieldCheck } from "lucide-react";
 import PhoneEditor from "./PhoneEditor";
 import { SmartDownloadButton, StoreButtons } from "./Download";
 import { scrollToDownload } from "@/lib/landing/download";
 
-const MARQUEE = ["Ya disponible en App Store", "My Clippings.txt → imagen en segundos", "Sin registro · Sin nube", "Gratis y sin registro"];
+const MARQUEE = ["Ya disponible en App Store", "My Clippings.txt → imagen en segundos", "Sin registro · Sin nube", COPY.sentence];
 
 export default function Hero({
   onPrimary,

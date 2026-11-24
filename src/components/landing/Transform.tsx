@@ -1,5 +1,6 @@
 "use client";
 
+import { COPY } from "@/lib/landing/copy";
 import { useEffect, useRef, useState } from "react";
 import { ChevronsLeftRight, FileText, ImageDown, MoveHorizontal } from "lucide-react";
 import { Reveal } from "./Hero";
@@ -166,7 +167,7 @@ export function TransformSection() {
           <Reveal delay={200}>
             <div className="flex flex-col items-center gap-2 rounded-2xl bg-ink px-7 py-5 text-center">
               <SmartDownloadButton />
-              <p className="font-jbmono text-[10.5px] uppercase tracking-[0.18em] text-paper/70">Gratis · Sin registro</p>
+              <p className="font-jbmono text-[10.5px] uppercase tracking-[0.18em] text-paper/70">{COPY.freeNoReg}</p>
             </div>
           </Reveal>
         </div>

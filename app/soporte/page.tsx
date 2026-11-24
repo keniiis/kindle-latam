@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import LegalLayout, { SUPPORT_EMAIL } from '@/components/LegalLayout';
+import { HAS_IAP } from '@/lib/landing/copy';
 
 export const metadata: Metadata = {
     title: 'Ayuda y soporte',
@@ -44,6 +45,32 @@ export default function Soporte() {
 
             <h3 className="font-extrabold text-[#140d1c]">No puedo guardar la imagen en Fotos</h3>
             <p>Comprueba que CitandoAndo tenga permiso para guardar fotos: Ajustes del iPhone → CitandoAndo → Fotos. Mientras tanto, usa el botón Compartir para enviar la imagen a otra app.</p>
+
+            {HAS_IAP && (
+                <>
+                    <h3 className="font-extrabold text-[#140d1c]">¿Qué incluye Pro?</h3>
+                    <p>
+                        CitandoAndo es gratis. <strong>Pro</strong> es un pago único y opcional, sin suscripción, que desbloquea el color libre, los fondos con tu foto o la portada del libro, y los stickers.
+                        Puedes probar esas funciones antes de pagar: Pro se te pide solo al guardar o compartir una imagen que las use. Todo lo demás sigue siendo gratis.
+                    </p>
+
+                    <h3 className="font-extrabold text-[#140d1c]">Cambié de iPhone o reinstalé la app: ¿cómo recupero Pro?</h3>
+                    <p>
+                        Abre Ajustes → <strong>CitandoAndo Pro</strong> y toca <strong>Restaurar compra</strong>. Usa el mismo Apple ID con el que pagaste. No se cobra de nuevo.
+                    </p>
+
+                    <h3 className="font-extrabold text-[#140d1c]">Pagué, pero Pro no se desbloqueó</h3>
+                    <p>
+                        Prueba primero con Ajustes → CitandoAndo Pro → Restaurar compra. Si no funciona, escríbenos a <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> y adjunta
+                        el recibo de Apple que te llegó por correo.
+                    </p>
+
+                    <h3 className="font-extrabold text-[#140d1c]">¿Cómo pido un reembolso?</h3>
+                    <p>
+                        Las compras las gestiona Apple, así que los reembolsos se solicitan en <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.
+                    </p>
+                </>
+            )}
 
             <h3 className="font-extrabold text-[#140d1c]">¿Cómo borro todos mis datos?</h3>
             <p>En Ajustes → Borrar toda la biblioteca. También se eliminan al desinstalar la app.</p>

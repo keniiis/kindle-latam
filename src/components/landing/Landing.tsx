@@ -1,5 +1,6 @@
 "use client";
 
+import { COPY } from "@/lib/landing/copy";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -230,7 +231,7 @@ const FAQS = [
   },
   {
     q: "¿Es realmente gratis? ¿Necesito crearme una cuenta?",
-    a: "Sí: es gratis, sin registro y sin suscripciones. La abres, importas tus citas y empiezas a diseñar.",
+    a: COPY.faqAnswerLong,
   },
   {
     q: "¿Cómo paso mi My Clippings.txt a la app?",
@@ -299,7 +300,7 @@ export function FinalCta() {
               <span className="absolute right-6 bottom-6 text-5xl opacity-30 rotate-[12deg]">”</span>
             </div>
             <div className="relative">
-              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-white/70">● Gratis · Sin registro · Solo iPhone por ahora</p>
+              <p className="font-jbmono text-[11px] uppercase tracking-[0.24em] text-white/70">● {COPY.freeLead} · Sin registro · Solo iPhone por ahora</p>
               <h2 className="font-fraunces mx-auto mt-3 max-w-3xl text-4xl sm:text-6xl font-black leading-[0.95] tracking-tight">
                 Tus libros ya te cambiaron.<br /><span className="italic font-light">Ahora deja que se note.</span>
               </h2>
@@ -325,7 +326,7 @@ export function Footer() {
               <span className="block overflow-hidden rounded-xl"><BrandIcon size={40} /></span>
               <span className="font-fraunces text-xl font-black">Citando<span className="italic font-light text-clay">Ando</span></span>
             </div>
-            <p className="mt-3 max-w-xs text-[13.5px] leading-relaxed text-paper/70">La app que convierte tus subrayados de Kindle en imágenes listas para Instagram. Gratis y privada.</p>
+            <p className="mt-3 max-w-xs text-[13.5px] leading-relaxed text-paper/70">La app que convierte tus subrayados de Kindle en imágenes listas para Instagram. {COPY.priv}.</p>
             <div className="mt-4"><StoreButtons compact /></div>
           </div>
           <div>
@@ -349,7 +350,7 @@ export function Footer() {
           </div>
           <div>
             <p className="font-jbmono text-[11px] uppercase tracking-[0.2em] text-paper/70">La app</p>
-            <p className="mt-3 flex items-center gap-1.5 text-[13px] text-paper/70"><Heart className="h-3.5 w-3.5 text-clay" fill="currentColor" /> Gratis y sin registro</p>
+            <p className="mt-3 flex items-center gap-1.5 text-[13px] text-paper/70"><Heart className="h-3.5 w-3.5 text-clay" fill="currentColor" /> {COPY.sentence}</p>
             <p className="mt-1 flex items-center gap-1.5 text-[13px] text-paper/70"><ShieldCheck className="h-3.5 w-3.5 text-sage" /> Tus citas, en tu iPhone</p>
           </div>
         </div>
