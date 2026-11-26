@@ -432,5 +432,132 @@ Lo esencial es invisible a los ojos.
         date: '2026-11-20',
         readTime: '6 min lectura',
         tags: ['Libros', 'Citas', 'Frases']
+    },
+    {
+        slug: 'citandoando-vs-canva-imagenes-citas-libros',
+        title: 'CitandoAndo vs Canva: ¿cuál conviene para crear imágenes de citas de libros?',
+        description: 'Comparativa honesta entre CitandoAndo y Canva para diseñar frases de libros y subrayados de Kindle para Instagram Stories: tiempo, flujo de trabajo, precio y cuándo elegir cada uno.',
+        content: `
+            <p>Si compartes frases de libros en Instagram o TikTok, casi seguro has abierto <strong>Canva</strong> alguna vez para diseñar una tarjeta con una cita. Funciona, pero cuando subrayas en Kindle y quieres publicar con frecuencia, diseñar cada imagen desde cero acaba dando pereza. Aquí comparamos con honestidad cuándo conviene usar <strong>CitandoAndo</strong> y cuándo sigue ganando Canva.</p>
+
+            <h2>El punto de partida: ¿de dónde sale la cita?</h2>
+            <p>La diferencia principal no está solo en los colores o las tipografías, sino en el flujo completo desde que subrayas una frase hasta que la subes a tus Stories:</p>
+            <ul>
+                <li><strong>Con Canva:</strong> tienes que copiar la frase a mano (o transcribirla desde el Kindle), abrir la app, buscar tu plantilla, pegar el texto, ajustar el tamaño de fuente para que no se corte, escribir el autor y el libro, y exportar. Suelen ser entre 5 y 15 minutos por cita.</li>
+                <li><strong>Con CitandoAndo:</strong> importas tu archivo <a href="/blog/que-es-my-clippings-txt-kindle">My Clippings.txt</a> una sola vez (o compartes la frase desde otra app de lectura) y ya tienes tu biblioteca ordenada por libro y autor. Eliges la frase, tocas un estilo y guardas la imagen en 9:16 o 1:1 en unos 30 segundos.</li>
+            </ul>
+
+            <h2>Comparativa rápida: pros y contras honestos</h2>
+
+            <h3>Dónde gana Canva</h3>
+            <ul>
+                <li><strong>Libertad total de diseño:</strong> si quieres hacer carruseles complejos, combinar varias fotos, añadir ilustraciones propias o maquetar reseñas largas, Canva es un editor gráfico completo y ahí no tiene rival.</li>
+                <li><strong>Multiplataforma:</strong> funciona en web, ordenador, Android y iPhone. CitandoAndo, por ahora, es solo para iPhone.</li>
+                <li><strong>Trabajo en equipo:</strong> si gestionas una cuenta literaria entre varias personas con plantillas compartidas en la nube, Canva facilita colaborar.</li>
+            </ul>
+
+            <h3>Dónde gana CitandoAndo</h3>
+            <ul>
+                <li><strong>Hecho específicamente para lectores de Kindle:</strong> lee <code>My Clippings.txt</code>, limpia el ruido del archivo y agrupa tus subrayados por libro y autor automáticamente.</li>
+                <li><strong>Velocidad real:</strong> pasas de subrayado a imagen lista para <a href="/blog/compartir-frases-libros-instagram-stories">Instagram Stories</a> en dos toques, sin mover cajas de texto ni pelearte con márgenes.</li>
+                <li><strong>Sin cuenta y sin suscripción mensual:</strong> descargarla y usarla es gratis, sin registro. Si quieres funciones extra (color libre, fondo con tu foto o portada del libro y stickers), Pro es un pago único opcional, no una suscripción mensual como Canva Pro.</li>
+                <li><strong>Privacidad total:</strong> tus libros y citas se quedan en tu iPhone; no subes tu biblioteca a ninguna nube.</li>
+            </ul>
+
+            <h2>¿Cuál elegir según tu caso?</h2>
+            <ul>
+                <li><strong>Elige Canva</strong> si usas Android o prefieres diseñar en ordenador, o si publicas carruseles elaborados y gráficos más allá de citas.</li>
+                <li><strong>Elige CitandoAndo</strong> si lees en Kindle (o libros físicos y Apple Books), usas iPhone y quieres rescatar tus subrayados y publicarlos con un estilo cuidado sin perder 15 minutos por imagen.</li>
+                <li><strong>Usa ambos:</strong> muchos lectores usan CitandoAndo para su biblioteca de citas y Stories diarias rápidas, y abren Canva solo cuando quieren armar un carrusel especial de fin de mes.</li>
+            </ul>
+        `,
+        coverImage: '/blog/citandoando-vs-canva.webp',
+        date: '2026-11-26',
+        readTime: '5 min lectura',
+        tags: ['Guías', 'Kindle', 'Bookstagram', 'Canva']
+    },
+    {
+        slug: 'alternativas-a-readwise-gratis-kindle',
+        title: 'Alternativas a Readwise para Kindle sin suscripción (y más privadas)',
+        description: '¿Buscas una alternativa a Readwise para tus subrayados de Kindle sin pagar cada mes? Comparamos opciones reales según lo que necesitas: estudiar, archivar o compartir citas.',
+        content: `
+            <p><strong>Readwise</strong> es la herramienta más famosa para sincronizar subrayados de Kindle, pero tiene dos frenos claros para muchos lectores: requiere una <strong>suscripción mensual de pago</strong> y guarda toda tu biblioteca de notas en sus servidores. Si solo quieres tener tus frases a mano y disfrutarlas —sin montar un sistema complejo ni pagar cada mes—, existen muy buenas alternativas.</p>
+
+            <h2>Cuándo SÍ merece la pena pagar Readwise</h2>
+            <p>Seamos justos: Readwise hace muy bien lo suyo. Si necesitas sincronización automática con Notion, Obsidian o Roam Research, subrayas artículos web y podcasts además de Kindle, y usas el repaso diario por correo para estudiar o investigar, Readwise sigue siendo difícil de superar.</p>
+            <p>El problema es cuando pagas una suscripción mensual por funciones que no usas, cuando en realidad solo quieres rescatar tus frases del Kindle y compartirlas o releerlas.</p>
+
+            <h2>Las mejores alternativas a Readwise para Kindle</h2>
+
+            <h3>1. Cuaderno de Amazon Kindle (gratis, el más básico)</h3>
+            <ul>
+                <li><strong>Lo bueno:</strong> ya viene incluido con tu cuenta de Amazon en <code>read.amazon.com/notebook</code>, sin instalar nada.</li>
+                <li><strong>Lo malo:</strong> solo muestra libros comprados en la tienda de Amazon (si cargas documentos o EPUBs propios, no aparecen) y no permite diseñar imágenes ni exportar con comodidad. Te explicamos sus límites en nuestra guía para <a href="/blog/ver-subrayados-kindle">ver todos tus subrayados de Kindle</a>.</li>
+            </ul>
+
+            <h3>2. Obsidian + plugin de Kindle (gratis y local, para perfiles técnicos)</h3>
+            <ul>
+                <li><strong>Lo bueno:</strong> gratis, tus notas viven en archivos Markdown en tu ordenador y puedes conectar ideas entre libros como un «segundo cerebro».</li>
+                <li><strong>Lo malo:</strong> tiene curva de aprendizaje, está pensado para trabajar desde el ordenador y no sirve para generar imágenes bonitas para redes sociales.</li>
+            </ul>
+
+            <h3>3. CitandoAndo (gratis para empezar, sin suscripción y 100 % local en iPhone)</h3>
+            <ul>
+                <li><strong>Lo bueno:</strong> importa tu archivo <a href="/blog/que-es-my-clippings-txt-kindle">My Clippings.txt</a> —incluidos libros cargados por USB que Amazon no sincroniza—, organiza tu biblioteca por libro y autor, te deja buscar frases al instante, registra tu racha de lectura y convierte cualquier cita en una imagen lista para Instagram en segundos.</li>
+                <li><strong>Sin cuentas ni nube:</strong> tus subrayados nunca salen de tu iPhone.</li>
+                <li><strong>Precio transparente:</strong> descargarla y usarla es gratis, sin suscripciones. Si quieres personalizar más (color libre, fondos con tu foto o portada del libro y stickers), Pro es un pago único opcional.</li>
+                <li><strong>Lo que NO hace (honestidad ante todo):</strong> por ahora solo está disponible para iPhone y no sincroniza automáticamente con Notion ni Obsidian, porque todo se guarda de forma local a propósito.</li>
+            </ul>
+
+            <h2>Resumen rápido: ¿cuál te conviene?</h2>
+            <ul>
+                <li><strong>Si estudias y conectas notas en Notion u Obsidian:</strong> Readwise (si no te importa la suscripción) u Obsidian en local (si prefieres gratis).</li>
+                <li><strong>Si solo quieres revisar una frase puntual de un libro comprado en Amazon:</strong> el cuaderno web de Kindle te alcanza.</li>
+                <li><strong>Si quieres rescatar todos tus subrayados de Kindle en tu iPhone, mantenerlos privados y compartir citas bonitas sin pagar suscripciones:</strong> <strong>CitandoAndo</strong> está hecho exactamente para eso.</li>
+            </ul>
+        `,
+        coverImage: '/blog/alternativas-readwise.webp',
+        date: '2026-11-26',
+        readTime: '6 min lectura',
+        tags: ['Guías', 'Kindle', 'Readwise', 'Subrayados']
+    },
+    {
+        slug: 'citandoando-vs-capturas-kindle-apple-books',
+        title: 'CitandoAndo vs capturas de Kindle y notas de Apple Books para compartir citas',
+        description: 'Comparamos las tres formas más comunes de compartir frases de tus libros en Instagram: capturas de pantalla, tarjetas nativas de Kindle o Apple Books y CitandoAndo.',
+        content: `
+            <p>Cuando terminas un capítulo y encuentras una frase que te golpea, lo primero que suele hacer cualquiera es sacar una captura de pantalla o usar el botón «Compartir cita» de la app de lectura. Pero basta con ver cómo quedan en Instagram Stories para notar la diferencia. Comparamos las tres opciones con sus ventajas y límites reales.</p>
+
+            <h2>1. Captura de pantalla (del Kindle o del móvil)</h2>
+            <ul>
+                <li><strong>Lo bueno:</strong> tarda dos segundos y no necesitas ninguna app adicional.</li>
+                <li><strong>Lo malo:</strong> se ve el porcentaje de lectura, el reloj, la batería y el resto del párrafo alrededor. En una pantalla pequeña la letra queda diminuta, obliga a hacer zoom y rara vez invita a leerla en una Story.</li>
+            </ul>
+
+            <h2>2. Tarjetas nativas de la app de Kindle o Apple Books</h2>
+            <ul>
+                <li><strong>Lo bueno:</strong> están integradas en el propio lector y generan una tarjeta limpia al instante sin salir del libro.</li>
+                <li><strong>Lo malo:</strong> tienen muy pocos estilos, todas se ven iguales a las de cualquier otro usuario, añaden su propia marca y solo funcionan con libros que estés leyendo dentro de esa app concreta. Si lees en un Kindle físico (e-ink), en papel, en Kobo o en PDF, no tienes esa opción.</li>
+            </ul>
+
+            <h2>3. CitandoAndo (biblioteca unificada + editor para Stories y Posts)</h2>
+            <ul>
+                <li><strong>Lo bueno:</strong> reúne en un solo lugar los subrayados de tu Kindle (vía <a href="/blog/que-es-my-clippings-txt-kindle">My Clippings.txt</a>), frases enviadas desde Apple Books u otras apps con el botón Compartir y citas de libros en papel escritas a mano.</li>
+                <li><strong>Formato pensado para redes:</strong> exporta en vertical <strong>9:16</strong> para <a href="/blog/compartir-frases-libros-instagram-stories">Instagram Stories</a> o en <strong>1:1</strong> para publicaciones, con estilos coherentes, tipografías legibles y la posibilidad de mostrar u ocultar título, autor y marca.</li>
+                <li><strong>Memoria de lectura:</strong> además de crear la imagen, te queda tu biblioteca buscable en el iPhone y un calendario de días y rachas con las frases que vas guardando.</li>
+                <li><strong>El punto a tener en cuenta:</strong> requiere iPhone y, si tus subrayados están en un Kindle físico, la primera vez tendrás que copiar tu <code>My Clippings.txt</code> al teléfono (te explicamos cómo en menos de un minuto en <a href="/blog/ver-subrayados-kindle">esta guía</a>).</li>
+            </ul>
+
+            <h2>¿Cuándo conviene cada método?</h2>
+            <ul>
+                <li><strong>Captura rápida:</strong> si solo quieres enviársela por WhatsApp a un amigo y te da igual cómo se vea.</li>
+                <li><strong>Tarjeta nativa de Kindle o Apple Books:</strong> si compartes una cita muy de vez en cuando y siempre lees desde el teléfono en la misma app.</li>
+                <li><strong>CitandoAndo:</strong> si subrayas con frecuencia, lees en Kindle físico o combinas digital y papel, y quieres que tus citas tengan un estilo propio y legible en Instagram sin diseñar desde cero.</li>
+            </ul>
+        `,
+        coverImage: '/blog/capturas-kindle-apple-books.webp',
+        date: '2026-11-26',
+        readTime: '5 min lectura',
+        tags: ['Guías', 'Kindle', 'Apple Books', 'Instagram']
     }
 ];
